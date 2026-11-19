@@ -306,8 +306,8 @@ small{font-size:.82em}
 .toggle input:checked+.sw::after{transform:translateX(18px)}
 .toggle input:focus-visible+.sw{outline:3px solid var(--teal2);outline-offset:2px}
 .toggle b,.toggle small{display:block}.toggle small{color:var(--ink2)}
-#toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,120px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;z-index:60;transition:transform .3s;font-weight:700;max-width:90vw}
-#toast.show{transform:translate(-50%,0)}
+#toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,120px);opacity:0;visibility:hidden;background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;z-index:60;transition:transform .3s;font-weight:700;max-width:90vw}
+#toast.show{transform:translate(-50%,0);opacity:1;visibility:visible}
 
 /* ---------- Celular ---------- */
 @media (max-width:860px){
@@ -340,6 +340,78 @@ small{font-size:.82em}
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 
+/* ---------- Navegación con íconos ---------- */
+#nav .ni{display:none}
+.practice-cta{display:flex;align-items:center;gap:12px;width:100%;margin:14px 0 4px;text-align:left;border:0;border-radius:16px;padding:14px 16px;background:linear-gradient(135deg,#5B3E96,#7B5EA7);color:#fff;box-shadow:var(--shadow)}
+.practice-cta>span:first-child{font-size:1.8rem}.practice-cta div{flex:1}.practice-cta b,.practice-cta small{display:block}.practice-cta small{opacity:.85}
+.practice-cta>span:last-child{font-size:1.4rem}
+
+/* ---------- Práctica de pronunciación ---------- */
+.notice.ok{background:#E1F6EE;color:#0B5A44}
+.stats.three{grid-template-columns:repeat(3,1fr);margin:12px 0}
+.set-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+.set-card{border:2px solid var(--line);background:#fff;border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:2px;transition:border-color .2s,transform .15s}
+.set-card:hover:not(:disabled){border-color:var(--plum);transform:translateY(-2px)}
+.set-card .muted{font-size:.85rem}
+.pill.good{background:#C9F0E0;color:#0B5A44}.pill.mid{background:#FFE9B3;color:#6B4A00}.pill.bad{background:#FFD6CC;color:#8A2A12}
+.level{width:160px;height:6px;border-radius:999px;background:#EDE5DB;overflow:hidden}
+.level span{display:block;height:100%;width:0;background:var(--teal2);transition:width .08s}
+.pron-ans .level{margin:-2px 0 2px}
+.pron-res{margin-top:12px;display:flex;flex-direction:column;gap:10px}
+.rings{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.ring{--c:var(--ok);width:74px;height:74px;border-radius:50%;display:grid;place-items:center;align-content:center;background:conic-gradient(var(--c) calc(var(--v)*1%),#EEE6DC 0);position:relative}
+.ring::before{content:'';position:absolute;inset:7px;border-radius:50%;background:#fff}
+.ring b,.ring span{position:relative;line-height:1.05;text-align:center}
+.ring b{font-family:'Baloo 2';font-size:1.3rem}.ring span{font-size:.6rem;font-weight:800;color:var(--ink2);max-width:58px}
+.ring.big{width:104px;height:104px}.ring.big b{font-size:2rem}.ring.big::before{inset:9px}
+.ring.mid{--c:#F2B33D}.ring.bad{--c:var(--coral)}
+.pron-words{display:flex;flex-wrap:wrap;gap:8px}
+.pw{border:2px solid transparent;border-radius:12px;padding:6px 10px;font-weight:800;font-size:1.05rem;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.pw small{font-size:.7rem;font-weight:700;opacity:.8}
+.pw.good{background:#E1F6EE;color:#0B5A44}.pw.mid{background:#FFF1CC;color:#6B4A00}.pw.bad{background:#FFE0D8;color:#8A2A12}
+.pw.omit{background:#F1ECE6;color:#9A8C80;text-decoration:line-through}.pw.ins{background:#EDE6FA;color:var(--plum)}
+.pw.sel{border-color:var(--ink)}
+.pron-detail{border:1px solid var(--line);border-radius:14px;padding:12px;background:#FFFCF8;display:flex;flex-direction:column;gap:8px}
+.phons{display:flex;flex-wrap:wrap;gap:6px}
+.ph{border-radius:10px;padding:4px 9px;font-weight:700;font-size:.88rem;display:inline-flex;gap:6px;align-items:baseline}
+.ph small{font-weight:800}
+.ph.good{background:#E1F6EE;color:#0B5A44}.ph.mid{background:#FFF1CC;color:#6B4A00}.ph.bad{background:#FFE0D8;color:#8A2A12}
+
+/* ---------- Celular: barra inferior de navegación ---------- */
+@media (max-width:860px){
+  #nav{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;justify-content:space-around;background:rgba(255,255,255,.97);border-top:1px solid var(--line);padding:4px 2px calc(4px + env(safe-area-inset-bottom));backdrop-filter:blur(8px);overflow:visible}
+  #nav button{display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 2px;font-size:.66rem;flex:1;border-radius:12px;min-width:0}
+  #nav .ni{display:block;font-size:1.25rem;line-height:1.2}
+  #nav .nt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  #nav:not([hidden])~#btnSettings{margin-left:auto}
+  #btnSettings{margin-left:auto}
+  .brand span{display:inline}
+  body{padding-bottom:64px}
+  .stats.three{grid-template-columns:repeat(3,1fr)}
+  .ring{width:62px;height:62px}.ring.big{width:86px;height:86px}
+}
+
+/* ---------- Tutores realistas (por cuadros) ---------- */
+.char-wrap.is-photo{width:min(78%,360px);bottom:70px}
+.photo-char{position:relative;width:100%;aspect-ratio:4/5;transform-origin:50% 100%;animation:breathe 3.6s ease-in-out infinite;filter:drop-shadow(0 18px 24px rgba(0,0,0,.28))}
+.photo-char .fr{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;user-select:none;-webkit-user-drag:none}
+.photo-char .fr.on{opacity:1}
+.photo-char .fr-happy,.photo-char .fr-think,.photo-char .fr-listen,.photo-char .fr-correct{transition:opacity .18s}
+.is-photo.talking .photo-char{animation:bob-photo .9s ease-in-out infinite alternate}
+.is-photo.mood-celebrate .photo-char{animation:hop .45s ease-out 2}
+.is-photo.mood-listen .photo-char{transform:rotate(-2deg)}
+.is-photo.mood-think .photo-char{transform:rotate(1.5deg)}
+.photo-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+@keyframes bob-photo{from{transform:translateY(0) rotate(-.4deg)}to{transform:translateY(-3px) rotate(.4deg)}}
+.char-card .mini img{width:100%;aspect-ratio:4/5;object-fit:contain;display:block}
+.thumb-fallback{display:grid;place-items:center;aspect-ratio:4/5;width:100%;font-family:'Baloo 2';font-size:2.4rem;color:var(--teal);background:#E3F5F2;border-radius:12px}
+.thumb-fallback.big{font-size:5rem}
+.char-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+@media (max-width:860px){
+  .char-wrap.is-photo{width:150px;bottom:0;left:4px}
+  .char-grid{grid-template-columns:repeat(2,1fr)}
+}
+
 </style>
 </head>
 <body>
@@ -349,10 +421,11 @@ small{font-size:.82em}
     <span>Charla</span>
   </button>
   <nav id="nav" hidden aria-label="Secciones">
-    <button data-go="plan">Plan</button>
-    <button data-go="lessons">Lecciones</button>
-    <button data-go="free">Conversar</button>
-    <button data-go="progress">Progreso</button>
+    <button data-go="plan"><span class="ni">🏠</span><span class="nt">Plan</span></button>
+    <button data-go="lessons"><span class="ni">🎬</span><span class="nt">Lecciones</span></button>
+    <button data-go="practice"><span class="ni">🎙️</span><span class="nt">Pronunciación</span></button>
+    <button data-go="free"><span class="ni">💬</span><span class="nt">Conversar</span></button>
+    <button data-go="progress"><span class="ni">📈</span><span class="nt">Progreso</span></button>
   </nav>
   <button id="btnSettings" aria-label="Ajustes">⚙️</button>
 </header>
@@ -1033,17 +1106,38 @@ function musicianSVG() {
   </g></svg>`;
 }
 
+/* Tutores realistas: cada uno tiene cuadros en assets/chars/<id>/
+   neutral · mid · open · round (bocas) · blink · happy · think · listen · correct
+   Si las imágenes no cargan, se usa el dibujo SVG (cuando existe).        */
+const PHOTO_FRAMES = ['neutral', 'mid', 'open', 'round', 'blink', 'happy', 'think', 'listen', 'correct'];
+const ph = id => ({ kind: 'photo', dir: `assets/chars/${id}/` });
 const CHARACTERS = {
-  fox: { id: 'fox', name: 'Fito', species: 'Zorro', svg: foxSVG, claudeVoice: 'rounded', pitch: 0.95,
+  fox: { id: 'fox', name: 'Fito', species: 'Zorro', style: 'Animal realista', ...ph('fox'), svg: foxSVG, claudeVoice: 'rounded', pitch: 0.95,
     tagline: 'Curioso y bromista. Te reta a hablar desde el primer minuto.',
     hello_es: '¡Hola! Soy Fito. Voy a ser tu tutor de inglés.', hello_en: "Hi! I'm Fito. Let's speak English together!" },
-  owl: { id: 'owl', name: 'Olivia', species: 'Búho', svg: owlSVG, claudeVoice: 'airy', pitch: 1.15,
+  owl: { id: 'owl', name: 'Olivia', species: 'Búho', style: 'Animal realista', ...ph('owl'), svg: owlSVG, claudeVoice: 'airy', pitch: 1.15,
     tagline: 'Paciente y precisa. Te explica todo con calma.',
     hello_es: '¡Hola! Soy Olivia. Vamos a aprender inglés paso a paso.', hello_en: "Hello! I'm Olivia. I can't wait to hear you speak!" },
-  musician: { id: 'musician', name: 'Lía Vox', species: 'Artista musical (ficticia)', svg: musicianSVG, claudeVoice: 'glassy', pitch: 1.08,
+  sofia: { id: 'sofia', name: 'Sofía', species: 'Maestra', style: 'Persona realista', ...ph('sofia'), claudeVoice: 'airy', pitch: 1.1,
+    tagline: 'Cálida y clara. Te corrige con paciencia y buen humor.',
+    hello_es: '¡Hola! Soy Sofía, tu maestra. Vamos a hablar inglés desde hoy.', hello_en: "Hi, I'm Sofía! I'm so happy to practice with you." },
+  daniel: { id: 'daniel', name: 'Daniel', species: 'Maestro', style: 'Persona realista', ...ph('daniel'), claudeVoice: 'rounded', pitch: 0.9,
+    tagline: 'Tranquilo y práctico. Ideal para inglés de trabajo.',
+    hello_es: '¡Hola! Soy Daniel. Te voy a ayudar a hablar con seguridad.', hello_en: "Hello, I'm Daniel. Let's get you speaking with confidence." },
+  hana: { id: 'hana', name: 'Hana', species: 'Estudiante', style: 'Anime original', ...ph('hana'), claudeVoice: 'glassy', pitch: 1.2,
+    tagline: 'Alegre y curiosa. Practica como si platicaras con una amiga.',
+    hello_es: '¡Hola! Soy Hana. ¡Vamos a divertirnos practicando inglés!', hello_en: "Hi hi! I'm Hana. Let's have fun with English!" },
+  kenji: { id: 'kenji', name: 'Kenji', species: 'Estudiante', style: 'Anime original', ...ph('kenji'), claudeVoice: 'buttery', pitch: 1.0,
+    tagline: 'Relajado y motivador. Te reta a mejorar cada día.',
+    hello_es: '¡Hola! Soy Kenji. Cada día un poco mejor, ¿va?', hello_en: "Hey, I'm Kenji! Ready to level up your English?" },
+  musician: { id: 'musician', name: 'Lía Vox', species: 'Artista musical (ficticia)', style: 'Persona realista', ...ph('musician'), svg: musicianSVG, claudeVoice: 'glassy', pitch: 1.08,
     tagline: 'Cantante inventada. Aprende con ritmo y buena vibra.',
     hello_es: '¡Hola! Soy Lía Vox. Vamos a practicar inglés con mucho ritmo.', hello_en: "Hey! I'm Lía. Let's make English sound like music!" }
 };
+function charThumb(c) {
+  if (c.kind === 'photo' && !c.photoFailed) return `<img src="${c.dir}neutral.webp" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'thumb-fallback',textContent:'${c.name.charAt(0)}'}))">`;
+  return c.svg ? c.svg() : `<span class="thumb-fallback">${c.name.charAt(0)}</span>`;
+}
 
 /* ---------------- ESCENARIOS DE FONDO ---------------- */
 function sceneSVG(id) {
@@ -1455,7 +1549,7 @@ const Lip = {
       for (let k = 0; k < n; k++) {
         const v = groups[k] || 'e', d = syl / rate;
         const amp = /a|á/.test(v) ? 1 : /o|ó/.test(v) ? 0.8 : /u|ú/.test(v) ? 0.6 : /e|é/.test(v) ? 0.7 : 0.55;
-        segs.push({ t0: t, t1: t + d * 0.9, amp }); t += d;
+        segs.push({ t0: t, t1: t + d * 0.9, amp, round: /[ouóú]/.test(v) }); t += d;
       }
       t += 0.05 / rate;
       if (/[,;:]$/.test(raw)) t += 0.22 / rate;
@@ -1474,12 +1568,12 @@ const Lip = {
   },
   startAnalyser(an) { this.tl = null; this.analyser = an; this.buf = new Uint8Array(an.fftSize); this.running = true; this.pending = false; this.loop(); },
   stop() { this.running = false; cancelAnimationFrame(this.raf); this.set(0); this.analyser = null; },
-  set(v) { if (Tutor.root) Tutor.root.style.setProperty('--m', v.toFixed(3)); },
+  set(v, round) { if (Tutor.root) { Tutor.root.style.setProperty('--m', v.toFixed(3)); Tutor.mouth(v, round); } },
   loop() {
     cancelAnimationFrame(this.raf);
     const step = () => {
       if (!this.running) return;
-      let m = 0;
+      let m = 0, round = false;
       if (this.analyser) {
         this.analyser.getByteTimeDomainData(this.buf);
         let sum = 0; for (let i = 0; i < this.buf.length; i++) { const x = (this.buf[i] - 128) / 128; sum += x * x; }
@@ -1488,12 +1582,12 @@ const Lip = {
       } else if (this.tl && !this.pending) {
         const t = this.anchorT + (performance.now() - this.anchorPerf) / 1000;
         const s = this.tl.segs.find(sg => t >= sg.t0 && t <= sg.t1);
-        if (s) m = s.amp * Math.pow(Math.sin(Math.PI * (t - s.t0) / (s.t1 - s.t0)), 0.8);
+        if (s) { m = s.amp * Math.pow(Math.sin(Math.PI * (t - s.t0) / (s.t1 - s.t0)), 0.8); round = s.round; }
         let wi = -1; this.tl.wordStarts.forEach((w, k) => { if (w.t <= t) wi = k; });
         if (wi >= 0) Subs.highlight(wi);
       }
       this.smooth = this.smooth * 0.45 + m * 0.55;
-      this.set(this.smooth);
+      this.set(this.smooth, round);
       this.raf = requestAnimationFrame(step);
     };
     this.raf = requestAnimationFrame(step);
@@ -1788,22 +1882,58 @@ function addReview(item) {
 }
 
 /* ---------------- Tutor (personaje animado) ---------------- */
+const MOOD_FRAME = { idle: 'neutral', greet: 'happy', celebrate: 'happy', listen: 'listen', think: 'think', correct: 'correct' };
 const Tutor = {
-  root: null, char: CHARACTERS.fox, t: 0,
+  root: null, char: CHARACTERS.fox, t: 0, isPhoto: false, frames: {}, cur: 'neutral', moodName: 'idle', isTalking: false, blinkT: 0,
   mount(el) { this.root = el; },
   set(id) {
     this.char = CHARACTERS[id] || CHARACTERS.fox;
-    this.root.innerHTML = this.char.svg();
-    this.root.className = 'char-wrap char-' + this.char.id;
+    clearTimeout(this.blinkT);
+    this.isPhoto = this.char.kind === 'photo' && !this.char.photoFailed;
+    this.root.className = 'char-wrap char-' + this.char.id + (this.isPhoto ? ' is-photo' : '');
+    if (this.isPhoto) {
+      // Cuadros apilados; solo uno visible. Precarga todos para cambiar sin parpadeo.
+      this.root.innerHTML = `<div class="photo-char">${PHOTO_FRAMES.map(fr => `<img class="fr fr-${fr}${fr === 'neutral' ? ' on' : ''}" src="${this.char.dir}${fr}.webp" alt="" draggable="false">`).join('')}</div>
+        <svg class="photo-fx" viewBox="0 0 220 260" aria-hidden="true">${FX_SVG}</svg>`;
+      this.frames = {}; $$('.fr', this.root).forEach(img => { this.frames[img.className.match(/fr-(\w+)/)[1]] = img; });
+      this.frames.neutral.addEventListener('error', () => { this.char.photoFailed = true; this.set(this.char.id); }, { once: true });
+      this.cur = 'neutral'; this.scheduleBlink();
+    } else {
+      this.root.innerHTML = this.char.svg ? this.char.svg() : `<div class="thumb-fallback big">${this.char.name.charAt(0)}</div>`;
+    }
+  },
+  show(fr) {
+    if (!this.isPhoto || fr === this.cur || !this.frames[fr]) return;
+    this.frames[this.cur].classList.remove('on'); this.frames[fr].classList.add('on'); this.cur = fr;
+  },
+  base() { return this.isTalking ? 'neutral' : (MOOD_FRAME[this.moodName] || 'neutral'); },
+  // Boca: v = apertura 0..1 (de la voz), round = vocal redonda (o/u)
+  mouth(v, round) {
+    if (!this.isPhoto) return;
+    if (!this.isTalking) return;
+    this.show(v < 0.12 ? 'neutral' : (round && v >= 0.25) ? 'round' : v < 0.45 ? 'mid' : 'open');
+  },
+  scheduleBlink() {
+    clearTimeout(this.blinkT);
+    this.blinkT = setTimeout(() => {
+      if (this.isPhoto && this.cur === 'neutral') { this.show('blink'); setTimeout(() => { if (this.cur === 'blink') this.show(this.base()); }, 130); }
+      this.scheduleBlink();
+    }, 2800 + Math.random() * 3200);
   },
   mood(m, ms) {
     clearTimeout(this.t);
     ['greet', 'listen', 'think', 'celebrate', 'correct'].forEach(x => this.root.classList.remove('mood-' + x));
     if (m && m !== 'idle') this.root.classList.add('mood-' + m);
+    this.moodName = m || 'idle';
+    if (!this.isTalking) this.show(this.base());
     const auto = { greet: 2600, celebrate: 2600, correct: 2800 }[m];
     if (ms || auto) this.t = setTimeout(() => this.mood('idle'), ms || auto);
   },
-  talking(on) { if (this.root) this.root.classList.toggle('talking', !!on); }
+  talking(on) {
+    if (!this.root) return;
+    this.isTalking = !!on; this.root.classList.toggle('talking', !!on);
+    this.show(on ? 'neutral' : this.base());
+  }
 };
 const setScene = id => { $('#scene').innerHTML = sceneSVG(id); };
 
@@ -1814,7 +1944,7 @@ const App = {
   go(name, arg) {
     this.flow++; Voice.stop(); Ears.abort(); this.screen = name;
     Tutor.mood('idle'); Subs.hide();
-    $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.go === name || (name === 'lesson' && b.dataset.go === 'lessons') || (name === 'freeChat' && b.dataset.go === 'free') || (name === 'review' && b.dataset.go === 'progress')));
+    $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.go === name || (name === 'lesson' && b.dataset.go === 'lessons') || (name === 'freeChat' && b.dataset.go === 'free') || (name === 'review' && b.dataset.go === 'progress') || (name === 'practiceRun' && b.dataset.go === 'practice')));
     $('#nav').hidden = S.levelIdx === null;
     window.scrollTo({ top: 0 });
     SCREENS[name](arg);
@@ -1831,7 +1961,8 @@ function statusList() {
   return `<ul class="status-list">
     <li><b>🔊 Voz:</b> ${esc(Voice.label())}</li>
     <li><b>🎤 Micrófono:</b> ${esc(Ears.label())}</li>
-    <li><b>🧠 Conversación:</b> ${esc(AI.label())}</li></ul>`;
+    <li><b>🧠 Conversación:</b> ${esc(AI.label())}</li>
+    <li><b>🎙️ Pronunciación:</b> ${esc(typeof Pron !== 'undefined' ? Pron.label() : '')}</li></ul>`;
 }
 function run(fn) { Promise.resolve().then(fn).catch(e => { if (e !== ABORT) { console.error(e); toast('Algo salió mal: ' + (e.message || e)); } }); }
 const en = (text, who = 'tutor', npc) => ({ text, lang: 'en', who, npc });
@@ -1942,8 +2073,8 @@ SCREENS.welcome = () => {
     <h2>Elige a tu tutor</h2>
     <div class="char-grid">${Object.values(CHARACTERS).map(c => `
       <button class="char-card ${S.character === c.id ? 'sel' : ''}" data-c="${c.id}" aria-pressed="${S.character === c.id}">
-        <div class="mini">${c.svg()}</div>
-        <b>${c.name}</b><span class="species">${c.species}</span>
+        <div class="mini">${charThumb(c)}</div>
+        <b>${c.name}</b><span class="species">${c.species} · ${c.style || ''}</span>
         <span class="tag">${c.tagline}</span>
         <span class="listen-btn">🔊 Escuchar su voz</span>
       </button>`).join('')}</div>
@@ -2296,11 +2427,13 @@ SCREENS.plan = () => {
     </div>
     <h2>Tu ruta</h2>
     <div class="lesson-list">${route.map(l => lessonRow(l, l.id === rec.id)).join('')}</div>
+    <button class="practice-cta" id="toPractice"><span>🎙️</span><div><b>Práctica de pronunciación</b><small>Pura práctica oral: el tutor corrige cada palabra y cada sonido</small></div><span>→</span></button>
     <button class="link" id="editPlan">Cambiar objetivo o días</button>
   </div>`);
   $('#startSession').addEventListener('click', () => App.go('lesson', { id: rec.id, session: true }));
   bindLessonRows();
   $('#editPlan').addEventListener('click', () => App.go('goal'));
+  $('#toPractice').addEventListener('click', () => App.go('practice'));
   Tutor.mood('greet');
   run(() => say(f, [en(`Welcome${S.name ? ', ' + S.name : ''}! Ready for today's session?`)]));
 };
@@ -2428,6 +2561,20 @@ async function lessonFlow(id, opts = {}) {
     await say(f, [en(p.en)]);
     let best = 0, tries = 0, lastSaid = '';
     for (; ;) {
+      if (Pron.available()) {
+        // Con Azure: evaluación real de pronunciación del audio
+        const pr = await pronounceAttempt($('#ans'), p.en, { label: 'Repite la frase:' }); App.check(f);
+        tries++; lastSaid = pr.text || ''; best = Math.max(best, (pr.score || 0) / 100);
+        const goodP = (pr.score || 0) >= 80;
+        $('#fb').innerHTML = pronResultHTML(pr, p.en) + `<div class="actions">${goodP ? '' : '<button class="btn soft" id="again">🔁 Intentar otra vez</button>'}<button class="btn primary" id="next">${pi < L.phrases.length - 1 ? 'Siguiente frase' : 'Continuar'}</button></div>`;
+        bindPronResult($('#fb'), pr, p.en);
+        const w = pr.res && Pron.worst(pr.res);
+        if (goodP && !w) { Tutor.mood('celebrate'); run(() => say(f, [en(pick(['Great!', 'Nice job!', 'Perfect!']))])); }
+        else { Tutor.mood('correct'); const t = w ? phTip(w.p) : null; run(() => say(f, [es(t ? `Cuida el sonido ${t[0]} en «${w.word}». ${t[1]}` : 'Casi. Escúchala otra vez.'), en(p.en)], { slow: true })); }
+        const actP = await new Promise(res => { $('#next').addEventListener('click', () => res('next')); $('#again')?.addEventListener('click', () => res('again')); });
+        App.check(f); Voice.stop();
+        if (actP === 'next') break; else continue;
+      }
       const r = await askAnswer($('#ans'), { label: 'Repite la frase:' }); App.check(f);
       if (r.cmd === 'repeat') { await say(f, [en(p.en)], { slow: true }); continue; }
       tries++; if (r.viaMic) addSpoken(r.seconds);
@@ -2698,6 +2845,7 @@ SCREENS.progress = () => {
       <div class="stat"><span class="s-num">${sessionsThisWeek()}/3</span><span>Sesiones esta semana</span></div>
     </div>
     ${R && !R.skipped ? `<h2>Habilidades (examen inicial)</h2><div class="skills">${skillBars(R)}</div><p class="fine">Estimación del ${new Date(R.date).toLocaleDateString('es-MX')}. No es una certificación.</p>` : ''}
+    ${S.pron && S.pron.attempts ? `<h2>Pronunciación</h2><div class="stats three"><div class="stat"><span class="s-num">${Math.round(S.pron.sum / S.pron.attempts)}</span><span>Promedio (Azure)</span></div><div class="stat"><span class="s-num">${S.pron.attempts}</span><span>Intentos evaluados</span></div><div class="stat"><span class="s-num">${Object.keys(S.pron.weak).length}</span><span>Palabras por mejorar</span></div></div><button class="btn soft" id="toPron">🎙️ Practicar pronunciación</button>` : ''}
     <h2>Vocabulario por repasar <small class="muted">(${S.review.length})</small></h2>
     ${S.review.length ? `<div class="review-list">${S.review.map((r, i) => `<div class="review-item"><div><b>${esc(r.en)}</b>${r.es ? `<span>${esc(r.es)}</span>` : ''}${r.said ? `<small>Dijiste: «${esc(r.said)}»</small>` : ''}</div><span class="reps">${'●'.repeat(r.reps)}${'○'.repeat(3 - Math.min(3, r.reps))}</span><button class="icon-btn" data-del="${i}" aria-label="Quitar">✕</button></div>`).join('')}</div>
       <button class="btn primary" id="practice">🔁 Practicar ahora</button>` : '<p class="muted">Vacío por ahora. Se llena con las frases que te cuestan.</p>'}
@@ -2705,6 +2853,7 @@ SCREENS.progress = () => {
     <div class="actions"><button class="btn ghost" id="retest">Repetir examen inicial</button></div></div>`);
   $$('[data-del]').forEach(b => b.addEventListener('click', () => { S.review.splice(+b.dataset.del, 1); save(); SCREENS.progress(); }));
   $('#practice')?.addEventListener('click', () => App.go('review'));
+  $('#toPron')?.addEventListener('click', () => App.go('practice'));
   $('#retest').addEventListener('click', () => App.go('test'));
   bindLessonRows();
 };
@@ -2767,6 +2916,382 @@ function init() {
   else App.go('plan');
 }
 document.addEventListener('DOMContentLoaded', init);
+
+/* ===== pronunciation.js ===== */
+/* ============================================================
+   PRÁCTICA DE PRONUNCIACIÓN
+   - Con Azure Speech (servidor /api/pronunciation): califica el AUDIO
+     por palabra y por sonido (fonema): precisión, fluidez, completitud.
+   - Sin Azure: graba tu voz para que te compares con el modelo y compara
+     el texto reconocido. En ese modo NO se evalúa pronunciación y la app
+     lo dice en pantalla.
+   ============================================================ */
+
+/* ---------- Sonidos difíciles para hispanohablantes ---------- */
+const PRACTICE_SETS = [
+  { id: 'th', icon: '👅', title: 'La «th»', sub: 'think · this · three',
+    tip: 'Saca un poquito la punta de la lengua entre los dientes. En «think» solo sale aire; en «this» la garganta vibra.',
+    items: ['think', 'three', 'thank you', 'this', 'mother', 'I think three things are free.', 'This is the thing I thought about.'] },
+  { id: 'vb', icon: '🦷', title: 'V contra B', sub: 'very · berry · vote · boat',
+    tip: 'Para la V, apoya los dientes de arriba en el labio de abajo y deja vibrar. Para la B, junta los dos labios.',
+    items: ['very', 'berry', 'vote', 'boat', 'video', 'I have a very valuable van.', 'Victor visited a big village.'] },
+  { id: 'iee', icon: '😁', title: 'I corta e «ee» larga', sub: 'ship · sheep · live · leave',
+    tip: 'La «ee» larga se dice sonriendo y tensa (sheep). La «i» corta es relajada y breve, casi entre i y e (ship).',
+    items: ['ship', 'sheep', 'live', 'leave', 'sit', 'seat', 'Please sit in this seat.', 'Will you leave or live here?'] },
+  { id: 'shch', icon: '🤫', title: 'SH contra CH', sub: 'shoes · choose · wash · watch',
+    tip: 'SH es un sonido continuo, como pedir silencio: «shhh». CH empieza con un pequeño golpe de lengua: «t+sh».',
+    items: ['shoes', 'choose', 'wash', 'watch', 'share', 'chair', 'She chose cheap shoes.', 'Wash the dishes, then watch TV.'] },
+  { id: 'z', icon: '🐝', title: 'La Z que zumba', sub: 'zoo · is · easy · eyes',
+    tip: 'La Z inglesa vibra como una abeja: «zzz». También la «s» de «is», «eyes» y «easy» suena así.',
+    items: ['zoo', 'easy', 'busy', 'eyes', 'music', 'His zebra is busy.', 'It is easy to choose music.'] },
+  { id: 'h', icon: '💨', title: 'La H suave', sub: 'hot · house · happy',
+    tip: 'La H inglesa es solo aire suave, como empañar un vidrio. No raspes la garganta como en la «j» de «jamón».',
+    items: ['hot', 'house', 'happy', 'hello', 'behind', 'Harry has a happy horse.', 'How hot is your house?'] },
+  { id: 'sc', icon: '🏫', title: 'S + consonante', sub: 'school · Spain · student',
+    tip: 'No agregues una «e» al principio: es «school», no «eschool». Empieza directo con «sss».',
+    items: ['school', 'Spain', 'student', 'street', 'speak', 'Students speak in a small school.', 'Stay on this street.'] },
+  { id: 'ed', icon: '⏮️', title: 'Pasado con -ed', sub: 'worked · played · wanted',
+    tip: 'La terminación -ed suena «t» (worked), «d» (played) o «id» solo después de t o d (wanted). No digas «work-ed».',
+    items: ['worked', 'played', 'wanted', 'watched', 'needed', 'I walked home and watched a movie.', 'She wanted to visit and played music.'] },
+  { id: 'r', icon: '🌀', title: 'La R inglesa', sub: 'red · right · car · very',
+    tip: 'No vibres la lengua. Llévala un poco hacia atrás sin tocar el paladar y redondea un poco los labios.',
+    items: ['red', 'right', 'car', 'world', 'really', 'Rachel runs really fast.', 'The red car is right there.'] },
+  { id: 'schwa', icon: '🎵', title: 'Sílabas débiles', sub: 'banana · comfortable · chocolate',
+    tip: 'En inglés las sílabas sin acento se relajan y suenan como «uh». «Comfortable» tiene 3 sílabas: CUMF-ter-bul.',
+    items: ['banana', 'comfortable', 'chocolate', 'vegetable', 'problem', 'It is a comfortable chocolate cake.', 'Bananas are my favorite vegetable? No, a fruit!'] }
+];
+
+/* ---------- Consejos por sonido (alfabeto de Azure SAPI e IPA) ---------- */
+const PHONEME_TIPS = {
+  th: ['«th» sin voz', 'Lengua entre los dientes y sopla, como en «think».'],
+  dh: ['«th» con voz', 'Lengua entre los dientes y deja vibrar la garganta, como en «this».'],
+  v: ['V', 'Dientes de arriba sobre el labio de abajo, con vibración.'],
+  b: ['B', 'Junta los dos labios y suelta.'],
+  ih: ['i corta', 'Relajada y breve, casi entre «i» y «e» (ship, sit).'],
+  iy: ['ee larga', 'Sonríe y alárgala: «ee» (sheep, seat).'],
+  sh: ['SH', 'Continuo, como pedir silencio: «shhh».'],
+  ch: ['CH', 'Golpe corto: «t» + «sh».'],
+  jh: ['J inglesa', 'Como «ch» pero con vibración (job, just).'],
+  z: ['Z', 'Vibra como abeja: «zzz».'],
+  s: ['S', 'Siseo limpio, sin agregar «e» antes.'],
+  h: ['H', 'Solo aire suave, sin raspar la garganta.'],
+  r: ['R inglesa', 'No la vibres; lengua atrás sin tocar el paladar.'],
+  er: ['«er»', 'R suave con la boca casi cerrada (bird, world).'],
+  ax: ['vocal débil «uh»', 'Relájala: suena «uh», muy corta.'],
+  ah: ['«uh» corta', 'Boca medio abierta y relajada (cup, love).'],
+  ae: ['«a» abierta', 'Abre la boca entre «a» y «e» (cat, happy).'],
+  aa: ['«a» larga', 'Boca bien abierta (hot, car).'],
+  ng: ['NG', 'Termina en la garganta, sin pronunciar la «g» (sing).'],
+  t: ['T', 'Golpe con la punta de la lengua; no la omitas al final.'],
+  d: ['D', 'Toca detrás de los dientes de arriba; no la omitas al final.'],
+  w: ['W', 'Labios redondos como para «u» y abre rápido.'],
+  y: ['Y', 'Como «i» rápida al inicio (yes, you).'],
+  uh: ['«u» corta', 'Relajada (book, good).'],
+  uw: ['«uu» larga', 'Labios redondos y alarga (food, you).'],
+  ow: ['«ou»', 'Desliza de «o» a «u» (go, home).'],
+  ey: ['«ei»', 'Desliza de «e» a «i» (day, name).'],
+  ay: ['«ai»', 'Desliza de «a» a «i» (my, time).'],
+  eh: ['«e»', 'Como la «e» española, corta (bed).'],
+  l: ['L', 'Al final de palabra, la lengua sube y la L suena oscura (feel).'],
+  k: ['K', 'Golpe con aire al inicio (cat).'], p: ['P', 'Suelta aire al inicio (park).'], g: ['G', 'Suave, desde atrás (go).'],
+  f: ['F', 'Dientes sobre el labio, solo aire.'], m: ['M', 'Labios juntos.'], n: ['N', 'Punta de la lengua arriba.'],
+  zh: ['«zh»', 'Como SH con vibración (vision).'], oy: ['«oi»', 'Desliza de «o» a «i» (boy).'], aw: ['«au»', 'Desliza de «a» a «u» (now).'], ao: ['«o» abierta', 'Boca redonda y abierta (law).']
+};
+const IPA_TO_SAPI = { 'θ': 'th', 'ð': 'dh', 'ɪ': 'ih', 'i': 'iy', 'iː': 'iy', 'ʃ': 'sh', 'tʃ': 'ch', 'dʒ': 'jh', 'ɹ': 'r', 'ɝ': 'er', 'ɚ': 'er', 'ə': 'ax', 'ʌ': 'ah', 'æ': 'ae', 'ɑ': 'aa', 'ŋ': 'ng', 'j': 'y', 'ʊ': 'uh', 'u': 'uw', 'oʊ': 'ow', 'eɪ': 'ey', 'aɪ': 'ay', 'ɛ': 'eh', 'ʒ': 'zh', 'ɔɪ': 'oy', 'aʊ': 'aw', 'ɔ': 'ao' };
+const phKey = p => { const k = String(p || '').toLowerCase(); return PHONEME_TIPS[k] ? k : (IPA_TO_SAPI[p] || k); };
+const phTip = p => PHONEME_TIPS[phKey(p)] || [p, ''];
+
+/* ---------- Grabadora: WAV PCM 16 kHz mono ---------- */
+const Rec = {
+  stream: null, ctx: null, node: null, src: null, chunks: [], rate: 48000, active: false,
+  supported() { return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) && window.isSecureContext !== false; },
+  async start({ onLevel, maxMs = 15000, silenceMs = 1300 } = {}) {
+    if (!this.stream) this.stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+    const AC = window.AudioContext || window.webkitAudioContext;
+    this.ctx = new AC(); this.rate = this.ctx.sampleRate;
+    this.src = this.ctx.createMediaStreamSource(this.stream);
+    this.node = this.ctx.createScriptProcessor(4096, 1, 1);
+    this.chunks = []; this.active = true;
+    let spoke = false, lastVoice = performance.now(); const t0 = performance.now();
+    return new Promise(resolve => {
+      this._resolve = resolve;
+      this.node.onaudioprocess = e => {
+        if (!this.active) return;
+        const d = new Float32Array(e.inputBuffer.getChannelData(0)); this.chunks.push(d);
+        let s = 0; for (let i = 0; i < d.length; i++) s += d[i] * d[i];
+        const rms = Math.sqrt(s / d.length); onLevel && onLevel(rms);
+        const now = performance.now();
+        if (rms > 0.02) { spoke = true; lastVoice = now; }
+        if ((spoke && now - lastVoice > silenceMs) || now - t0 > maxMs) this.stop();
+      };
+      this.src.connect(this.node); this.node.connect(this.ctx.destination);
+    });
+  },
+  stop() {
+    if (!this.active) return; this.active = false;
+    try { this.src.disconnect(); this.node.disconnect(); this.ctx.close(); } catch (e) { }
+    const len = this.chunks.reduce((a, c) => a + c.length, 0);
+    const all = new Float32Array(len); let o = 0; this.chunks.forEach(c => { all.set(c, o); o += c.length; });
+    const wav = encodeWav(downsample(trimSilence(all, this.rate), this.rate, 16000), 16000);
+    const r = this._resolve; this._resolve = null;
+    r && r({ wav, url: URL.createObjectURL(wav), seconds: len / this.rate });
+  },
+  release() { if (this.stream) { this.stream.getTracks().forEach(t => t.stop()); this.stream = null; } }
+};
+function trimSilence(buf, rate) {
+  const win = Math.floor(rate * 0.02), th = 0.012; let a = 0, b = buf.length;
+  const rms = (i) => { let s = 0; for (let k = i; k < Math.min(buf.length, i + win); k++) s += buf[k] * buf[k]; return Math.sqrt(s / win); };
+  while (a < buf.length && rms(a) < th) a += win;
+  while (b > a && rms(Math.max(0, b - win)) < th) b -= win;
+  const pad = Math.floor(rate * 0.25);
+  return buf.subarray(Math.max(0, a - pad), Math.min(buf.length, b + pad));
+}
+function downsample(buf, from, to) {
+  if (from === to) return buf;
+  const ratio = from / to, out = new Float32Array(Math.floor(buf.length / ratio));
+  for (let i = 0; i < out.length; i++) { const s = Math.floor(i * ratio), e = Math.min(buf.length, Math.floor((i + 1) * ratio)); let sum = 0; for (let k = s; k < e; k++) sum += buf[k]; out[i] = sum / Math.max(1, e - s); }
+  return out;
+}
+function encodeWav(samples, rate) {
+  const b = new ArrayBuffer(44 + samples.length * 2), v = new DataView(b);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + samples.length * 2, true); w(8, 'WAVE'); w(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, rate, true);
+  v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, samples.length * 2, true);
+  for (let i = 0; i < samples.length; i++) { const s = clamp(samples[i], -1, 1); v.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true); }
+  return new Blob([b], { type: 'audio/wav' });
+}
+
+/* ---------- Evaluación (Azure vía servidor) ---------- */
+const Pron = {
+  available() { return !!Caps.server.pronunciation && Rec.supported(); },
+  label() { return this.available() ? 'Azure Speech: evalúa tu pronunciación' : 'Sin evaluación de pronunciación (falta configurar Azure)'; },
+  async assess(wav, referenceText) {
+    const r = await fetch('api/pronunciation?text=' + encodeURIComponent(referenceText), { method: 'POST', headers: { 'content-type': 'audio/wav' }, body: wav });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+    return Pron.normalize(j, referenceText);
+  },
+  normalize(j, ref) {
+    if (j.RecognitionStatus && j.RecognitionStatus !== 'Success') return { ok: false, status: j.RecognitionStatus, words: [] };
+    const nb = (j.NBest || [])[0] || {};
+    const pa = o => (o && (o.PronunciationAssessment || o)) || {};
+    const words = (nb.Words || []).map(w => ({
+      word: w.Word, score: Math.round(pa(w).AccuracyScore ?? 0), error: pa(w).ErrorType || 'None',
+      phonemes: (w.Phonemes || []).map(p => ({ p: p.Phoneme, score: Math.round(pa(p).AccuracyScore ?? 0) }))
+    }));
+    const s = pa(nb);
+    return {
+      ok: true, text: nb.Display || j.DisplayText || '', words,
+      pron: Math.round(s.PronScore ?? s.AccuracyScore ?? 0), accuracy: Math.round(s.AccuracyScore ?? 0),
+      fluency: Math.round(s.FluencyScore ?? 0), completeness: Math.round(s.CompletenessScore ?? 0),
+      prosody: s.ProsodyScore != null ? Math.round(s.ProsodyScore) : null
+    };
+  },
+  worst(res) {
+    const bad = [];
+    res.words.forEach(w => w.phonemes.forEach(p => { if (p.score < 70) bad.push({ ...p, word: w.word }); }));
+    bad.sort((a, b) => a.score - b.score);
+    return bad[0] || null;
+  },
+  record(res) {
+    // Guarda estadísticas por sonido y palabras débiles para repasar.
+    S.pron = S.pron || { attempts: 0, sum: 0, phon: {}, weak: {} };
+    S.pron.attempts++; S.pron.sum += res.pron;
+    res.words.forEach(w => {
+      w.phonemes.forEach(p => { const k = phKey(p.p); const e = S.pron.phon[k] = S.pron.phon[k] || { sum: 0, n: 0 }; e.sum += p.score; e.n++; });
+      const k = w.word.toLowerCase();
+      if (w.error !== 'Insertion') {
+        if (w.score < 70) S.pron.weak[k] = { best: Math.max(S.pron.weak[k]?.best || 0, w.score), last: w.score };
+        else if (S.pron.weak[k] && w.score >= 85) delete S.pron.weak[k];
+      }
+    });
+    save();
+  }
+};
+const scoreClass = s => s >= 85 ? 'good' : s >= 65 ? 'mid' : 'bad';
+
+/* ---------- Componente: un intento de pronunciación ----------
+   Devuelve { mode:'azure'|'text', score (0..100), res, text, url } */
+function pronounceAttempt(container, refText, opts = {}) {
+  return new Promise(resolve => {
+    const azure = Pron.available();
+    const canRec = Rec.supported();
+    container.innerHTML = `<div class="answer pron-ans">
+      ${opts.label ? `<p class="ans-label">${opts.label}</p>` : ''}
+      <div class="ans-live" aria-live="polite">${azure ? 'Toca el micrófono y di la frase. Se detiene solo cuando terminas.' : 'Toca el micrófono y di la frase.'}</div>
+      <div class="level"><span></span></div>
+      <button class="mic" type="button"><span class="mic-ico" aria-hidden="true"></span><span class="mic-lbl">Toca y habla</span></button>
+      <div class="ans-tools"><button type="button" class="link" data-a="repeat">🐢 Escuchar modelo lento</button>${opts.skip ? '<button type="button" class="link" data-a="skip">Saltar</button>' : ''}</div></div>`;
+    const live = $('.ans-live', container), mic = $('.mic', container), lvl = $('.level span', container);
+    let busy = false, done = false;
+    const finish = r => { if (done) return; done = true; $('.answer', container).classList.add('done'); Tutor.mood('idle'); resolve(r); };
+    $$('.ans-tools .link', container).forEach(b => b.addEventListener('click', () => { if (b.dataset.a === 'repeat') Voice.speak([en(refText)], { slow: true }); if (b.dataset.a === 'skip') { if (Rec.active) Rec.stop(); finish({ cmd: 'skip' }); } }));
+    mic.addEventListener('click', async () => {
+      if (busy) { if (Rec.active) Rec.stop(); else if (Ears.listening) Ears.stop(); return; }
+      busy = true; Voice.stop(); Voice.unlock(); Tutor.mood('listen');
+      mic.classList.add('on'); $('.mic-lbl', mic).textContent = 'Te escucho… toca para terminar'; live.textContent = 'Te escucho…';
+      // Sin Azure: además del audio, pedimos el texto reconocido al navegador.
+      let heard = '', earsDone = Promise.resolve();
+      if (!azure && Ears.available()) {
+        earsDone = new Promise(res => {
+          Ears.start({ partial: t => { live.innerHTML = `<span class="you">Tú:</span> ${esc(t)}…`; }, final: t => { heard = (heard + ' ' + t).trim(); },
+            state: st => { if (st === 'idle') { res(); if (Rec.active) Rec.stop(); } }, error: () => res() });
+        });
+      }
+      let clip = null;
+      if (canRec) {
+        try { clip = await Rec.start({ onLevel: r => { lvl.style.width = Math.min(100, r * 600) + '%'; } }); }
+        catch (e) { live.textContent = 'No se pudo usar el micrófono para grabar (' + (e.name || e.message) + ').'; }
+      }
+      if (!azure) { if (Ears.listening) Ears.stop(); await Promise.race([earsDone, sleep(2500)]); }
+      mic.classList.remove('on'); $('.mic-lbl', mic).textContent = 'Toca y habla'; lvl.style.width = '0%';
+      if (azure && clip) {
+        if (clip.seconds < 0.4) { live.textContent = 'No te escuché. Intenta otra vez.'; busy = false; Tutor.mood('idle'); return; }
+        live.textContent = 'Analizando tu pronunciación…'; Tutor.mood('think');
+        try {
+          const res = await Pron.assess(clip.wav, refText);
+          if (!res.ok) { live.textContent = res.status === 'NoMatch' ? 'No logré reconocer la frase. Habla un poco más fuerte y claro.' : 'No te escuché bien (' + res.status + '). Intenta otra vez.'; busy = false; Tutor.mood('idle'); return; }
+          addSpoken(clip.seconds); Pron.record(res);
+          live.innerHTML = `<span class="you">Reconocí:</span> ${esc(res.text)}`;
+          return finish({ mode: 'azure', score: res.pron, res, text: res.text, url: clip.url });
+        } catch (e) { live.textContent = 'No se pudo evaluar (' + e.message + '). Revisa la configuración de Azure.'; busy = false; Tutor.mood('idle'); return; }
+      }
+      // Modo texto
+      const text = heard.trim();
+      if (!text && !clip) { live.textContent = 'No te escuché. Intenta otra vez.'; busy = false; Tutor.mood('idle'); return; }
+      if (clip) addSpoken(clip.seconds);
+      const cmp = text ? compareText(refText, text) : null;
+      live.innerHTML = text ? `<span class="you">Tú:</span> ${esc(text)}` : 'Grabé tu voz. Escúchala y compárala con el modelo.';
+      finish({ mode: 'text', score: cmp ? Math.round(cmp.ratio * 100) : null, cmp, text, url: clip?.url });
+    });
+  });
+}
+
+function pronResultHTML(r, refText) {
+  if (r.mode === 'azure') {
+    const res = r.res;
+    const ring = (v, label, big) => `<div class="ring ${big ? 'big' : ''} ${scoreClass(v)}" style="--v:${v}"><b>${v}</b><span>${label}</span></div>`;
+    return `<div class="pron-res">
+      <div class="rings">${ring(res.pron, 'Pronunciación', true)}${ring(res.accuracy, 'Precisión')}${ring(res.fluency, 'Fluidez')}${ring(res.completeness, 'Completitud')}${res.prosody != null ? ring(res.prosody, 'Entonación') : ''}</div>
+      <p class="fine">Toca una palabra para ver cada sonido.</p>
+      <div class="pron-words">${res.words.map((w, i) => `<button class="pw ${w.error === 'Omission' ? 'omit' : w.error === 'Insertion' ? 'ins' : scoreClass(w.score)}" data-i="${i}">${esc(w.word)}<small>${w.error === 'Omission' ? 'omitida' : w.error === 'Insertion' ? 'de más' : w.score}</small></button>`).join('')}</div>
+      <div class="pron-detail" hidden></div>
+      <div class="row-btns">${r.url ? `<button class="btn soft sm" data-play="${r.url}">▶ Escucharme</button>` : ''}<button class="btn soft sm" data-model="1">🔊 Modelo</button></div>
+      <p class="fine">Evaluado por Azure Speech a partir de tu audio.</p></div>`;
+  }
+  return `<div class="pron-res">
+    ${r.cmp ? diffHTML(r.cmp, 'Coincidencia del texto reconocido') : ''}
+    <div class="row-btns">${r.url ? `<button class="btn soft sm" data-play="${r.url}">▶ Escucharme</button>` : ''}<button class="btn soft sm" data-model="1">🔊 Modelo</button></div>
+    <p class="notice soft">🔎 Escúchate y compárate con el modelo. <b>En este modo la app no evalúa tu pronunciación</b>: solo compara el texto reconocido. Para evaluar cada sonido, configura Azure Speech (ver README).</p></div>`;
+}
+
+function bindPronResult(root, r, refText) {
+  $$('[data-play]', root).forEach(b => b.addEventListener('click', () => { Voice.stop(); new Audio(b.dataset.play).play().catch(() => { }); }));
+  $$('[data-model]', root).forEach(b => b.addEventListener('click', () => Voice.speak([en(refText)])));
+  if (r.mode !== 'azure') return;
+  $$('.pw', root).forEach(b => b.addEventListener('click', () => {
+    const w = r.res.words[+b.dataset.i];
+    $$('.pw', root).forEach(x => x.classList.toggle('sel', x === b));
+    const det = $('.pron-detail', root); det.hidden = false;
+    const worst = w.phonemes.slice().sort((a, b) => a.score - b.score)[0];
+    det.innerHTML = `<div class="row-between"><b>${esc(w.word)}</b><button class="btn soft sm" data-word>🔊 Escuchar «${esc(w.word)}»</button></div>
+      <div class="phons">${w.phonemes.map(p => `<span class="ph ${scoreClass(p.score)}" title="${esc(phTip(p.p)[0])}">${esc(phTip(p.p)[0])}<small>${p.score}</small></span>`).join('') || '<span class="muted">Sin detalle por sonido.</span>'}</div>
+      ${worst && worst.score < 85 ? `<p class="corr-tip">💡 <b>${esc(phTip(worst.p)[0])}:</b> ${esc(phTip(worst.p)[1])}</p>` : '<p class="good-box">¡Bien dicha!</p>'}`;
+    $('[data-word]', det).addEventListener('click', () => Voice.speak([en(w.word)], { slow: true }));
+  }));
+}
+
+/* ---------- Pantallas ---------- */
+SCREENS.practice = () => {
+  setScene('studio');
+  const P = S.pron || { attempts: 0, sum: 0, phon: {}, weak: {} };
+  const best = S.pronBest || {};
+  const weakSounds = Object.entries(P.phon).filter(([, v]) => v.n >= 2).map(([k, v]) => ({ k, avg: Math.round(v.sum / v.n) })).sort((a, b) => a.avg - b.avg).slice(0, 4);
+  const weakWords = Object.keys(P.weak);
+  view(`<div class="card"><p class="eyebrow">Práctica de pronunciación</p><h1>Pura práctica para hablar</h1>
+    <p class="muted">Escucha al tutor, repite en voz alta y recibe corrección de cada palabra y cada sonido.</p>
+    <div class="notice ${Pron.available() ? 'ok' : ''}">${Pron.available() ? '✅ <b>Evaluación activa (Azure Speech).</b> Califica tu audio: precisión, fluidez y cada sonido.' : '⚠️ <b>Sin evaluación de pronunciación.</b> Puedes practicar, grabarte y compararte con el modelo, pero la app no califica tu pronunciación hasta que configures Azure Speech en el servidor (ver README).'}</div>
+    ${P.attempts ? `<div class="stats three"><div class="stat"><span class="s-num">${Math.round(P.sum / P.attempts)}</span><span>Promedio de pronunciación</span></div><div class="stat"><span class="s-num">${P.attempts}</span><span>Intentos evaluados</span></div><div class="stat"><span class="s-num">${weakWords.length}</span><span>Palabras por mejorar</span></div></div>` : ''}
+    ${weakSounds.length ? `<h2>Tus sonidos por mejorar</h2><div class="phons">${weakSounds.map(s => `<span class="ph ${scoreClass(s.avg)}">${esc(phTip(s.k)[0])}<small>${s.avg}</small></span>`).join('')}</div>` : ''}
+    <h2>Sonidos difíciles para hispanohablantes</h2>
+    <div class="set-grid">${PRACTICE_SETS.map(s => `<button class="set-card" data-set="${s.id}"><span class="g-ico">${s.icon}</span><b>${s.title}</b><span class="muted">${s.sub}</span>${best[s.id] != null ? `<span class="pill ${scoreClass(best[s.id])}">Mejor: ${best[s.id]}</span>` : ''}</button>`).join('')}</div>
+    <h2>Más práctica</h2>
+    <div class="set-grid">
+      <button class="set-card" data-set="lessons"><span class="g-ico">🎬</span><b>Frases de mis lecciones</b><span class="muted">Las frases útiles de cada lección</span></button>
+      <button class="set-card" data-set="review" ${S.review.length ? '' : 'disabled'}><span class="g-ico">🔁</span><b>Mis frases difíciles</b><span class="muted">${S.review.length} guardadas</span></button>
+      <button class="set-card" data-set="weak" ${weakWords.length ? '' : 'disabled'}><span class="g-ico">🎯</span><b>Mis palabras por mejorar</b><span class="muted">${weakWords.length ? weakWords.slice(0, 4).join(', ') : 'Aparecen al practicar'}</span></button>
+    </div></div>`);
+  $$('[data-set]').forEach(b => b.addEventListener('click', () => App.go('practiceRun', b.dataset.set)));
+  const f = App.flow; Tutor.mood('greet');
+  run(() => say(f, [es('Aquí practicamos solo pronunciación. Elige un sonido y repite después de mí.')]));
+};
+
+function practiceItems(setId) {
+  if (setId === 'lessons') {
+    const done = LESSONS.filter(l => S.completed[l.id]);
+    const src = (done.length ? done : LESSONS.slice(0, 3));
+    return { title: 'Frases de mis lecciones', icon: '🎬', tip: '', items: shuffle(src.flatMap(l => l.phrases.map(p => p.en))).slice(0, 8) };
+  }
+  if (setId === 'review') return { title: 'Mis frases difíciles', icon: '🔁', tip: '', items: S.review.slice(0, 8).map(r => r.en) };
+  if (setId === 'weak') return { title: 'Mis palabras por mejorar', icon: '🎯', tip: '', items: Object.keys((S.pron || {}).weak || {}).slice(0, 10) };
+  return PRACTICE_SETS.find(s => s.id === setId) || PRACTICE_SETS[0];
+}
+
+SCREENS.practiceRun = setId => run(async () => {
+  const f = App.flow; setScene('studio');
+  const set = practiceItems(setId);
+  const items = set.items;
+  const scores = [];
+  for (let i = 0; i < items.length; i++) {
+    const ref = items[i];
+    view(`<div class="card"><div class="row-between"><div><p class="eyebrow">${set.icon} ${esc(set.title)} · ${i + 1} de ${items.length}</p></div><button class="btn ghost sm" id="exit">Salir</button></div>
+      <div class="progress"><span style="width:${(i / items.length) * 100}%"></span></div>
+      ${set.tip ? `<p class="hint-box">💡 ${esc(set.tip)}</p>` : ''}
+      <div class="phrase"><p class="p-en">${esc(ref)}</p><div class="row-btns"><button class="btn soft sm" id="pl">🔊 Escuchar</button><button class="btn soft sm" id="ps">🐢 Lento</button></div></div>
+      <div id="ans"></div><div id="fb"></div></div>`);
+    $('#exit').addEventListener('click', () => App.go('practice'));
+    $('#pl').addEventListener('click', () => Voice.speak([en(ref)]));
+    $('#ps').addEventListener('click', () => Voice.speak([en(ref)], { slow: true }));
+    if (i === 0 && set.tip) await say(f, [es(set.tip)]);
+    await say(f, [en(ref)]);
+    let best = null;
+    for (; ;) {
+      const r = await pronounceAttempt($('#ans'), ref, { skip: true }); App.check(f);
+      if (r.cmd === 'skip') break;
+      $('#fb').innerHTML = pronResultHTML(r, ref) + `<div class="actions"><button class="btn soft" id="again">🔁 Inténtalo de nuevo</button><button class="btn primary" id="next">${i < items.length - 1 ? 'Siguiente' : 'Terminar'}</button></div>`;
+      bindPronResult($('#fb'), r, ref);
+      if (r.score != null) best = Math.max(best ?? 0, r.score);
+      // Retroalimentación hablada del tutor
+      if (r.mode === 'azure') {
+        const w = Pron.worst(r.res);
+        const omitted = r.res.words.find(x => x.error === 'Omission');
+        if (r.score >= 85 && !w) { Tutor.mood('celebrate'); run(() => say(f, [en(pick(['Excellent pronunciation!', 'That sounded great!', 'Very clear, well done!']))])); }
+        else if (omitted) { Tutor.mood('correct'); run(() => say(f, [es(`Te faltó la palabra «${omitted.word}». Escúchala y dila completa.`), en(ref)], { slow: true })); }
+        else if (w) { Tutor.mood('correct'); const t = phTip(w.p); run(() => say(f, [es(`Cuida el sonido ${t[0]} en «${w.word}». ${t[1]}`), en(w.word), en(w.word)], { slow: true })); $('.pw[data-i="' + r.res.words.findIndex(x => x.word === w.word) + '"]', $('#fb'))?.click(); }
+        else { Tutor.mood('celebrate'); run(() => say(f, [en('Good! Try once more to make it even smoother.')])); }
+      } else {
+        Tutor.mood('listen', 1500);
+        run(() => say(f, [es('Escúchate y compárate con mi modelo.'), en(ref)]));
+      }
+      const act = await new Promise(res => { $('#next').addEventListener('click', () => res('next')); $('#again').addEventListener('click', () => res('again')); });
+      App.check(f); Voice.stop();
+      if (act === 'next') break;
+    }
+    if (best != null) scores.push(best);
+  }
+  const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
+  const azure = Pron.available();
+  if (avg != null && azure && PRACTICE_SETS.some(s => s.id === setId)) { S.pronBest = S.pronBest || {}; S.pronBest[setId] = Math.max(S.pronBest[setId] || 0, avg); save(); }
+  view(`<div class="card"><div class="done-box"><div class="big-emoji">🎙️</div><h2>¡Práctica terminada!</h2>
+    ${avg != null ? `<p>${azure ? 'Pronunciación promedio' : 'Coincidencia de texto promedio'}: <b>${avg}</b></p>` : ''}
+    <p class="muted">Tiempo hablado acumulado: ${fmtTime(S.secondsSpoken)}</p></div>
+    <div class="actions"><button class="btn primary" id="again">Practicar otra vez</button><button class="btn ghost" id="back">Elegir otro sonido</button></div></div>`);
+  $('#again').addEventListener('click', () => App.go('practiceRun', setId));
+  $('#back').addEventListener('click', () => App.go('practice'));
+  Tutor.mood('celebrate');
+  await say(f, [en('Great practice session!')]);
+});
 
 </script>
 </body>

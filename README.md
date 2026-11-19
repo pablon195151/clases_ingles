@@ -6,12 +6,13 @@ Aplicación web para hispanohablantes, adaptable a celular y computadora. Sigue 
 
 | Pantalla | Qué hace |
 |---|---|
-| Bienvenida | Nombre opcional y selección de tutor: **Fito** (zorro), **Olivia** (búho) o **Lía Vox** (artista musical ficticia). Cada uno saluda con su voz. |
+| Bienvenida | Nombre opcional y selección entre 7 tutores originales: **Fito** (zorro) y **Olivia** (búho) como animales realistas; **Sofía** (maestra), **Daniel** (maestro) y **Lía Vox** (cantante ficticia) como personas realistas; y **Hana** y **Kenji** en estilo anime original. Cada uno saluda con su voz. |
 | Examen inicial | 10 actividades adaptativas (~8–10 min): 3 de comprensión auditiva, 3 de vocabulario en contexto, 1 de repetición, 2 de respuesta oral y una conversación breve con el tutor. La dificultad sube o baja según cada respuesta. |
 | Resultados | Nivel MCER estimado (A1–C1), desempeño por habilidad, fortalezas, aspectos por mejorar y la primera lección recomendada. Aclara que es una estimación, no una certificación. Sin micrófono, la expresión oral aparece como **«Sin evaluar»**. |
 | Curso personalizado | Objetivo (viajes, trabajo, vida cotidiana o entretenimiento) y plan de **3 sesiones semanales de 30 min** con selección de días. |
 | Plan de estudio | Siguiente sesión (lección ~20 min + repaso ~5 + conversación libre ~5), avance semanal y ruta de lecciones ordenada por nivel y objetivo. |
 | Lecciones (6) | Café, aeropuerto, presentarte en el trabajo, dar direcciones, recomendar una serie y proponer una idea en una junta. Cada una sigue la secuencia de 6 pasos (abajo). |
+| **Práctica de pronunciación** | Módulo de pura práctica oral. Tiene 10 sonidos difíciles para hispanohablantes (th, v/b, i corta y «ee» larga, sh/ch, z, h, s + consonante, -ed, r inglesa y sílabas débiles), más frases de tus lecciones, tus frases difíciles y tus palabras por mejorar. Con **Azure Speech**, califica tu audio por palabra y por sonido (pronunciación, precisión, fluidez, completitud y entonación). El tutor te dice qué sonido corregir y cómo, y te pide intentarlo otra vez. Siempre puedes escucharte y comparar tu voz con el modelo. |
 | Conversación libre | 5 temas. El tutor hace una pregunta a la vez, reacciona a lo que dices, recuerda lo que mencionaste antes y muestra correcciones con reintento. |
 | Progreso | Nivel, lecciones completadas, tiempo hablado, sesiones de la semana, habilidades y vocabulario por repasar (con práctica). |
 
@@ -24,6 +25,7 @@ Aplicación web para hispanohablantes, adaptable a celular y computadora. Sigue 
 6. Las frases difíciles se guardan para repasarlas después.
 
 **El tutor**
+- Los tutores realistas se animan por cuadros: boca cerrada, entreabierta, abierta y redonda, parpadeo y 4 expresiones. Los cuadros cambian al ritmo de la voz. Las imágenes van en `public/assets/chars/<id>/`. Si faltan, la app usa un dibujo o la inicial del tutor.
 - Está integrado en el escenario (columna izquierda en computadora, franja superior en celular) y nunca tapa preguntas ni controles.
 - Tiene expresiones: saludar, escuchar, pensar, celebrar y corregir con amabilidad, además de parpadeo y respiración.
 - **Habla de verdad**: en inglés durante la práctica y en español de México para las instrucciones. La boca se mueve sincronizada con el audio (ver «Cómo funciona la voz»).
@@ -69,6 +71,7 @@ La app elige automáticamente el mejor recurso disponible:
 |---|---|---|---|
 | **Voz** | Servidor `/api/tts` (OpenAI TTS): audio real, la boca sigue la **amplitud de la señal** | Voz de Claude (cuando está publicada en claude.ai) | `speechSynthesis` del navegador: la boca sigue los **eventos de cada palabra** y una línea de tiempo de sílabas |
 | **Oído** | Dictado de Claude (en claude.ai) | Web Speech API del navegador | Respuestas escritas |
+| **Pronunciación** | Servidor `/api/pronunciation` (Azure Speech): calificación real del audio | — | Grabar y compararte con el modelo (sin calificación) |
 | **Conversación** | Servidor `/api/chat` (Claude vía API de Anthropic) | IA de Claude (en claude.ai) | Motor local de reglas (sin internet) |
 
 **Honestidad sobre la evaluación.** La app **no evalúa pronunciación**. Convierte tu voz en texto y compara ese texto con la frase objetivo («Coincidencia del texto reconocido»). También califica contenido y gramática de tus respuestas abiertas. Así lo dice en pantalla.
@@ -89,7 +92,20 @@ npm start
 - Los modelos y voces se cambian en `.env` (`ANTHROPIC_MODEL`, `OPENAI_TTS_MODEL`, `VOICE_FOX`…). Revisa la documentación de cada proveedor para ver los nombres vigentes.
 - La pantalla **Ajustes (⚙️)** muestra qué recurso está activo para voz, micrófono y conversación.
 
-**Para evaluar pronunciación de verdad** se necesita un servicio especializado, como *Azure AI Speech – Pronunciation Assessment*, que califica precisión, fluidez y prosodia a partir del audio. La integración sugerida: grabar audio con `MediaRecorder`, enviarlo a un nuevo endpoint `/api/pronunciation` en `server.mjs` y mostrar esos puntajes en lugar de la coincidencia de texto. No viene incluida en esta versión.
+### Activar la evaluación de pronunciación (Azure Speech)
+
+1. Entra a https://portal.azure.com y crea un recurso **Speech** (el plan gratuito **F0** incluye horas de audio al mes).
+2. En el recurso, abre «Keys and Endpoint» y copia **Key 1** y la **Location/Region** (por ejemplo, `eastus`).
+3. En tu `.env` agrega:
+   ```
+   AZURE_SPEECH_KEY=tu_llave
+   AZURE_SPEECH_REGION=eastus
+   ```
+4. Ejecuta `npm start`. En **Pronunciación** debe aparecer «✅ Evaluación activa».
+
+Cómo funciona: el navegador graba tu voz en WAV de 16 kHz y la envía a `/api/pronunciation` en `server.mjs`. El servidor la reenvía a Azure (*Pronunciation Assessment*, REST de audio corto, máximo 30 s) junto con la frase de referencia. Azure devuelve puntajes por palabra y por sonido, y la app los traduce a consejos en español. La llave nunca llega al navegador.
+
+Sin Azure, el módulo sigue funcionando para practicar y escucharte, pero indica claramente que **no está evaluando tu pronunciación**. La evaluación tampoco funciona en la versión publicada en claude.ai, porque ahí no hay servidor propio.
 
 ## Estructura
 

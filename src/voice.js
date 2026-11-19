@@ -85,7 +85,7 @@ const Lip = {
       for (let k = 0; k < n; k++) {
         const v = groups[k] || 'e', d = syl / rate;
         const amp = /a|á/.test(v) ? 1 : /o|ó/.test(v) ? 0.8 : /u|ú/.test(v) ? 0.6 : /e|é/.test(v) ? 0.7 : 0.55;
-        segs.push({ t0: t, t1: t + d * 0.9, amp }); t += d;
+        segs.push({ t0: t, t1: t + d * 0.9, amp, round: /[ouóú]/.test(v) }); t += d;
       }
       t += 0.05 / rate;
       if (/[,;:]$/.test(raw)) t += 0.22 / rate;
@@ -104,12 +104,12 @@ const Lip = {
   },
   startAnalyser(an) { this.tl = null; this.analyser = an; this.buf = new Uint8Array(an.fftSize); this.running = true; this.pending = false; this.loop(); },
   stop() { this.running = false; cancelAnimationFrame(this.raf); this.set(0); this.analyser = null; },
-  set(v) { if (Tutor.root) Tutor.root.style.setProperty('--m', v.toFixed(3)); },
+  set(v, round) { if (Tutor.root) { Tutor.root.style.setProperty('--m', v.toFixed(3)); Tutor.mouth(v, round); } },
   loop() {
     cancelAnimationFrame(this.raf);
     const step = () => {
       if (!this.running) return;
-      let m = 0;
+      let m = 0, round = false;
       if (this.analyser) {
         this.analyser.getByteTimeDomainData(this.buf);
         let sum = 0; for (let i = 0; i < this.buf.length; i++) { const x = (this.buf[i] - 128) / 128; sum += x * x; }
@@ -118,12 +118,12 @@ const Lip = {
       } else if (this.tl && !this.pending) {
         const t = this.anchorT + (performance.now() - this.anchorPerf) / 1000;
         const s = this.tl.segs.find(sg => t >= sg.t0 && t <= sg.t1);
-        if (s) m = s.amp * Math.pow(Math.sin(Math.PI * (t - s.t0) / (s.t1 - s.t0)), 0.8);
+        if (s) { m = s.amp * Math.pow(Math.sin(Math.PI * (t - s.t0) / (s.t1 - s.t0)), 0.8); round = s.round; }
         let wi = -1; this.tl.wordStarts.forEach((w, k) => { if (w.t <= t) wi = k; });
         if (wi >= 0) Subs.highlight(wi);
       }
       this.smooth = this.smooth * 0.45 + m * 0.55;
-      this.set(this.smooth);
+      this.set(this.smooth, round);
       this.raf = requestAnimationFrame(step);
     };
     this.raf = requestAnimationFrame(step);

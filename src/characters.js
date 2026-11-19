@@ -147,17 +147,38 @@ function musicianSVG() {
   </g></svg>`;
 }
 
+/* Tutores realistas: cada uno tiene cuadros en assets/chars/<id>/
+   neutral · mid · open · round (bocas) · blink · happy · think · listen · correct
+   Si las imágenes no cargan, se usa el dibujo SVG (cuando existe).        */
+const PHOTO_FRAMES = ['neutral', 'mid', 'open', 'round', 'blink', 'happy', 'think', 'listen', 'correct'];
+const ph = id => ({ kind: 'photo', dir: `assets/chars/${id}/` });
 const CHARACTERS = {
-  fox: { id: 'fox', name: 'Fito', species: 'Zorro', svg: foxSVG, claudeVoice: 'rounded', pitch: 0.95,
+  fox: { id: 'fox', name: 'Fito', species: 'Zorro', style: 'Animal realista', ...ph('fox'), svg: foxSVG, claudeVoice: 'rounded', pitch: 0.95,
     tagline: 'Curioso y bromista. Te reta a hablar desde el primer minuto.',
     hello_es: '¡Hola! Soy Fito. Voy a ser tu tutor de inglés.', hello_en: "Hi! I'm Fito. Let's speak English together!" },
-  owl: { id: 'owl', name: 'Olivia', species: 'Búho', svg: owlSVG, claudeVoice: 'airy', pitch: 1.15,
+  owl: { id: 'owl', name: 'Olivia', species: 'Búho', style: 'Animal realista', ...ph('owl'), svg: owlSVG, claudeVoice: 'airy', pitch: 1.15,
     tagline: 'Paciente y precisa. Te explica todo con calma.',
     hello_es: '¡Hola! Soy Olivia. Vamos a aprender inglés paso a paso.', hello_en: "Hello! I'm Olivia. I can't wait to hear you speak!" },
-  musician: { id: 'musician', name: 'Lía Vox', species: 'Artista musical (ficticia)', svg: musicianSVG, claudeVoice: 'glassy', pitch: 1.08,
+  sofia: { id: 'sofia', name: 'Sofía', species: 'Maestra', style: 'Persona realista', ...ph('sofia'), claudeVoice: 'airy', pitch: 1.1,
+    tagline: 'Cálida y clara. Te corrige con paciencia y buen humor.',
+    hello_es: '¡Hola! Soy Sofía, tu maestra. Vamos a hablar inglés desde hoy.', hello_en: "Hi, I'm Sofía! I'm so happy to practice with you." },
+  daniel: { id: 'daniel', name: 'Daniel', species: 'Maestro', style: 'Persona realista', ...ph('daniel'), claudeVoice: 'rounded', pitch: 0.9,
+    tagline: 'Tranquilo y práctico. Ideal para inglés de trabajo.',
+    hello_es: '¡Hola! Soy Daniel. Te voy a ayudar a hablar con seguridad.', hello_en: "Hello, I'm Daniel. Let's get you speaking with confidence." },
+  hana: { id: 'hana', name: 'Hana', species: 'Estudiante', style: 'Anime original', ...ph('hana'), claudeVoice: 'glassy', pitch: 1.2,
+    tagline: 'Alegre y curiosa. Practica como si platicaras con una amiga.',
+    hello_es: '¡Hola! Soy Hana. ¡Vamos a divertirnos practicando inglés!', hello_en: "Hi hi! I'm Hana. Let's have fun with English!" },
+  kenji: { id: 'kenji', name: 'Kenji', species: 'Estudiante', style: 'Anime original', ...ph('kenji'), claudeVoice: 'buttery', pitch: 1.0,
+    tagline: 'Relajado y motivador. Te reta a mejorar cada día.',
+    hello_es: '¡Hola! Soy Kenji. Cada día un poco mejor, ¿va?', hello_en: "Hey, I'm Kenji! Ready to level up your English?" },
+  musician: { id: 'musician', name: 'Lía Vox', species: 'Artista musical (ficticia)', style: 'Persona realista', ...ph('musician'), svg: musicianSVG, claudeVoice: 'glassy', pitch: 1.08,
     tagline: 'Cantante inventada. Aprende con ritmo y buena vibra.',
     hello_es: '¡Hola! Soy Lía Vox. Vamos a practicar inglés con mucho ritmo.', hello_en: "Hey! I'm Lía. Let's make English sound like music!" }
 };
+function charThumb(c) {
+  if (c.kind === 'photo' && !c.photoFailed) return `<img src="${c.dir}neutral.webp" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'thumb-fallback',textContent:'${c.name.charAt(0)}'}))">`;
+  return c.svg ? c.svg() : `<span class="thumb-fallback">${c.name.charAt(0)}</span>`;
+}
 
 /* ---------------- ESCENARIOS DE FONDO ---------------- */
 function sceneSVG(id) {

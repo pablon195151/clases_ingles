@@ -34,22 +34,58 @@ function addReview(item) {
 }
 
 /* ---------------- Tutor (personaje animado) ---------------- */
+const MOOD_FRAME = { idle: 'neutral', greet: 'happy', celebrate: 'happy', listen: 'listen', think: 'think', correct: 'correct' };
 const Tutor = {
-  root: null, char: CHARACTERS.fox, t: 0,
+  root: null, char: CHARACTERS.fox, t: 0, isPhoto: false, frames: {}, cur: 'neutral', moodName: 'idle', isTalking: false, blinkT: 0,
   mount(el) { this.root = el; },
   set(id) {
     this.char = CHARACTERS[id] || CHARACTERS.fox;
-    this.root.innerHTML = this.char.svg();
-    this.root.className = 'char-wrap char-' + this.char.id;
+    clearTimeout(this.blinkT);
+    this.isPhoto = this.char.kind === 'photo' && !this.char.photoFailed;
+    this.root.className = 'char-wrap char-' + this.char.id + (this.isPhoto ? ' is-photo' : '');
+    if (this.isPhoto) {
+      // Cuadros apilados; solo uno visible. Precarga todos para cambiar sin parpadeo.
+      this.root.innerHTML = `<div class="photo-char">${PHOTO_FRAMES.map(fr => `<img class="fr fr-${fr}${fr === 'neutral' ? ' on' : ''}" src="${this.char.dir}${fr}.webp" alt="" draggable="false">`).join('')}</div>
+        <svg class="photo-fx" viewBox="0 0 220 260" aria-hidden="true">${FX_SVG}</svg>`;
+      this.frames = {}; $$('.fr', this.root).forEach(img => { this.frames[img.className.match(/fr-(\w+)/)[1]] = img; });
+      this.frames.neutral.addEventListener('error', () => { this.char.photoFailed = true; this.set(this.char.id); }, { once: true });
+      this.cur = 'neutral'; this.scheduleBlink();
+    } else {
+      this.root.innerHTML = this.char.svg ? this.char.svg() : `<div class="thumb-fallback big">${this.char.name.charAt(0)}</div>`;
+    }
+  },
+  show(fr) {
+    if (!this.isPhoto || fr === this.cur || !this.frames[fr]) return;
+    this.frames[this.cur].classList.remove('on'); this.frames[fr].classList.add('on'); this.cur = fr;
+  },
+  base() { return this.isTalking ? 'neutral' : (MOOD_FRAME[this.moodName] || 'neutral'); },
+  // Boca: v = apertura 0..1 (de la voz), round = vocal redonda (o/u)
+  mouth(v, round) {
+    if (!this.isPhoto) return;
+    if (!this.isTalking) return;
+    this.show(v < 0.12 ? 'neutral' : (round && v >= 0.25) ? 'round' : v < 0.45 ? 'mid' : 'open');
+  },
+  scheduleBlink() {
+    clearTimeout(this.blinkT);
+    this.blinkT = setTimeout(() => {
+      if (this.isPhoto && this.cur === 'neutral') { this.show('blink'); setTimeout(() => { if (this.cur === 'blink') this.show(this.base()); }, 130); }
+      this.scheduleBlink();
+    }, 2800 + Math.random() * 3200);
   },
   mood(m, ms) {
     clearTimeout(this.t);
     ['greet', 'listen', 'think', 'celebrate', 'correct'].forEach(x => this.root.classList.remove('mood-' + x));
     if (m && m !== 'idle') this.root.classList.add('mood-' + m);
+    this.moodName = m || 'idle';
+    if (!this.isTalking) this.show(this.base());
     const auto = { greet: 2600, celebrate: 2600, correct: 2800 }[m];
     if (ms || auto) this.t = setTimeout(() => this.mood('idle'), ms || auto);
   },
-  talking(on) { if (this.root) this.root.classList.toggle('talking', !!on); }
+  talking(on) {
+    if (!this.root) return;
+    this.isTalking = !!on; this.root.classList.toggle('talking', !!on);
+    this.show(on ? 'neutral' : this.base());
+  }
 };
 const setScene = id => { $('#scene').innerHTML = sceneSVG(id); };
 
@@ -60,7 +96,7 @@ const App = {
   go(name, arg) {
     this.flow++; Voice.stop(); Ears.abort(); this.screen = name;
     Tutor.mood('idle'); Subs.hide();
-    $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.go === name || (name === 'lesson' && b.dataset.go === 'lessons') || (name === 'freeChat' && b.dataset.go === 'free') || (name === 'review' && b.dataset.go === 'progress')));
+    $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.go === name || (name === 'lesson' && b.dataset.go === 'lessons') || (name === 'freeChat' && b.dataset.go === 'free') || (name === 'review' && b.dataset.go === 'progress') || (name === 'practiceRun' && b.dataset.go === 'practice')));
     $('#nav').hidden = S.levelIdx === null;
     window.scrollTo({ top: 0 });
     SCREENS[name](arg);
@@ -77,7 +113,8 @@ function statusList() {
   return `<ul class="status-list">
     <li><b>🔊 Voz:</b> ${esc(Voice.label())}</li>
     <li><b>🎤 Micrófono:</b> ${esc(Ears.label())}</li>
-    <li><b>🧠 Conversación:</b> ${esc(AI.label())}</li></ul>`;
+    <li><b>🧠 Conversación:</b> ${esc(AI.label())}</li>
+    <li><b>🎙️ Pronunciación:</b> ${esc(typeof Pron !== 'undefined' ? Pron.label() : '')}</li></ul>`;
 }
 function run(fn) { Promise.resolve().then(fn).catch(e => { if (e !== ABORT) { console.error(e); toast('Algo salió mal: ' + (e.message || e)); } }); }
 const en = (text, who = 'tutor', npc) => ({ text, lang: 'en', who, npc });
@@ -188,8 +225,8 @@ SCREENS.welcome = () => {
     <h2>Elige a tu tutor</h2>
     <div class="char-grid">${Object.values(CHARACTERS).map(c => `
       <button class="char-card ${S.character === c.id ? 'sel' : ''}" data-c="${c.id}" aria-pressed="${S.character === c.id}">
-        <div class="mini">${c.svg()}</div>
-        <b>${c.name}</b><span class="species">${c.species}</span>
+        <div class="mini">${charThumb(c)}</div>
+        <b>${c.name}</b><span class="species">${c.species} · ${c.style || ''}</span>
         <span class="tag">${c.tagline}</span>
         <span class="listen-btn">🔊 Escuchar su voz</span>
       </button>`).join('')}</div>
@@ -542,11 +579,13 @@ SCREENS.plan = () => {
     </div>
     <h2>Tu ruta</h2>
     <div class="lesson-list">${route.map(l => lessonRow(l, l.id === rec.id)).join('')}</div>
+    <button class="practice-cta" id="toPractice"><span>🎙️</span><div><b>Práctica de pronunciación</b><small>Pura práctica oral: el tutor corrige cada palabra y cada sonido</small></div><span>→</span></button>
     <button class="link" id="editPlan">Cambiar objetivo o días</button>
   </div>`);
   $('#startSession').addEventListener('click', () => App.go('lesson', { id: rec.id, session: true }));
   bindLessonRows();
   $('#editPlan').addEventListener('click', () => App.go('goal'));
+  $('#toPractice').addEventListener('click', () => App.go('practice'));
   Tutor.mood('greet');
   run(() => say(f, [en(`Welcome${S.name ? ', ' + S.name : ''}! Ready for today's session?`)]));
 };
@@ -674,6 +713,20 @@ async function lessonFlow(id, opts = {}) {
     await say(f, [en(p.en)]);
     let best = 0, tries = 0, lastSaid = '';
     for (; ;) {
+      if (Pron.available()) {
+        // Con Azure: evaluación real de pronunciación del audio
+        const pr = await pronounceAttempt($('#ans'), p.en, { label: 'Repite la frase:' }); App.check(f);
+        tries++; lastSaid = pr.text || ''; best = Math.max(best, (pr.score || 0) / 100);
+        const goodP = (pr.score || 0) >= 80;
+        $('#fb').innerHTML = pronResultHTML(pr, p.en) + `<div class="actions">${goodP ? '' : '<button class="btn soft" id="again">🔁 Intentar otra vez</button>'}<button class="btn primary" id="next">${pi < L.phrases.length - 1 ? 'Siguiente frase' : 'Continuar'}</button></div>`;
+        bindPronResult($('#fb'), pr, p.en);
+        const w = pr.res && Pron.worst(pr.res);
+        if (goodP && !w) { Tutor.mood('celebrate'); run(() => say(f, [en(pick(['Great!', 'Nice job!', 'Perfect!']))])); }
+        else { Tutor.mood('correct'); const t = w ? phTip(w.p) : null; run(() => say(f, [es(t ? `Cuida el sonido ${t[0]} en «${w.word}». ${t[1]}` : 'Casi. Escúchala otra vez.'), en(p.en)], { slow: true })); }
+        const actP = await new Promise(res => { $('#next').addEventListener('click', () => res('next')); $('#again')?.addEventListener('click', () => res('again')); });
+        App.check(f); Voice.stop();
+        if (actP === 'next') break; else continue;
+      }
       const r = await askAnswer($('#ans'), { label: 'Repite la frase:' }); App.check(f);
       if (r.cmd === 'repeat') { await say(f, [en(p.en)], { slow: true }); continue; }
       tries++; if (r.viaMic) addSpoken(r.seconds);
@@ -944,6 +997,7 @@ SCREENS.progress = () => {
       <div class="stat"><span class="s-num">${sessionsThisWeek()}/3</span><span>Sesiones esta semana</span></div>
     </div>
     ${R && !R.skipped ? `<h2>Habilidades (examen inicial)</h2><div class="skills">${skillBars(R)}</div><p class="fine">Estimación del ${new Date(R.date).toLocaleDateString('es-MX')}. No es una certificación.</p>` : ''}
+    ${S.pron && S.pron.attempts ? `<h2>Pronunciación</h2><div class="stats three"><div class="stat"><span class="s-num">${Math.round(S.pron.sum / S.pron.attempts)}</span><span>Promedio (Azure)</span></div><div class="stat"><span class="s-num">${S.pron.attempts}</span><span>Intentos evaluados</span></div><div class="stat"><span class="s-num">${Object.keys(S.pron.weak).length}</span><span>Palabras por mejorar</span></div></div><button class="btn soft" id="toPron">🎙️ Practicar pronunciación</button>` : ''}
     <h2>Vocabulario por repasar <small class="muted">(${S.review.length})</small></h2>
     ${S.review.length ? `<div class="review-list">${S.review.map((r, i) => `<div class="review-item"><div><b>${esc(r.en)}</b>${r.es ? `<span>${esc(r.es)}</span>` : ''}${r.said ? `<small>Dijiste: «${esc(r.said)}»</small>` : ''}</div><span class="reps">${'●'.repeat(r.reps)}${'○'.repeat(3 - Math.min(3, r.reps))}</span><button class="icon-btn" data-del="${i}" aria-label="Quitar">✕</button></div>`).join('')}</div>
       <button class="btn primary" id="practice">🔁 Practicar ahora</button>` : '<p class="muted">Vacío por ahora. Se llena con las frases que te cuestan.</p>'}
@@ -951,6 +1005,7 @@ SCREENS.progress = () => {
     <div class="actions"><button class="btn ghost" id="retest">Repetir examen inicial</button></div></div>`);
   $$('[data-del]').forEach(b => b.addEventListener('click', () => { S.review.splice(+b.dataset.del, 1); save(); SCREENS.progress(); }));
   $('#practice')?.addEventListener('click', () => App.go('review'));
+  $('#toPron')?.addEventListener('click', () => App.go('practice'));
   $('#retest').addEventListener('click', () => App.go('test'));
   bindLessonRows();
 };

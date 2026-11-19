@@ -26,12 +26,19 @@ const VOICES = {
   musician: process.env.VOICE_MUSICIAN || 'coral',
   npc: process.env.VOICE_NPC || 'alloy'
 };
+const AZURE_KEY = process.env.AZURE_SPEECH_KEY || '';
+const AZURE_REGION = process.env.AZURE_SPEECH_REGION || '';
 const PUBLIC = join(process.cwd(), 'public');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json' };
 
 const readBody = req => new Promise((res, rej) => {
   let d = ''; req.on('data', c => { d += c; if (d.length > 100_000) { rej(new Error('too large')); req.destroy(); } });
   req.on('end', () => { try { res(JSON.parse(d || '{}')); } catch (e) { rej(e); } });
+});
+const readRaw = (req, max = 3_000_000) => new Promise((res, rej) => {
+  const parts = []; let n = 0;
+  req.on('data', c => { n += c.length; if (n > max) { rej(new Error('audio demasiado grande')); req.destroy(); } else parts.push(c); });
+  req.on('end', () => res(Buffer.concat(parts)));
 });
 const json = (res, code, obj) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(obj)); };
 
@@ -44,6 +51,24 @@ async function chat({ prompt }) {
   if (!r.ok) throw new Error('Anthropic ' + r.status + ': ' + (await r.text()).slice(0, 300));
   const j = await r.json();
   return (j.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+}
+
+// Evaluación de pronunciación (Azure Speech, REST para audio corto ≤ 30 s, WAV PCM 16 kHz mono)
+async function pronunciation(audio, referenceText) {
+  const params = { ReferenceText: String(referenceText).slice(0, 500), GradingSystem: 'HundredMark', Granularity: 'Phoneme', Dimension: 'Comprehensive', EnableMiscue: 'True', EnableProsodyAssessment: 'True' };
+  const url = `https://${AZURE_REGION}.stt.speech.microsoft.com/speech/recognition/conversation/cognitiveservices/v1?language=en-US&format=detailed`;
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Ocp-Apim-Subscription-Key': AZURE_KEY,
+      'Content-Type': 'audio/wav; codecs=audio/pcm; samplerate=16000',
+      'Accept': 'application/json',
+      'Pronunciation-Assessment': Buffer.from(JSON.stringify(params)).toString('base64')
+    },
+    body: audio
+  });
+  if (!r.ok) throw new Error('Azure Speech ' + r.status + ': ' + (await r.text()).slice(0, 300));
+  return r.json();
 }
 
 async function tts({ text, voice, lang, speed }) {
@@ -63,10 +88,16 @@ async function tts({ text, voice, lang, speed }) {
 http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   try {
-    if (url.pathname === '/api/config') return json(res, 200, { chat: !!ANTHROPIC_KEY, tts: !!OPENAI_KEY });
+    if (url.pathname === '/api/config') return json(res, 200, { chat: !!ANTHROPIC_KEY, tts: !!OPENAI_KEY, pronunciation: !!(AZURE_KEY && AZURE_REGION) });
     if (url.pathname === '/api/chat' && req.method === 'POST') {
       if (!ANTHROPIC_KEY) return json(res, 503, { error: 'ANTHROPIC_API_KEY no configurada' });
       return json(res, 200, { text: await chat(await readBody(req)) });
+    }
+    if (url.pathname === '/api/pronunciation' && req.method === 'POST') {
+      if (!AZURE_KEY || !AZURE_REGION) return json(res, 503, { error: 'AZURE_SPEECH_KEY / AZURE_SPEECH_REGION no configuradas' });
+      const text = url.searchParams.get('text') || '';
+      if (!text.trim()) return json(res, 400, { error: 'Falta el texto de referencia' });
+      return json(res, 200, await pronunciation(await readRaw(req), text));
     }
     if (url.pathname === '/api/tts' && req.method === 'POST') {
       if (!OPENAI_KEY) return json(res, 503, { error: 'OPENAI_API_KEY no configurada' });
@@ -87,5 +118,6 @@ http.createServer(async (req, res) => {
 }).listen(PORT, () => {
   console.log(`\n  Charla lista en  http://localhost:${PORT}\n`);
   console.log(`  IA conversacional (Anthropic): ${ANTHROPIC_KEY ? 'activa · ' + ANTHROPIC_MODEL : 'no configurada → reglas locales'}`);
-  console.log(`  Voz neuronal (OpenAI TTS):     ${OPENAI_KEY ? 'activa · ' + OPENAI_TTS_MODEL : 'no configurada → voz del navegador'}\n`);
+  console.log(`  Voz neuronal (OpenAI TTS):     ${OPENAI_KEY ? 'activa · ' + OPENAI_TTS_MODEL : 'no configurada → voz del navegador'}`);
+  console.log(`  Pronunciación (Azure Speech):  ${AZURE_KEY && AZURE_REGION ? 'activa · ' + AZURE_REGION : 'no configurada → práctica sin evaluación'}\n`);
 });
