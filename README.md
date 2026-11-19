@@ -118,7 +118,8 @@ charla-ingles/
 │   ├── characters.js   personajes SVG animables y escenarios
 │   ├── engine.js       correcciones, comparación de frases, diálogos, calificación, prompts de IA
 │   ├── voice.js        voz, micrófono, sincronía de boca, IA
-│   └── app.js          pantallas y flujo
+│   ├── app.js          pantallas y flujo
+│   └── pronunciation.js  práctica: grabadora WAV, Azure, resultados por sonido, consejos
 ├── public/index.html   app compilada en un solo archivo (lista para publicar)
 ├── server.mjs          servidor opcional + proxy de APIs
 ├── build.mjs           une src/ en public/index.html
@@ -141,5 +142,6 @@ Recorre todo el flujo (personaje → examen → resultados → plan → lección
 ## Límites de esta primera versión
 
 - 6 lecciones de ejemplo y un banco de examen corto: el nivel es una estimación orientativa.
+- Sin Azure configurado, el módulo de pronunciación no califica: solo permite grabarte y compararte.
 - Sin IA configurada, la conversación usa reglas: entiende respuestas esperadas y variantes comunes, pero no cualquier frase.
 - El progreso vive en un solo navegador; no hay cuentas ni sincronización entre dispositivos.
