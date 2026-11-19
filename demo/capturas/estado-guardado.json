@@ -1,0 +1,104 @@
+{
+  "v": 1,
+  "name": "Ana",
+  "character": "fox",
+  "levelIdx": 3,
+  "test": {
+    "date": "2026-11-19T22:31:14.586Z",
+    "levelIdx": 3,
+    "level": "B2",
+    "est": 4.36,
+    "skills": {
+      "L": {
+        "pct": 67,
+        "level": "B2",
+        "n": 3
+      },
+      "V": {
+        "pct": 67,
+        "level": "B2",
+        "n": 3
+      },
+      "S": {
+        "pct": 94,
+        "level": "C1",
+        "n": 3
+      },
+      "C": {
+        "pct": 78,
+        "level": "C1",
+        "n": 1
+      }
+    },
+    "speakingEvaluated": true,
+    "convWritten": false,
+    "strengths": [
+      "Te animas a responder en voz alta con frases completas.",
+      "Sostienes una plática respondiendo a lo que te preguntan."
+    ],
+    "improvements": [
+      "Practicar: Decir la edad."
+    ],
+    "recommended": "meeting",
+    "minutes": 1
+  },
+  "goal": "viajes",
+  "plan": {
+    "sessionsPerWeek": 3,
+    "minutes": 30,
+    "days": [
+      1,
+      3,
+      5
+    ]
+  },
+  "completed": {
+    "airport": {
+      "date": 1795127556399,
+      "comp": 67,
+      "phrases": 96
+    }
+  },
+  "secondsSpoken": 30.825399999999913,
+  "review": [
+    {
+      "en": "I'd like a window seat, please.",
+      "es": "Quisiera ventanilla, por favor.",
+      "note": "\"I'd like…\" es más amable que \"I want…\".",
+      "said": "I like a window seat",
+      "reps": 0,
+      "added": 1795127521754
+    },
+    {
+      "en": "I'd like a window seat.",
+      "es": "",
+      "note": "\"I'd like…\" suena más amable que \"I want…\".",
+      "said": "I want a window seat",
+      "reps": 0,
+      "added": 1795127556399
+    },
+    {
+      "en": "I'm 30 years old and I cook a lot.",
+      "es": "",
+      "note": "La edad se dice con \"to be\": \"I'm 30 years old\", no con \"have\".",
+      "said": "I have 30 years and I cook a lot.",
+      "reps": 0,
+      "added": 1795127570915
+    }
+  ],
+  "sessions": [
+    {
+      "date": 1795127556399,
+      "lesson": "airport"
+    }
+  ],
+  "chats": 1,
+  "settings": {
+    "cc": true,
+    "slow": false,
+    "mute": false,
+    "useAI": true,
+    "audioFirst": true
+  },
+  "forceText": false
+}

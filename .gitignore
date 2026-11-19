@@ -1,0 +1,5 @@
+.env
+node_modules/
+demo/capturas/video/
+__pycache__/
+.DS_Store

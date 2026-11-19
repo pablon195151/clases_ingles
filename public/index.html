@@ -1,0 +1,2773 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#FFF7EE">
+<title>Charla · Inglés conversacional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1B2A33; --ink2:#4A5A64; --bg:#FFF7EE; --card:#FFFFFF; --line:#EADFD2;
+  --teal:#0F766E; --teal2:#14B8A6; --tealbg:#E3F5F2; --coral:#FF6B4A; --coral2:#E9532F; --sun:#FFC94D; --plum:#5B3E96;
+  --ok:#14A37F; --bad:#D9534F; --radius:20px; --shadow:0 10px 30px -14px rgba(27,42,51,.35);
+  --head:56px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+h1,h2,h3{font-family:'Baloo 2','Nunito',sans-serif;line-height:1.15;margin:.2em 0 .4em}
+h1{font-size:clamp(1.6rem,3.2vw,2.3rem)} h2{font-size:1.35rem;margin-top:1.2em} h3{font-size:1.1rem}
+button{font:inherit;color:inherit;cursor:pointer} button:disabled{cursor:not-allowed;opacity:.5}
+:focus-visible{outline:3px solid var(--teal2);outline-offset:2px}
+small{font-size:.82em}
+.muted{color:var(--ink2)} .fine{color:var(--ink2);font-size:.84rem}
+.eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:.74rem;font-weight:800;color:var(--teal);margin:0}
+
+/* ---------- Barra superior ---------- */
+.topbar{position:sticky;top:0;z-index:30;height:var(--head);display:flex;align-items:center;gap:12px;padding:0 16px;background:rgba(255,247,238,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:8px;background:none;border:0;padding:0;font-family:'Baloo 2';font-weight:800;font-size:1.4rem;color:var(--teal)}
+.brand svg{width:34px;height:34px}
+#nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+#nav::-webkit-scrollbar{display:none}
+#nav button{border:0;background:none;padding:8px 12px;border-radius:999px;font-weight:700;color:var(--ink2);white-space:nowrap}
+#nav button.on{background:var(--tealbg);color:var(--teal)}
+#nav[hidden]+#btnSettings{margin-left:auto}
+#btnSettings{border:0;background:none;font-size:1.3rem;padding:6px;border-radius:12px}
+
+/* ---------- Distribución ---------- */
+.layout{display:grid;grid-template-columns:minmax(320px,40%) 1fr;gap:0;align-items:start}
+.stage{position:sticky;top:calc(var(--head) + 12px);height:calc(100vh - var(--head) - 24px);height:calc(100dvh - var(--head) - 24px);margin:12px;border-radius:28px;overflow:hidden;background:#0F5E63;box-shadow:var(--shadow);isolation:isolate}
+.scene,.scene svg{position:absolute;inset:0;width:100%;height:100%}
+.panel{padding:12px 20px 60px;min-width:0}
+#view{max-width:720px;margin:0 auto}
+
+/* ---------- Personaje ---------- */
+.char-wrap{position:absolute;left:50%;bottom:78px;width:min(70%,330px);transform:translateX(-50%);z-index:2;--m:0}
+.ch-svg{width:100%;height:auto;overflow:visible;display:block}
+.ch-root{transform-origin:110px 252px;animation:breathe 3.4s ease-in-out infinite}
+.ch-head{transform-origin:110px 150px;transition:transform .35s ease}
+.ch-arm{transform-origin:150px 196px;transition:transform .35s ease}
+.ch-tail{transform-origin:146px 214px;animation:wag 2.6s ease-in-out infinite}
+.ch-eyes{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+.ch-pupils{transition:transform .3s}
+.ch-brows path{transition:transform .3s}
+.ch-mouth-open{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(calc(.08 + var(--m) * .92));opacity:min(1, calc(var(--m) * 6))}
+.ch-mouth-closed{opacity:calc(1 - var(--m) * 5)}
+.ch-beak-low{transform:translateY(calc(var(--m) * 8px))}
+.talking .ch-head{animation:bob .55s ease-in-out infinite alternate}
+.ch-fx{opacity:0;transition:opacity .3s}
+.ch-fx-listen path{fill:none;stroke:var(--sun);stroke-width:4;stroke-linecap:round}
+.ch-fx-think circle{fill:#fff}
+.mood-greet .ch-arm{animation:wave .45s ease-in-out 6 alternate}
+.mood-listen .ch-head{transform:rotate(-7deg)}
+.mood-listen .ch-fx-listen{opacity:1;animation:pulse 1s ease-in-out infinite}
+.mood-think .ch-head{transform:rotate(5deg)}
+.mood-think .ch-pupils{transform:translate(3px,-4px)}
+.mood-think .ch-brow-l{transform:translateY(-4px)}
+.mood-think .ch-fx-think{opacity:1}
+.mood-celebrate .ch-root{animation:hop .45s ease-out 3}
+.mood-celebrate .ch-arm{transform:rotate(-28deg)}
+.mood-celebrate .ch-fx-celebrate{opacity:1;animation:pop 1s ease-out}
+.mood-correct .ch-head{animation:nod .7s ease-in-out 2}
+.mood-correct .ch-fx-correct{opacity:1}
+.mood-correct .ch-brows path{transform:translateY(-2px)}
+@keyframes breathe{50%{transform:scale(1.015,.99)}}
+@keyframes wag{50%{transform:rotate(9deg)}}
+@keyframes blink{0%,46%,50%,100%{transform:scaleY(1)}48%{transform:scaleY(.1)}}
+@keyframes bob{from{transform:rotate(-1.5deg) translateY(0)}to{transform:rotate(1.5deg) translateY(-2px)}}
+@keyframes wave{from{transform:rotate(0)}to{transform:rotate(-32deg)}}
+@keyframes pulse{50%{opacity:.35}}
+@keyframes hop{40%{transform:translateY(-16px)}}
+@keyframes nod{30%{transform:rotate(4deg) translateY(3px)}70%{transform:rotate(-2deg)}}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ---------- Globo de subtítulos ---------- */
+.bubble{position:absolute;top:16px;left:16px;right:16px;z-index:3;background:#fff;border-radius:18px;padding:10px 14px 12px;box-shadow:var(--shadow);max-height:42%;overflow:auto}
+.bubble::after{content:'';position:absolute;left:50%;bottom:-9px;width:18px;height:18px;background:#fff;transform:rotate(45deg);border-radius:3px}
+.bubble.is-npc{background:#FFF3D6}.bubble.is-npc::after{background:#FFF3D6;left:80%}
+.bubble-who{font-size:.75rem;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.06em}
+.bubble.is-npc .bubble-who{color:#9A6B00}
+.bubble-text{font-size:1.08rem;font-weight:600}
+.bubble.es .bubble-text{color:var(--ink2);font-style:italic}
+.bubble .w{border-radius:4px;transition:background .1s}
+.bubble .w.on{background:var(--sun)}
+.cc-off-msg small{color:var(--ink2);font-weight:400}
+
+.npc{position:absolute;right:18px;bottom:96px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:2px;opacity:.0;transition:opacity .25s}
+.npc:not([hidden]){opacity:.55}
+.npc.talking{opacity:1}
+.npc-ava{width:58px;height:58px;border-radius:50%;background:#FFF3D6;display:grid;place-items:center;font-size:1.8rem;box-shadow:var(--shadow);border:3px solid #fff}
+.npc.talking .npc-ava{animation:pulse-ring 1s ease-in-out infinite}
+.npc-name{background:#fff;border-radius:999px;padding:0 8px;font-size:.75rem;font-weight:800}
+@keyframes pulse-ring{50%{box-shadow:0 0 0 8px rgba(255,201,77,.45)}}
+
+/* ---------- Controles de voz ---------- */
+.vctl{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);z-index:4;display:flex;gap:6px;background:rgba(255,255,255,.94);padding:5px;border-radius:999px;box-shadow:var(--shadow)}
+.vbtn{border:0;background:none;border-radius:999px;padding:6px 10px;display:flex;align-items:center;gap:4px;font-weight:700;font-size:.82rem;color:var(--ink)}
+.vbtn .vi{font-size:1rem}
+.vbtn.on{background:var(--tealbg);color:var(--teal)}
+#vMute.on{background:#FDE7E2;color:var(--coral2)}
+.status-line{position:absolute;left:0;right:0;bottom:6px;z-index:4;display:flex;justify-content:center;gap:12px;white-space:nowrap;overflow:hidden;font-size:.7rem;color:rgba(255,255,255,.85);padding:0 10px}
+
+/* ---------- Tarjetas y elementos ---------- */
+.card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--line);margin-top:12px}
+.lead{font-size:1.1rem;color:var(--ink2)}
+.btn{border:0;border-radius:14px;padding:12px 18px;font-weight:800;background:var(--tealbg);color:var(--teal);transition:transform .08s,background .2s}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--coral);color:#fff;box-shadow:0 6px 0 -1px var(--coral2)}
+.btn.primary:hover{background:#ff7a5c}
+.btn.ghost{background:none;color:var(--ink2);text-decoration:underline;text-underline-offset:3px}
+.btn.soft{background:var(--tealbg);color:var(--teal)}
+.btn.danger{background:#FDE7E2;color:var(--bad)}
+.btn.big{padding:15px 22px;font-size:1.05rem}
+.btn.sm{padding:7px 12px;font-size:.88rem}
+.link{border:0;background:none;color:var(--teal);font-weight:700;padding:6px 0;text-decoration:underline;text-underline-offset:3px}
+.icon-btn{border:0;background:#F3EEE8;border-radius:10px;width:34px;height:34px;display:grid;place-items:center}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+.actions.col{flex-direction:column;align-items:stretch}
+.row-btns{display:flex;flex-wrap:wrap;gap:8px}
+.row-between{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pill{display:inline-block;background:var(--sun);color:#5A3E00;font-size:.72rem;font-weight:800;padding:1px 8px;border-radius:999px;margin-top:4px}
+.notice{background:#FFF3D6;border-radius:14px;padding:12px 14px;margin:12px 0}
+.notice.soft{background:#F3F7F6}
+.hint-box{background:#FFF3D6;border-radius:12px;padding:10px 12px;margin:8px 0}
+.good-box{background:#E1F6EE;border-radius:12px;padding:10px 12px;margin:8px 0;color:#0B5A44}
+.good-box.big{font-size:1.1rem;font-weight:700;padding:16px}
+
+.method{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}
+.method span{background:var(--tealbg);color:var(--teal);font-weight:800;border-radius:999px;padding:6px 12px;font-size:.9rem}
+.field{display:block;margin:10px 0}.field span{display:block;font-weight:800;margin-bottom:4px}
+.field input,.ans-form input{width:100%;font:inherit;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:#fff}
+.field input:focus,.ans-form input:focus{border-color:var(--teal2);outline:none}
+.field-label{font-weight:800;margin:14px 0 6px}
+
+.char-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.char-card{border:2px solid var(--line);background:#fff;border-radius:18px;padding:10px 10px 14px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px;transition:border-color .2s,transform .15s}
+.char-card:hover{transform:translateY(-2px)}
+.char-card.sel{border-color:var(--coral);box-shadow:0 0 0 4px #FFE1D8}
+.char-card .mini{width:100%;max-width:120px;background:linear-gradient(#E3F5F2,#fff);border-radius:14px;padding:6px}
+.char-card b{font-family:'Baloo 2';font-size:1.15rem}
+.char-card .species{font-size:.8rem;color:var(--teal);font-weight:800}
+.char-card .tag{font-size:.82rem;color:var(--ink2)}
+.char-card .listen-btn{margin-top:6px;font-size:.8rem;font-weight:800;color:var(--coral2)}
+.checks-box{margin-top:16px;background:#F7F3EE;border-radius:14px;padding:10px 14px}
+.checks-box summary{font-weight:800;cursor:pointer}
+.status-list{list-style:none;padding:0;margin:8px 0;display:grid;gap:4px;font-size:.92rem}
+
+/* Examen */
+.test-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.test-meta{display:flex;gap:8px;font-weight:800;font-variant-numeric:tabular-nums}
+.test-meta span{background:#F3EEE8;border-radius:999px;padding:4px 10px;font-size:.9rem}
+.progress{height:8px;background:#F0E8DF;border-radius:999px;overflow:hidden;margin:6px 0 18px}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--teal2),var(--teal));transition:width .4s}
+.skill-chip{display:inline-block;background:var(--tealbg);color:var(--teal);font-weight:800;border-radius:999px;padding:4px 12px;font-size:.88rem}
+.audio-box{background:#F7F3EE;border-radius:16px;padding:16px;margin:12px 0;text-align:center}
+.wave{display:flex;justify-content:center;align-items:center;gap:5px;height:36px}
+.wave i{display:block;width:6px;height:12px;background:var(--teal2);border-radius:4px;animation:wv 1s ease-in-out infinite}
+.wave i:nth-child(2){animation-delay:.1s}.wave i:nth-child(3){animation-delay:.2s}.wave i:nth-child(4){animation-delay:.3s}.wave i:nth-child(5){animation-delay:.4s}
+@keyframes wv{50%{height:32px}}
+.say{color:var(--coral2)}
+.q-text{font-weight:700;font-size:1.05rem}
+.opts{display:grid;gap:10px;margin-top:10px}
+.opt{text-align:left;border:2px solid var(--line);background:#fff;border-radius:14px;padding:13px 16px;font-weight:700;transition:border-color .2s,background .2s}
+.opt:hover:not(:disabled){border-color:var(--teal2)}
+.opt.picked{border-color:var(--teal);background:var(--tealbg)}
+.opt.right{border-color:var(--ok);background:#E1F6EE}
+.opt.wrong{border-color:var(--bad);background:#FDECEA}
+.opt:disabled{opacity:1;cursor:default}
+.sentence{font-size:1.25rem;font-weight:700;background:#F7F3EE;padding:16px;border-radius:14px}
+.blank{color:var(--coral2);letter-spacing:2px}
+
+/* Respuesta / micrófono */
+.answer{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;background:#FBF8F4;border:2px dashed var(--line);border-radius:18px;padding:16px}
+.answer.done{opacity:.8;border-style:solid}
+.answer.done .mic,.answer.done .ans-tools,.answer.done .ans-form,.answer.done .ans-hint{display:none}
+.ans-label{margin:0;font-weight:800}
+.ans-live{min-height:1.5em;text-align:center;font-size:1.05rem}
+.ans-live .you{font-weight:800;color:var(--teal)}
+.mic{border:0;background:var(--coral);color:#fff;border-radius:999px;padding:12px 22px 12px 14px;display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.05rem;box-shadow:0 6px 0 -1px var(--coral2)}
+.mic-ico{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center}
+.mic-ico::before{content:'🎤';font-size:1.4rem}
+.mic.on{background:var(--teal);box-shadow:0 6px 0 -1px #0b5a54}
+.mic.on .mic-ico{animation:pulse-ring 1s infinite}
+.ans-form{display:flex;gap:8px;width:100%}
+.ans-form[hidden]{display:none}
+.ans-tools{display:flex;flex-wrap:wrap;gap:4px 16px;justify-content:center}
+.ans-hint{background:#FFF3D6;border-radius:10px;padding:8px 12px;width:100%}
+
+.diff{margin-top:12px}
+.diff-words{display:flex;flex-wrap:wrap;gap:6px}
+.diff-words span{padding:3px 9px;border-radius:8px;font-weight:700}
+.diff-words .ok{background:#E1F6EE;color:#0B5A44}
+.diff-words .miss{background:#F1ECE6;color:#9A8C80;text-decoration:underline wavy #D9A08F}
+.meter{height:10px;background:#F0E8DF;border-radius:999px;overflow:hidden;margin:8px 0 4px}
+.meter span{display:block;height:100%;background:linear-gradient(90deg,var(--teal2),var(--teal));border-radius:999px}
+.meter.na{background:repeating-linear-gradient(45deg,#F0E8DF 0 6px,#E6DDD2 6px 12px)}
+
+/* Resultados */
+.level-badge{display:flex;gap:16px;align-items:center;margin:12px 0}
+.level-badge .lv{flex:none;width:92px;height:92px;border-radius:24px;background:linear-gradient(135deg,var(--coral),#FF9A5C);color:#fff;font-family:'Baloo 2';font-weight:800;font-size:2.4rem;display:grid;place-items:center;box-shadow:var(--shadow)}
+.level-badge p{margin:0;color:var(--ink2)}
+.skills{display:grid;gap:10px}
+.skill-top{display:flex;justify-content:space-between;font-weight:700;font-size:.95rem}
+.skill-top .na{color:var(--ink2);font-style:italic}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two-col ul{padding-left:18px;margin:0}.two-col li{margin:4px 0}
+.rec-card{display:flex;gap:14px;align-items:center;background:var(--tealbg);border-radius:16px;padding:14px;margin-top:18px}
+.rec-ico{font-size:2rem}.rec-card p{margin:0}
+
+/* Plan */
+.goal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.goal-card{border:2px solid var(--line);background:#fff;border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:2px}
+.goal-card.sel{border-color:var(--coral);box-shadow:0 0 0 4px #FFE1D8}
+.g-ico{font-size:1.8rem}
+.plan-opt{display:flex;gap:12px;align-items:flex-start;border:2px solid var(--coral);border-radius:16px;padding:14px;background:#FFF9F6}
+.plan-opt input{margin-top:5px;accent-color:var(--coral)}
+.plan-opt span{display:block}
+.days{display:flex;flex-wrap:wrap;gap:8px}
+.day{border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;font-weight:800;min-width:56px}
+.day.sel{background:var(--teal);border-color:var(--teal);color:#fff}
+.week{display:flex;justify-content:space-between;align-items:center;background:#F7F3EE;border-radius:16px;padding:12px 16px;margin:12px 0}
+.week span{display:block;font-size:.9rem}
+.dots{display:flex;gap:6px}.dots span{width:18px;height:18px;border-radius:50%;background:#E6DDD2}.dots span.on{background:var(--ok)}
+.next-session{border:2px solid var(--teal2);border-radius:18px;padding:16px;background:linear-gradient(#F2FBF9,#fff)}
+.session-steps{list-style:none;padding:0;margin:8px 0 14px;display:grid;gap:10px}
+.session-steps li{display:flex;gap:10px;align-items:center}
+.session-steps li>span{font-size:1.4rem;width:40px;height:40px;display:grid;place-items:center;background:#fff;border-radius:12px;box-shadow:0 2px 8px -4px rgba(0,0,0,.25)}
+.session-steps b,.session-steps small{display:block}
+.lesson-list{display:grid;gap:8px}
+.lesson-row{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff}
+.lesson-row.done{background:#F6FBF9}
+.l-ico{font-size:1.5rem}.l-info{flex:1;min-width:0}.l-info b,.l-info .muted{display:block}.l-info .muted{font-size:.85rem}
+
+/* Lección */
+.stepper{list-style:none;padding:0;margin:14px 0;display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.stepper li{font-size:.72rem;font-weight:800;color:#A99C90;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px}
+.stepper li span{width:28px;height:28px;border-radius:50%;background:#F0E8DF;display:grid;place-items:center;font-size:.85rem}
+.stepper li.on{color:var(--coral2)}.stepper li.on span{background:var(--coral);color:#fff}
+.stepper li.past{color:var(--teal)}.stepper li.past span{background:var(--teal2);color:#fff}
+.transcript{background:#F7F3EE;border-radius:14px;padding:12px 16px}
+.transcript p{margin:6px 0}.transcript .es{display:block;color:var(--ink2);font-size:.9rem;font-style:italic}
+.q-en{font-size:1.3rem;margin-bottom:0}.q-es{color:var(--ink2);margin-top:2px}
+.phrase{background:linear-gradient(135deg,#FFF3EC,#FFF9F2);border-radius:18px;padding:16px 18px;border:1px solid #FFE1D3}
+.p-en{font-size:1.4rem;font-weight:800;margin:0;font-family:'Baloo 2'}
+.p-es{color:var(--ink2);margin:2px 0 8px}
+.p-tip{font-size:.92rem;margin:0 0 10px}
+.chat{display:flex;flex-direction:column;gap:8px;margin:12px 0;max-height:none}
+.msg{max-width:88%;display:flex;flex-direction:column}
+.msg .who{font-size:.72rem;font-weight:800;color:var(--ink2);margin:0 8px}
+.msg p{margin:0;padding:10px 14px;border-radius:16px;font-size:1.02rem}
+.msg.tutor{align-self:flex-start}.msg.tutor p{background:var(--tealbg);border-top-left-radius:4px}
+.msg.user{align-self:flex-end;align-items:flex-end}.msg.user p{background:#FFE7DE;border-top-right-radius:4px}
+.msg.note{align-self:stretch;max-width:100%}
+.blur{filter:blur(5px);cursor:pointer;user-select:none}
+.note-chip{display:inline-block;background:#FFF3D6;border-radius:999px;padding:3px 12px;font-size:.82rem;font-weight:700;align-self:center}
+.corr{border:2px solid var(--line);border-radius:18px;overflow:hidden;background:#fff}
+.corr-row{padding:12px 16px;border-bottom:1px solid var(--line)}
+.corr-row>span{display:block;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.corr-row p{margin:2px 0 0;font-size:1.1rem;font-weight:700}
+.corr-row.said{background:#FDF1EE}.corr-row.said span{color:var(--bad)}.corr-row.said p{text-decoration:line-through;text-decoration-color:rgba(217,83,79,.4)}
+.corr-row.natural{background:#EEF9F5}.corr-row.natural span{color:var(--ok)}
+.corr-row.retry span{color:var(--teal)}
+.corr-row.retry .answer{background:none;border:0;padding:6px 0 0}
+.corr-tip{margin:0;padding:10px 16px;background:#FFFBF0;border-bottom:1px solid var(--line)}
+.corr-mini{font-size:.95rem}
+.corr-mini .retry-btn{margin:10px 16px 12px}
+.corr-mini .diff{padding:0 4px}
+.more{margin-top:12px}.more summary{font-weight:800;cursor:pointer}
+.save-list{display:grid;gap:8px}
+.save-item{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.save-item input{margin-top:5px;accent-color:var(--coral);width:18px;height:18px}
+.save-item b,.save-item span,.save-item small{display:block}.save-item span{color:var(--ink2)}.save-item small{color:var(--ink2)}
+.done-box{text-align:center;padding:10px}
+.big-emoji{font-size:3rem}
+
+/* Progreso */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat{background:#F7F3EE;border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:2px}
+.s-num{font-family:'Baloo 2';font-weight:800;font-size:1.8rem;color:var(--teal);line-height:1}
+.stat>span:last-child{font-size:.82rem;color:var(--ink2);font-weight:700}
+.review-list{display:grid;gap:8px;margin-bottom:12px}
+.review-item{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.review-item>div{flex:1;min-width:0}.review-item b,.review-item span,.review-item small{display:block}.review-item span,.review-item small{color:var(--ink2);font-size:.88rem}
+.reps{color:var(--ok);letter-spacing:2px}
+
+/* Modal */
+.modal{position:fixed;inset:0;background:rgba(27,42,51,.45);z-index:50;display:grid;place-items:center;padding:16px}
+.modal[hidden]{display:none}
+.modal-card{background:#fff;border-radius:22px;padding:20px;max-width:520px;width:100%;max-height:90vh;overflow:auto}
+.toggle{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.toggle input{position:absolute;opacity:0}
+.toggle .sw{flex:none;width:44px;height:26px;border-radius:999px;background:#E6DDD2;position:relative;transition:background .2s;margin-top:2px}
+.toggle .sw::after{content:'';position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle input:checked+.sw{background:var(--teal2)}
+.toggle input:checked+.sw::after{transform:translateX(18px)}
+.toggle input:focus-visible+.sw{outline:3px solid var(--teal2);outline-offset:2px}
+.toggle b,.toggle small{display:block}.toggle small{color:var(--ink2)}
+#toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,120px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;z-index:60;transition:transform .3s;font-weight:700;max-width:90vw}
+#toast.show{transform:translate(-50%,0)}
+
+/* ---------- Celular ---------- */
+@media (max-width:860px){
+  .layout{display:block}
+  .stage{position:sticky;top:var(--head);z-index:20;height:212px;margin:0;border-radius:0 0 24px 24px}
+  .char-wrap{left:6px;bottom:8px;width:138px;transform:none}
+  .bubble{left:150px;right:10px;top:10px;max-height:142px;padding:8px 12px}
+  .bubble::after{left:-6px;top:24px;bottom:auto}
+  .bubble.is-npc::after{left:-6px}
+  .bubble-text{font-size:.98rem}
+  .vctl{left:auto;right:8px;bottom:8px;transform:none;padding:3px;gap:2px}
+  .vbtn{padding:6px 8px}
+  .vbtn .vl{display:none}
+  .status-line{display:none}
+  .npc{right:auto;left:150px;bottom:8px;flex-direction:row;gap:6px}
+  .npc-ava{width:42px;height:42px;font-size:1.3rem}
+  .panel{padding:4px 12px 40px}
+  .card{padding:18px;border-radius:18px}
+  .char-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .char-card .tag{display:none}
+  .two-col{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .goal-grid{grid-template-columns:1fr 1fr}
+  .stepper li{font-size:0}.stepper li span{font-size:.8rem}
+  #nav{flex:1;min-width:0;justify-content:flex-start;margin-left:4px}
+  #nav button{padding:6px 7px;font-size:.8rem}
+  .brand span{display:none}
+  .topbar{padding:0 8px;gap:6px}
+  #btnSettings{padding:4px;font-size:1.15rem}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="brand" id="brand" aria-label="Charla, ir al inicio">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 8h22a6 6 0 0 1 6 6v9a6 6 0 0 1-6 6H16l-7 6v-6H6a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4z" fill="#FF6B4A"/><path d="M11 18q3-4 6 0t6 0t6 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+    <span>Charla</span>
+  </button>
+  <nav id="nav" hidden aria-label="Secciones">
+    <button data-go="plan">Plan</button>
+    <button data-go="lessons">Lecciones</button>
+    <button data-go="free">Conversar</button>
+    <button data-go="progress">Progreso</button>
+  </nav>
+  <button id="btnSettings" aria-label="Ajustes">⚙️</button>
+</header>
+
+<main class="layout">
+  <section class="stage" aria-label="Tutor virtual">
+    <div class="scene" id="scene"></div>
+    <div class="npc" id="npc" hidden><span class="npc-ava"></span><span class="npc-name"></span></div>
+    <div class="char-wrap" id="charWrap"></div>
+    <div class="bubble" id="bubble" hidden aria-live="polite"><div class="bubble-who"></div><div class="bubble-text"></div></div>
+    <div class="vctl" role="toolbar" aria-label="Controles de voz">
+      <button class="vbtn" id="vRepeat" title="Repetir lo último que dijo"><span class="vi">🔁</span><span class="vl">Repetir</span></button>
+      <button class="vbtn" id="vSlow" title="Voz más lenta" aria-pressed="false"><span class="vi">🐢</span><span class="vl">Lento</span></button>
+      <button class="vbtn" id="vCC" title="Subtítulos" aria-pressed="true"><span class="vi">💬</span><span class="vl">Subtítulos</span></button>
+      <button class="vbtn" id="vMute" title="Silenciar al tutor" aria-pressed="false"><span class="vi">🔊</span><span class="vl">Sonido</span></button>
+    </div>
+    <div class="status-line" id="statusLine"></div>
+  </section>
+  <section class="panel"><div id="view"></div></section>
+</main>
+<div id="modal" class="modal" hidden></div>
+<div id="toast" role="status"></div>
+<script>
+/* ===== content.js ===== */
+/* ============================================================
+   CONTENIDO DE EJEMPLO — lecciones, examen y temas de conversación
+   Todo el contenido es original. Edita o agrega lecciones aquí.
+   ============================================================ */
+
+const LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1'];
+const LEVEL_DESC_ES = {
+  A1: 'Principiante: entiendes y usas frases muy básicas sobre ti y tu entorno.',
+  A2: 'Básico: te comunicas en situaciones sencillas y cotidianas.',
+  B1: 'Intermedio: te defiendes en viajes, trabajo y temas conocidos.',
+  B2: 'Intermedio alto: conversas con bastante fluidez sobre muchos temas.',
+  C1: 'Avanzado: te expresas con soltura, precisión y matices.'
+};
+
+const GOALS = {
+  viajes: { label: 'Viajes', icon: '✈️', desc: 'Aeropuertos, hoteles, pedir direcciones' },
+  trabajo: { label: 'Trabajo', icon: '💼', desc: 'Presentarte, juntas, proponer ideas' },
+  cotidiana: { label: 'Vida cotidiana', icon: '🏙️', desc: 'Cafeterías, compras, plática casual' },
+  entretenimiento: { label: 'Entretenimiento', icon: '🎬', desc: 'Series, música, recomendaciones' }
+};
+
+const SKILL_LABELS = {
+  L: 'Comprensión auditiva',
+  V: 'Vocabulario en contexto',
+  S: 'Expresión oral',
+  C: 'Conversación',
+  W: 'Respuestas escritas'
+};
+
+/* ---------------- EXAMEN INICIAL (banco adaptativo) ----------------
+   d = dificultad 1..5 (≈ A1..C1). El examen elige el reactivo más
+   cercano a la dificultad actual y sube o baja según la respuesta. */
+const TEST_SEQUENCE = ['L', 'V', 'L', 'V', 'R', 'L', 'V', 'S', 'S', 'C'];
+
+const TEST_BANK = {
+  L: [
+    { id: 'L1', d: 1, lines: [{ who: 'npc', en: "Hi! My name is Sam. I'm from Canada, and I'm a nurse." }],
+      q: '¿De dónde es Sam?', options: ['De Canadá', 'De Colombia', 'De California'], answer: 0 },
+    { id: 'L2', d: 2, lines: [{ who: 'npc', en: 'Excuse me, the bus to the airport leaves at a quarter past seven.' }],
+      q: '¿A qué hora sale el autobús?', options: ['7:15', '7:45', '6:15'], answer: 0 },
+    { id: 'L3', d: 3, lines: [
+        { who: 'npc', en: 'Do you want to grab dinner tonight?' },
+        { who: 'tutor', en: "I'd love to, but I have to finish a report. How about tomorrow?" }],
+      q: '¿Qué propone la segunda persona?', options: ['Cenar mañana', 'Cenar hoy después del trabajo', 'Terminar el reporte juntos'], answer: 0 },
+    { id: 'L4', d: 4, lines: [{ who: 'npc', en: "Honestly, the hotel was fine, but considering the price, I expected a lot more. I probably wouldn't stay there again." }],
+      q: '¿Qué opina la persona del hotel?', options: ['Estaba bien, pero no valió lo que costó', 'Le encantó y volvería', 'Era barato pero muy sucio'], answer: 0 },
+    { id: 'L6', d: 4, lines: [{ who: 'npc', en: "If I'd known the traffic would be this bad, I'd have taken the train." }],
+      q: '¿Qué quiere decir la persona?', options: ['Se arrepiente de no haber tomado el tren', 'Mañana va a tomar el tren', 'El tren también tenía tráfico'], answer: 0 },
+    { id: 'L5', d: 5, lines: [{ who: 'npc', en: "We've decided to put the launch on hold until legal signs off, which, realistically, won't happen before the end of the quarter." }],
+      q: '¿Qué pasará con el lanzamiento?', options: ['Se pospone hasta que lo apruebe el área legal, quizá después del trimestre', 'Sale este trimestre sin cambios', 'Se cancela definitivamente'], answer: 0 }
+  ],
+  V: [
+    { id: 'V1', d: 1, sentence: "I'm hungry. Let's ___ something.", options: ['eat', 'sleep', 'drive'], answer: 0 },
+    { id: 'V2', d: 2, sentence: 'My flight was ___, so I waited four hours at the airport.', options: ['delayed', 'borrowed', 'closed'], answer: 0 },
+    { id: 'V6', d: 2, sentence: 'Can you ___ me the salt, please?', options: ['pass', 'lend', 'take'], answer: 0 },
+    { id: 'V3', d: 3, sentence: "I'm really looking ___ to the trip.", options: ['forward', 'ahead', 'after'], answer: 0 },
+    { id: 'V4', d: 4, sentence: "She's very ___: she always finishes her work before the deadline.", options: ['reliable', 'reluctant', 'restless'], answer: 0 },
+    { id: 'V5', d: 5, sentence: 'The new policy is likely to ___ a lot of criticism.', options: ['draw', 'make', 'take'], answer: 0 }
+  ],
+  // R = repetir (expresión oral; con micrófono se compara el texto reconocido)
+  R: [
+    { id: 'R1', d: 1, en: 'Nice to meet you.' },
+    { id: 'R2', d: 2, en: 'Could I have a glass of water, please?' },
+    { id: 'R3', d: 3, en: "I've been working here for about two years." },
+    { id: 'R4', d: 4, en: "I'd rather stay in tonight, if you don't mind." },
+    { id: 'R5', d: 5, en: 'Had I known about the delay, I would have rescheduled the meeting.' }
+  ],
+  // S = respuesta abierta
+  S: [
+    { id: 'S1', d: 1, en: "What's your name, and where are you from?", minWords: 5, expect: /\b(name|i'm|i am|from)\b/i },
+    { id: 'S2', d: 2, en: 'What do you usually do on weekends?', minWords: 6, expect: /\b(i|we)\s+(usually|always|often|sometimes|like|go|play|watch|visit|stay|sleep|read|cook|walk)\b/i },
+    { id: 'S3', d: 3, en: 'Tell me about a trip you took. Where did you go?', minWords: 10, expect: /\b(went|was|were|visited|saw|liked|loved|stayed|traveled|travelled|ate|took|had)\b/i },
+    { id: 'S4', d: 4, en: 'If you could change one thing about your city, what would it be?', minWords: 12, expect: /\b(would|could|should|i'd)\b/i },
+    { id: 'S5', d: 5, en: "Some people say remote work is better than working in an office. What's your opinion?", minWords: 20, expect: /\b(i think|i believe|in my opinion|personally|however|although|on the other hand|whereas|while|because)\b/i }
+  ]
+};
+
+/* ---------------- LECCIONES ----------------
+   Secuencia de cada lección:
+   1 situación (audio) → 2 comprensión → 3 frases útiles → 4 conversación
+   → 5 corrección y nuevo intento → 6 guardar frases difíciles          */
+const LESSONS = [
+  {
+    id: 'cafe', title: 'Tu primer café en inglés', title_en: 'Ordering at a café',
+    goals: ['cotidiana', 'viajes'], level: 1, scene: 'cafe',
+    npc: { name: 'Mia', role: 'barista', icon: '☕' },
+    intro_es: 'Estamos en una cafetería. Primero escucha la conversación sin leer. Fíjate en qué pide el cliente.',
+    situation: [
+      { who: 'npc', en: 'Hi there! What can I get for you?', es: '¡Hola! ¿Qué te sirvo?' },
+      { who: 'tutor', en: 'Hi! Can I have a medium latte, please?', es: '¡Hola! ¿Me das un latte mediano, por favor?' },
+      { who: 'npc', en: 'Sure. Is that for here or to go?', es: 'Claro. ¿Es para tomar aquí o para llevar?' },
+      { who: 'tutor', en: 'To go, please.', es: 'Para llevar, por favor.' },
+      { who: 'npc', en: "Great. That's four fifty. Can I get a name for the order?", es: 'Perfecto. Son cuatro cincuenta. ¿Me das un nombre para la orden?' },
+      { who: 'tutor', en: "It's {tutor}. Thank you!", es: 'Es {tutor}. ¡Gracias!' }
+    ],
+    comprehension: [
+      { q_en: 'What did the customer order?', q_es: '¿Qué pidió el cliente?', options: ['A medium latte', 'A large tea', 'A small black coffee'], answer: 0, line: 1 },
+      { q_en: 'Is the drink for here or to go?', q_es: '¿La bebida es para tomar ahí o para llevar?', options: ['To go', 'For here', "We don't know"], answer: 0, line: 3 },
+      { spoken: true, q_en: 'How much is the latte?', q_es: 'Responde en voz alta: ¿cuánto cuesta el latte?', expect: /\b(four|4)\b.*\b(fifty|50)\b|4[.:]50/i, model: "It's four fifty.", line: 4 }
+    ],
+    phrases: [
+      { en: 'Can I have a latte, please?', es: '¿Me das un latte, por favor?', tip: '"Can I have…?" es la forma más común y amable de pedir algo.' },
+      { en: 'For here, please.', es: 'Para tomar aquí, por favor.', tip: 'Si lo quieres para llevar, di "To go, please."' },
+      { en: 'How much is it?', es: '¿Cuánto es?', tip: 'También se usa "How much do I owe you?"' },
+      { en: 'Thanks, have a nice day!', es: '¡Gracias, que tengas buen día!', tip: 'Despedida amable y muy común.' }
+    ],
+    conversation: {
+      role_es: 'Ahora yo soy el barista y tú eres el cliente. Contesta en inglés como puedas. ¡Equivocarte es parte de aprender!',
+      scenario: 'A café counter. The tutor is the barista; the student is a customer ordering a drink.',
+      role_en: 'the barista at Cloud Café',
+      opening: 'Hi! Welcome to Cloud Café.',
+      turns: [
+        { ask: 'What can I get for you?', simple: 'What drink do you want? Coffee? Tea?',
+          hint: 'Pide una bebida: "Can I have a latte, please?"', model: 'Can I have a latte, please?',
+          expect: [{ re: /\b(latte|coffee|cappuccino|espresso|americano|tea|mocha|hot chocolate|chocolate|juice|water|frappe|frappuccino|smoothie|soda|milk)\b/i, slot: 'drink', reply: 'One {drink}, great choice.' }],
+          any: 'Okay, one house coffee then.', anySlots: { drink: 'coffee' } },
+        { ask: 'What size would you like? Small, medium, or large?', simple: 'Small, medium, or large?',
+          hint: 'Elige un tamaño: "Medium, please."', model: 'Medium, please.',
+          expect: [{ re: /\b(small|medium|large|regular|big|tall|grande)\b/i, slot: 'size',
+            val: m => ({ big: 'large', grande: 'large', tall: 'small', regular: 'medium' }[m[1].toLowerCase()] || m[1].toLowerCase()),
+            reply: 'A {size} {drink}, got it.' }],
+          any: "Let's make it a medium.", anySlots: { size: 'medium' } },
+        { ask: 'Is that for here or to go?', simple: 'Here or to go?',
+          hint: 'Di "For here, please" o "To go, please".', model: 'To go, please.',
+          expect: [
+            { re: /\b(to go|take ?away|take ?out|go)\b/i, slot: 'where', val: () => 'to go', reply: "Sure, I'll put a lid on it." },
+            { re: /\b(here|stay|sit)\b/i, slot: 'where', val: () => 'for here', reply: 'Perfect, you can sit anywhere you like.' }],
+          any: "I'll give you a cup to go, just in case." },
+        { ask: 'Can I get a name for the order?', simple: 'What is your name?',
+          hint: 'Di tu nombre: "It\'s Ana."', model: "It's Ana.",
+          expect: [
+            { re: /(?:it's|it is|my name is|my name's|i'm|i am|name's|call me)\s+([a-záéíóúñü]+)/i, slot: 'name', val: m => cap(m[1]), reply: 'Thanks, {name}!' },
+            { re: /^\s*([a-záéíóúñü]+)[.!]?\s*$/i, slot: 'name', val: m => cap(m[1]), reply: 'Thanks, {name}!' }],
+          any: 'Thanks!' },
+        { minLevel: 2, ask: 'Would you like anything to eat with that? We have muffins and croissants.',
+          hint: 'Puedes decir "Yes, a croissant, please" o "No, thanks".', model: "No, thanks. That's all.",
+          expect: [
+            { re: /\b(muffin|croissant|cookie|sandwich|cake|bagel)s?\b/i, slot: 'food', reply: 'Good choice, the {food}s are fresh today.' },
+            { re: /\b(no|nope|that's all|that's it|i'm good|nothing)\b/i, reply: 'No problem.' }],
+          any: 'Okay!' }
+      ],
+      closing: "That's four fifty. Your {size|} {drink|coffee} will be ready in a minute. Have a great day, {name|friend}!"
+    },
+    corrections: [
+      { re: /\bi want (a |an |one )?([a-z ]*?(latte|coffee|cappuccino|espresso|americano|tea|mocha|chocolate|juice|water|frappe|smoothie|soda|muffin|croissant)s?)\b(,? please)?/i,
+        rep: (m0, a, b) => `Can I have ${a || 'a '}${b}, please`, tip: '"I want…" suena brusco al pedir. "Can I have…, please?" es más amable.', tag: 'Pedir con cortesía' },
+      { re: /\bgive me (a |an |one )?([a-z ]+)/i, rep: (m0, a, b) => `Could I get ${a || 'a '}${b}, please`, tip: '"Give me…" suena a orden. Mejor: "Could I get…, please?"', tag: 'Pedir con cortesía' }
+    ]
+  },
+
+  {
+    id: 'airport', title: 'Documenta en el aeropuerto', title_en: 'Airport check-in',
+    goals: ['viajes'], level: 2, scene: 'airport',
+    npc: { name: 'Ken', role: 'agente de aerolínea', icon: '🛫' },
+    intro_es: 'Estamos en el mostrador de una aerolínea. Escucha y fíjate a dónde viaja la persona, cuántas maletas lleva y qué asiento pide.',
+    situation: [
+      { who: 'npc', en: 'Good morning. Where are you flying today?', es: 'Buenos días. ¿A dónde vuela hoy?' },
+      { who: 'tutor', en: "Good morning. I'm flying to Chicago.", es: 'Buenos días. Vuelo a Chicago.' },
+      { who: 'npc', en: 'May I see your passport, please?', es: '¿Me permite su pasaporte, por favor?' },
+      { who: 'tutor', en: 'Sure, here you go.', es: 'Claro, aquí tiene.' },
+      { who: 'npc', en: 'Are you checking any bags?', es: '¿Va a documentar maletas?' },
+      { who: 'tutor', en: 'Yes, just one suitcase.', es: 'Sí, solo una maleta.' },
+      { who: 'npc', en: 'Would you like a window or an aisle seat?', es: '¿Prefiere ventanilla o pasillo?' },
+      { who: 'tutor', en: 'A window seat, please.', es: 'Ventanilla, por favor.' }
+    ],
+    comprehension: [
+      { q_en: 'Where is the passenger flying?', q_es: '¿A dónde viaja la persona?', options: ['Chicago', 'Cancún', 'Chile'], answer: 0, line: 1 },
+      { q_en: 'How many bags is the passenger checking?', q_es: '¿Cuántas maletas documenta?', options: ['One', 'Two', 'None'], answer: 0, line: 5 },
+      { spoken: true, q_en: 'What seat does the passenger want?', q_es: 'Responde en voz alta: ¿qué asiento pidió?', expect: /\bwindow\b/i, model: 'A window seat.', line: 7 }
+    ],
+    phrases: [
+      { en: "I'm flying to Chicago.", es: 'Vuelo a Chicago.', tip: 'Usa "I\'m flying to…" + tu destino.' },
+      { en: 'Here you go.', es: 'Aquí tiene.', tip: 'Se dice al entregar algo, como tu pasaporte.' },
+      { en: "I'd like a window seat, please.", es: 'Quisiera ventanilla, por favor.', tip: '"I\'d like…" es más amable que "I want…".' },
+      { en: 'What time does boarding start?', es: '¿A qué hora empieza el abordaje?', tip: '"Boarding" = abordaje; "gate" = sala o puerta.' }
+    ],
+    conversation: {
+      role_es: 'Ahora yo soy el agente de la aerolínea y tú eres el pasajero. Elige tu destino: ¡a donde quieras!',
+      scenario: 'Airport check-in counter. The tutor is the airline agent; the student is a passenger.',
+      role_en: 'an airline check-in agent',
+      opening: 'Good morning, welcome to Sky Lines.',
+      turns: [
+        { ask: 'Where are you flying today?', simple: 'Where are you going? What city?',
+          hint: 'Di tu destino: "I\'m flying to Chicago."', model: "I'm flying to Chicago.",
+          expect: [
+            { re: /\b(?:to|for)\s+([a-záéíóúñ]+(?:\s(?!please)[a-záéíóúñ]+)?)/i, slot: 'city', val: (m, t) => {
+                const all = [...t.matchAll(/\b(?:to|for)\s+(?=([a-záéíóúñ]+(?:\s(?!please\b|today\b|tomorrow\b|to\b)[a-záéíóúñ]+)?))/gi)].map(x => x[1]).filter(x => !/^(go|fly|travel|be|visit|see|the)\b/i.test(x));
+                return titleCase((all.pop() || m[1]).replace(/\s+(today|please|tomorrow|now)$/i, ''));
+              }, reply: '{city}, perfect.' },
+            { re: /^\s*([a-záéíóúñ]+(?:\s[a-záéíóúñ]+)?)[.!]?\s*$/i, slot: 'city', val: m => titleCase(m[1]), reply: '{city}, perfect.' }],
+          any: 'Okay, let me check.', anySlots: { city: 'your destination' } },
+        { ask: 'May I see your passport, please?', simple: 'Your passport, please?',
+          hint: 'Entrega tu pasaporte: "Sure, here you go."', model: 'Sure, here you go.',
+          expect: [{ re: /\b(here|sure|yes|of course|okay|ok|passport)\b/i, reply: 'Thank you.' }], any: 'Thank you.' },
+        { ask: 'Are you checking any bags today?', simple: 'Do you have a suitcase?',
+          hint: 'Responde "Yes, one suitcase" o "No, just a carry-on".', model: 'Yes, just one suitcase.',
+          expect: [
+            { re: /\b(no|nope|just (a )?carry[- ]on|only (a )?backpack)\b/i, slot: 'bags', val: () => 'no', reply: 'Okay, just a carry-on then.' },
+            { re: /\b(one|two|three|1|2|3|a suitcase|yes|yeah)\b/i, slot: 'bags', val: () => 'yes', reply: 'Please put your bag on the scale.' }],
+          any: 'Okay.' },
+        { ask: 'Would you like a window or an aisle seat?', simple: 'Window or aisle?',
+          hint: '"A window seat, please." / "An aisle seat, please."', model: 'A window seat, please.',
+          expect: [{ re: /\b(window|aisle|middle)\b/i, slot: 'seat', val: m => m[1].toLowerCase(), reply: 'A {seat} seat, no problem.' }],
+          any: "I'll find you a good seat." },
+        { minLevel: 2, ask: 'Is anyone traveling with you today?', hint: '"No, I\'m traveling alone." / "Yes, my wife."',
+          model: "No, I'm traveling alone.",
+          expect: [{ re: /\b(alone|no|nobody|just me)\b/i, reply: 'Okay, traveling solo.' }, { re: /\b(yes|my|with)\b/i, reply: 'Great, I see you are together.' }], any: 'Okay.' }
+      ],
+      closing: 'Here is your boarding pass. Boarding starts at nine forty at gate twelve. Have a nice flight to {city|your destination}!'
+    },
+    corrections: [
+      { re: /\bi want (a |an )?(window|aisle|middle)( seat)?/i, rep: (m0, a, b) => `I'd like ${b === 'aisle' ? 'an' : 'a'} ${b} seat`, tip: '"I\'d like…" suena más amable que "I want…".', tag: 'Pedir con cortesía' },
+      { re: /\bi go to ([a-z]+)/i, rep: (m0, a) => `I'm flying to ${a}`, tip: 'Para un vuelo es más natural "I\'m flying to…".', tag: 'Hablar de planes' }
+    ]
+  },
+
+  {
+    id: 'work-intro', title: 'Preséntate en tu nuevo trabajo', title_en: 'Meeting a new colleague',
+    goals: ['trabajo'], level: 1, scene: 'office',
+    npc: { name: 'Priya', role: 'compañera de trabajo', icon: '👩🏽‍💼' },
+    intro_es: 'Es tu primer día en una oficina. Escucha cómo se presentan dos compañeros. Fíjate en qué hacía antes la persona nueva.',
+    situation: [
+      { who: 'npc', en: "Hi, you must be the new team member. I'm Priya, I work in marketing.", es: 'Hola, tú debes ser la persona nueva del equipo. Soy Priya, trabajo en marketing.' },
+      { who: 'tutor', en: "Nice to meet you, Priya! I'm {tutor}. I'm the new support analyst.", es: '¡Mucho gusto, Priya! Soy {tutor}. Soy el nuevo analista de soporte.' },
+      { who: 'npc', en: 'Welcome! What did you do before this?', es: '¡Bienvenido! ¿Qué hacías antes?' },
+      { who: 'tutor', en: 'I worked at a logistics company for three years.', es: 'Trabajé en una empresa de logística tres años.' },
+      { who: 'npc', en: 'Cool. Let me know if you need anything.', es: 'Qué bien. Avísame si necesitas algo.' }
+    ],
+    comprehension: [
+      { q_en: 'Where does Priya work?', q_es: '¿En qué área trabaja Priya?', options: ['In marketing', 'In logistics', 'In support'], answer: 0, line: 0 },
+      { q_en: "What's the new person's job?", q_es: '¿Cuál es el puesto de la persona nueva?', options: ['Support analyst', 'Marketing manager', 'Truck driver'], answer: 0, line: 1 },
+      { spoken: true, q_en: 'How long did the new person work at the logistics company?', q_es: 'Responde en voz alta: ¿cuánto tiempo trabajó en logística?', expect: /\b(three|3)\s+years?\b/i, model: 'For three years.', line: 3 }
+    ],
+    phrases: [
+      { en: 'Nice to meet you.', es: 'Mucho gusto.', tip: 'Se usa la primera vez que conoces a alguien.' },
+      { en: "I'm the new support analyst.", es: 'Soy el nuevo analista de soporte.', tip: 'Para tu puesto usa "I\'m a…" o "I work as a…".' },
+      { en: 'I worked at a logistics company for three years.', es: 'Trabajé tres años en una empresa de logística.', tip: 'Duración: "for" + tiempo (for three years).' },
+      { en: 'Let me know if you need anything.', es: 'Avísame si necesitas algo.', tip: 'Frase muy común entre compañeros.' }
+    ],
+    conversation: {
+      role_es: 'Ahora yo soy tu compañero de trabajo y tú eres la persona nueva. Cuéntame de ti.',
+      scenario: 'First day at a new office. The tutor is a friendly colleague; the student is the new employee.',
+      role_en: 'a friendly colleague who works in marketing',
+      opening: "Hi! You must be the new team member. I'm {tutor}, I work in marketing.",
+      turns: [
+        { ask: "What's your name?", simple: 'What is your name?', hint: '"I\'m Ana. Nice to meet you."', model: "I'm Ana. Nice to meet you.",
+          expect: [
+            { re: /(?:it's|it is|my name is|my name's|i'm|i am|name's|call me)\s+([a-záéíóúñü]+)/i, slot: 'name', val: m => cap(m[1]), reply: 'Nice to meet you, {name}!' },
+            { re: /^\s*([a-záéíóúñü]+)[.!]?\s*$/i, slot: 'name', val: m => cap(m[1]), reply: 'Nice to meet you, {name}!' }],
+          any: 'Nice to meet you!' },
+        { ask: 'So, what will you be doing here?', simple: 'What is your job?',
+          hint: '"I\'m the new support analyst." / "I work in logistics."', model: "I'm the new support analyst.",
+          expect: [
+            { re: /(?:i'm an?|i am an?|i work as an?|i'll be an?|i will be an?|i'm the|i am the|i'll be the)\s+(?:new\s+)?([a-z ]+?)(?:[.,!]|$| for| in| at)/i, slot: 'job', val: m => m[1].trim(), reply: 'Oh, a {job}! That sounds interesting.' },
+            { re: /(?:work in|working in|work on|work with)\s+([a-z ]+?)(?:[.,!]|$)/i, slot: 'area', val: m => m[1].trim(), reply: "Oh, {area}! We work with that team a lot." }],
+          any: 'Oh, that sounds interesting.' },
+        { ask: 'What did you do before this job?', simple: 'Where did you work before?',
+          hint: 'Usa pasado: "I worked at a logistics company."', model: 'I worked at a logistics company.',
+          expect: [{ re: /\b(worked|was|were|studied|did|used to|had)\b/i, reply: 'Nice, that experience will be really useful here.' }],
+          any: 'Cool.' },
+        { ask: 'How long did you do that?', simple: 'How many years?',
+          hint: '"For three years."', model: 'For three years.',
+          expect: [{ re: /(\d+|one|two|three|four|five|six|seven|eight|nine|ten|a few|many|several)\s+(years?|months?)/i, slot: 'time', val: m => m[0].toLowerCase(), reply: "Wow, {time}. That's a lot of experience." }],
+          any: 'Okay, great.' },
+        { minLevel: 2, ask: 'What are you most excited about in this new role?', hint: '"I\'m excited to learn new things."',
+          model: "I'm excited to work with a new team.", expect: [], any: 'I love that.' }
+      ],
+      closing: 'Well, welcome to the team, {name|my friend}! Let me know if you need anything.'
+    },
+    corrections: [
+      { re: /\bwork like (a|an)\b/i, rep: (m0, a) => `work as ${a}`, tip: 'Para tu puesto: "I work as a…", no "like".', tag: 'Hablar de tu trabajo' }
+    ]
+  },
+
+  {
+    id: 'directions', title: 'Ayuda a un turista perdido', title_en: 'Giving directions',
+    goals: ['viajes', 'cotidiana'], level: 2, scene: 'street',
+    npc: { name: 'Sam', role: 'vecino', icon: '🧭' },
+    intro_es: 'Alguien pregunta cómo llegar a la estación de tren. Escucha las indicaciones: ¿derecho, izquierda o derecha?',
+    situation: [
+      { who: 'tutor', en: 'Excuse me, how do I get to the train station?', es: 'Disculpa, ¿cómo llego a la estación de tren?' },
+      { who: 'npc', en: "Sure. Go straight for two blocks, then turn left at the bank. It's next to a big park.", es: 'Claro. Sigue derecho dos cuadras y da vuelta a la izquierda en el banco. Está junto a un parque grande.' },
+      { who: 'tutor', en: 'Is it far?', es: '¿Está lejos?' },
+      { who: 'npc', en: "No, it's about a ten-minute walk.", es: 'No, está como a diez minutos caminando.' }
+    ],
+    comprehension: [
+      { q_en: 'Where do you turn left?', q_es: '¿Dónde hay que dar vuelta a la izquierda?', options: ['At the bank', 'At the park', 'At the station'], answer: 0, line: 1 },
+      { q_en: 'What is next to the station?', q_es: '¿Qué está junto a la estación?', options: ['A big park', 'A hospital', 'A museum'], answer: 0, line: 1 },
+      { spoken: true, q_en: 'How long is the walk?', q_es: 'Responde en voz alta: ¿cuánto se tarda caminando?', expect: /\b(ten|10)\b.*\bminutes?\b|\bten-minute\b/i, model: 'About ten minutes.', line: 3 }
+    ],
+    phrases: [
+      { en: 'Excuse me, how do I get to the station?', es: 'Disculpa, ¿cómo llego a la estación?', tip: '"How do I get to…?" sirve para cualquier lugar.' },
+      { en: 'Go straight for two blocks.', es: 'Sigue derecho dos cuadras.', tip: '"Block" = cuadra. Se dice "for two blocks".' },
+      { en: 'Turn left at the bank.', es: 'Da vuelta a la izquierda en el banco.', tip: 'Turn left / turn right. "At" + el lugar donde das la vuelta.' },
+      { en: "It's next to the park.", es: 'Está junto al parque.', tip: 'Next to = junto a; across from = enfrente de.' }
+    ],
+    conversation: {
+      role_es: 'Ahora los papeles cambian: yo soy un turista perdido y tú me das indicaciones en inglés.',
+      scenario: 'On a street. The tutor is a lost tourist; the student is a local giving directions to a pharmacy.',
+      role_en: 'a lost tourist looking for a pharmacy',
+      opening: "Excuse me, sorry to bother you. I'm a little lost.",
+      turns: [
+        { ask: 'Is there a pharmacy near here?', simple: 'A pharmacy, near here?',
+          hint: '"Yes, there\'s one near here."', model: "Yes, there's one near here.",
+          expect: [
+            { re: /\b(no|not|don't know|sorry)\b/i, reply: "Oh, okay. Maybe there's one a little farther away." },
+            { re: /\b(yes|yeah|sure|there's|there is|one)\b/i, reply: 'Oh, great!' }],
+          any: 'Oh, great!' },
+        { ask: 'How do I get there?', simple: 'Left or right?',
+          hint: '"Go straight for two blocks and turn left."', model: 'Go straight for two blocks, then turn left.',
+          expect: [{ re: /\b(straight|left|right|blocks?|corner|next to|across|turn|walk)\b/i, slot: 'dirs', val: (m, t) => shorten(t, 12), reply: 'Okay, so, {dirs}. Got it.' }],
+          any: 'Okay, I think I understand.' },
+        { ask: 'Is it far from here?', simple: 'Is it far?',
+          hint: '"No, it\'s about a five-minute walk."', model: "No, it's about a five-minute walk.",
+          expect: [
+            { re: /(\d+|one|two|three|five|ten|fifteen|twenty|a few)[\s-]+minutes?/i, slot: 'mins', val: m => m[0].toLowerCase(), reply: 'Only {mins}? Perfect.' },
+            { re: /\b(not far|close|near|no)\b/i, reply: 'Great, not far.' },
+            { re: /\b(yes|far|pretty far|a bit)\b/i, reply: 'Hmm, okay.' }],
+          any: 'Okay.' },
+        { ask: 'Should I walk or take a taxi?', simple: 'Walk or taxi?',
+          hint: '"You can walk." / "Take a taxi."', model: 'You can walk, it\'s close.',
+          expect: [
+            { re: /\b(walk|walking|on foot)\b/i, reply: 'Walking it is. I need the exercise!' },
+            { re: /\b(taxi|uber|cab|bus|metro|subway|train)\b/i, slot: 'transport', reply: "Okay, I'll take the {transport}." }],
+          any: 'Good idea.' }
+      ],
+      closing: 'Thank you so much for your help! Have a great day.'
+    },
+    corrections: [
+      { re: /\bstraight (to|by) (\w+) blocks\b/i, rep: (m0, a, b) => `straight for ${b} blocks`, tip: 'Se dice "go straight for two blocks".', tag: 'Dar indicaciones' },
+      { re: /\bin the corner\b/i, rep: 'at the corner', tip: 'En la esquina de la calle = "at the corner".', tag: 'Preposiciones de lugar' },
+      { re: /\bturn to the (left|right)\b/i, rep: (m0, a) => `turn ${a}`, tip: 'Más natural y corto: "turn left / turn right".', tag: 'Dar indicaciones' }
+    ]
+  },
+
+  {
+    id: 'series', title: 'Recomienda una serie', title_en: 'Recommending a show',
+    goals: ['entretenimiento', 'cotidiana'], level: 3, scene: 'living',
+    npc: { name: 'Leo', role: 'amigo', icon: '🍿' },
+    intro_es: 'Dos amigos platican de series. Escucha de qué trata la serie y qué opinan de ella.',
+    situation: [
+      { who: 'npc', en: 'Have you watched anything good lately?', es: '¿Has visto algo bueno últimamente?' },
+      { who: 'tutor', en: "Yes! I've just finished a series called Signal Lost. It's a sci-fi mystery.", es: '¡Sí! Acabo de terminar una serie que se llama Signal Lost. Es un misterio de ciencia ficción.' },
+      { who: 'npc', en: "What's it about?", es: '¿De qué trata?' },
+      { who: 'tutor', en: "It's about a radio host who receives messages from the future. It's a bit slow at first, but it gets really intense.", es: 'Trata de un locutor de radio que recibe mensajes del futuro. Al principio es un poco lenta, pero luego se pone muy intensa.' },
+      { who: 'npc', en: "Sounds cool. I'll check it out.", es: 'Suena bien. La voy a ver.' }
+    ],
+    comprehension: [
+      { q_en: 'What kind of series is it?', q_es: '¿Qué tipo de serie es?', options: ['A sci-fi mystery', 'A romantic comedy', 'A cooking show'], answer: 0, line: 1 },
+      { q_en: 'What is the problem with the beginning?', q_es: '¿Qué pasa al principio de la serie?', options: ["It's a bit slow", "It's too scary", "It's very short"], answer: 0, line: 3 },
+      { spoken: true, q_en: 'Who is the main character?', q_es: 'Responde en voz alta: ¿quién es el protagonista?', expect: /\bradio\b/i, model: 'A radio host.', line: 3 }
+    ],
+    phrases: [
+      { en: 'Have you watched anything good lately?', es: '¿Has visto algo bueno últimamente?', tip: 'Ideal para iniciar plática sobre series o películas.' },
+      { en: "It's about a radio host who receives messages.", es: 'Trata de un locutor que recibe mensajes.', tip: '"It\'s about…" = trata de… (sin "of").' },
+      { en: "It's a bit slow at first, but it gets really good.", es: 'Al principio es lenta, pero luego mejora mucho.', tip: '"At first… but…" para contrastar.' },
+      { en: "I'd totally recommend it.", es: 'La recomiendo muchísimo.', tip: '"Totally" le da énfasis informal.' }
+    ],
+    conversation: {
+      role_es: 'Ahora tú me recomiendas una serie o película que te guste. Cuéntame de qué trata.',
+      scenario: 'Two friends chatting about TV series and movies. The student recommends something.',
+      role_en: 'a friend who loves TV series',
+      opening: 'Hey! I need something new to watch this weekend.',
+      turns: [
+        { ask: 'Have you watched anything good lately?', simple: 'What series do you like?',
+          hint: '"Yes, I\'ve just watched…" / "I\'m watching…"', model: "Yes, I've just finished a series called Dark Waters.",
+          expect: [
+            { re: /\b(?:watched|watching|saw|seen|finished|started|called|like|love)\s+(.+)/i, slot: 'show',
+              val: m => m[1].split(/[,.!?]| and | it | on | because /)[0].replace(/^(a series|a show|a movie|the series|series)\s*(called)?\s*/i, '').trim().slice(0, 40), reply: 'Oh, {show}! I\'ve heard about it.' },
+            { re: /\b(no|not really|nothing)\b/i, slot: 'show', val: () => '', reply: 'No worries. Tell me about your favorite show ever, then.' }],
+          any: 'Oh, nice.' },
+        { ask: "What's it about?", simple: 'Is it funny, scary, or romantic?',
+          hint: '"It\'s about a family who…" / "It\'s a comedy about…"', model: "It's about a detective who solves crimes in London.",
+          expect: [{ re: /\b(about|story|follows|guy|girl|man|woman|family|people|detective|comedy|drama|funny|scary|romantic|action|it's a)\b/i, reply: 'That sounds really interesting.' }],
+          any: 'Hmm, interesting.' },
+        { ask: 'Why would you recommend it?', simple: 'Do you like it?',
+          hint: 'Usa "because": "Because the characters are amazing."', model: "Because the characters are great and the story is surprising.",
+          expect: [{ re: /\b(because|the characters|the story|the actors|funny|exciting|intense|good|great|amazing|interesting)\b/i, reply: 'Okay, you convinced me.' }],
+          any: 'Okay, I trust you.' },
+        { ask: 'How often do you watch series?', simple: 'Every day? On weekends?',
+          hint: '"Almost every night." / "Only on weekends."', model: 'Almost every night, after dinner.',
+          expect: [{ re: /\b(every day|every night|weekends?|sometimes|often|once|twice|never|always|usually|night|day)\b/i, reply: "Same here, it's my favorite way to relax." }],
+          any: 'Nice.' }
+      ],
+      closing: "Thanks for the recommendation! I'll check out {show|something new} this weekend."
+    },
+    corrections: [
+      { re: /\bis about of\b/i, rep: 'is about', tip: '"It\'s about…" no lleva "of".', tag: 'Hablar de series' },
+      { re: /\bthe history (is|was)\b/i, rep: (m0, a) => `the story ${a}`, tip: 'La trama es "story"; "history" es la historia como disciplina.', tag: 'Falsos amigos' },
+      { re: /\b(in|at) netflix\b/i, rep: 'on Netflix', tip: 'Con plataformas y TV se usa "on": on Netflix, on TV.', tag: 'Preposiciones' }
+    ]
+  },
+
+  {
+    id: 'meeting', title: 'Propón una idea en una junta', title_en: 'Suggesting an idea in a meeting',
+    goals: ['trabajo'], level: 4, scene: 'meeting',
+    npc: { name: 'Dana', role: 'gerente', icon: '📊' },
+    intro_es: 'En una junta, la gerente pide ideas para resolver un problema. Escucha qué propone el empleado y cuándo estaría listo.',
+    situation: [
+      { who: 'npc', en: "Okay team, we're getting too many repeated support tickets. Any ideas?", es: 'Bien, equipo, estamos recibiendo demasiados tickets repetidos. ¿Ideas?' },
+      { who: 'tutor', en: 'I have a suggestion. What if we created a short FAQ for the most common issues?', es: 'Tengo una sugerencia. ¿Y si hacemos unas preguntas frecuentes cortas para los problemas más comunes?' },
+      { who: 'npc', en: 'Interesting. How long would that take?', es: 'Interesante. ¿Cuánto tomaría?' },
+      { who: 'tutor', en: 'I think we could have a first version ready by next Friday.', es: 'Creo que podríamos tener una primera versión para el próximo viernes.' },
+      { who: 'npc', en: "Great, let's try it.", es: 'Perfecto, intentémoslo.' }
+    ],
+    comprehension: [
+      { q_en: "What's the problem?", q_es: '¿Cuál es el problema?', options: ['Too many repeated tickets', 'Not enough employees', 'A slow computer system'], answer: 0, line: 0 },
+      { q_en: 'What does the employee suggest?', q_es: '¿Qué propone el empleado?', options: ['A short FAQ', 'Hiring more people', 'A longer meeting'], answer: 0, line: 1 },
+      { spoken: true, q_en: 'When could the first version be ready?', q_es: 'Responde en voz alta: ¿cuándo estaría lista la primera versión?', expect: /\bfriday\b/i, model: 'By next Friday.', line: 3 }
+    ],
+    phrases: [
+      { en: 'I have a suggestion.', es: 'Tengo una sugerencia.', tip: 'Forma amable de pedir la palabra en una junta.' },
+      { en: 'What if we created a short FAQ?', es: '¿Y si hacemos unas preguntas frecuentes cortas?', tip: '"What if we + pasado" suena a propuesta abierta, no a orden.' },
+      { en: 'I think we could have it ready by Friday.', es: 'Creo que podríamos tenerlo listo para el viernes.', tip: '"By" + fecha = a más tardar.' },
+      { en: "That's a good point, but…", es: 'Buen punto, pero…', tip: 'Para no estar de acuerdo con tacto.' }
+    ],
+    conversation: {
+      role_es: 'Ahora yo soy tu gerente. Cuéntame un problema real de tu trabajo y propón una solución.',
+      scenario: 'A team meeting at work. The tutor is the manager; the student describes a problem and proposes a solution.',
+      role_en: 'a supportive team manager running a meeting',
+      opening: 'Okay team, quick question before we wrap up.',
+      turns: [
+        { ask: "What's one problem that slows your team down at work?", simple: 'What is a problem at your work?',
+          hint: 'Describe un problema: "We get too many repeated tickets."', model: 'We get a lot of repeated questions from stores.',
+          expect: [], any: 'Yeah, I can see how that would be frustrating.' },
+        { ask: 'What would you suggest to fix it?', simple: 'What is your idea?',
+          hint: 'Usa "What if we…?" o "We could…"', model: 'What if we created a short FAQ for the most common issues?',
+          expect: [{ re: /\b(what if|we could|i suggest|i'd suggest|i propose|maybe we|we should|let's|how about|i think we)\b/i, reply: 'I like that idea.' }],
+          any: 'Okay, that could work.' },
+        { ask: 'How long do you think it would take?', simple: 'Days? Weeks?',
+          hint: '"About two weeks." / "By next Friday."', model: 'I think we could have a first version by next Friday.',
+          expect: [{ re: /(\d+|one|two|three|a couple of|a few)\s+(days?|weeks?|months?|hours?)|by (monday|tuesday|wednesday|thursday|friday|next week|the end of [a-z ]+)/i, slot: 'time', val: m => m[0].toLowerCase(), reply: '{time} sounds realistic.' }],
+          any: 'Okay, sounds realistic.' },
+        { ask: 'What could go wrong with this plan?', simple: 'Is there a risk?',
+          hint: '"The risk is that…"', model: "The only risk is that people might not read it, so we'd need to share it often.",
+          expect: [], any: "Good point, we'll keep that in mind." }
+      ],
+      closing: "Great, let's try it. Please send everyone a short summary after the meeting. Thanks!"
+    },
+    corrections: [
+      { re: /\b(make|do) a meeting\b/i, rep: 'have a meeting', tip: 'Se dice "have / schedule a meeting".', tag: 'Inglés de oficina' },
+      { re: /\bdiscuss about\b/i, rep: 'discuss', tip: '"Discuss" no lleva "about".', tag: 'Inglés de oficina' }
+    ]
+  }
+];
+
+/* ---------------- CONVERSACIÓN LIBRE ---------------- */
+const FREE_TOPICS = [
+  { id: 'intro', label: 'Sobre ti', icon: '🙂', hidden: true,
+    qA: ['Tell me a little about yourself. What do you do?', 'What do you like to do in your free time?', 'Why do you want to learn English?'],
+    qB: ['So, tell me a bit about yourself. What keeps you busy these days?', "What's something you've really enjoyed doing recently?", 'How do you think English could change things for you?'] },
+  { id: 'dia', label: 'Tu día', icon: '☀️',
+    qA: ['How are you today?', 'What did you do this morning?', 'What are you going to do tonight?', 'What time do you usually wake up?', 'What is your favorite part of the day?'],
+    qB: ["How's your day going so far?", "What's the best part of a normal day for you?", 'If you had a free afternoon today, what would you do?', "Is there anything you're looking forward to this week?", "What's something that always makes your day better?"] },
+  { id: 'comida', label: 'Comida', icon: '🌮',
+    qA: ['What do you usually eat for breakfast?', 'What is your favorite food?', 'Do you like to cook?', 'What Mexican food do you recommend?', 'Do you like spicy food?'],
+    qB: ["What's a dish you could eat every single day?", 'Do you prefer cooking at home or eating out?', "What's the best meal you've ever had?", 'If a friend visited your city, where would you take them to eat?', 'Is there a food you used to hate but now love?'] },
+  { id: 'viajes', label: 'Viajes', icon: '🧳',
+    qA: ['Do you like to travel?', 'Where did you go on your last vacation?', 'Do you prefer the beach or the mountains?', 'What city do you want to visit?', 'Who do you usually travel with?'],
+    qB: ["What's the most memorable trip you've taken?", 'Do you prefer planning everything or improvising when you travel?', "Where would you go if money weren't a problem?", "What's something every visitor should do in your city?", 'Have you ever had a problem while traveling?'] },
+  { id: 'trabajo', label: 'Trabajo o estudios', icon: '💼',
+    qA: ['What do you do?', 'Do you like your job?', 'What time do you start work?', 'Do you work in an office or at home?', 'What do you do after work?'],
+    qB: ['What does a typical workday look like for you?', 'What do you enjoy most about your work?', "What's a challenge you're dealing with at work right now?", 'How do you use English at work, or how would you like to?', 'Where do you see yourself in five years?'] },
+  { id: 'entretenimiento', label: 'Series y música', icon: '🎧',
+    qA: ['What music do you like?', 'Do you watch series?', 'What is your favorite movie?', 'Do you play video games?', 'Who is your favorite singer?'],
+    qB: ["What have you been watching lately?", "What's a song you've had on repeat recently?", "Is there a movie you think everyone should see?", 'Do you prefer series or movies? Why?', "What's the best concert you've been to?"] }
+];
+
+const LEXICON = {
+  food: ['pizza', 'tacos', 'taco', 'sushi', 'pasta', 'burger', 'burgers', 'hamburger', 'chicken', 'salad', 'chocolate', 'coffee', 'tea', 'fruit', 'eggs', 'bread', 'cereal', 'enchiladas', 'pozole', 'mole', 'tamales', 'quesadillas', 'chilaquiles', 'ramen', 'steak', 'fish', 'rice', 'beans', 'pancakes', 'ice cream', 'cake', 'soup', 'tortillas', 'cookies'],
+  place: ['beach', 'mountains', 'park', 'museum', 'mexico city', 'mexico', 'monterrey', 'guadalajara', 'cancun', 'oaxaca', 'puebla', 'merida', 'tijuana', 'new york', 'paris', 'london', 'japan', 'tokyo', 'spain', 'madrid', 'canada', 'europe', 'italy', 'rome', 'los angeles', 'chicago', 'texas', 'colombia', 'peru', 'argentina'],
+  music: ['music', 'songs', 'song', 'band', 'concert', 'guitar', 'piano', 'rock', 'pop', 'reggaeton', 'jazz', 'rap', 'hip hop', 'singing', 'banda', 'cumbia', 'k-pop', 'electronic'],
+  movie: ['movie', 'movies', 'film', 'films', 'series', 'show', 'shows', 'netflix', 'anime', 'documentary', 'documentaries', 'cinema'],
+  sport: ['soccer', 'football', 'basketball', 'baseball', 'tennis', 'running', 'gym', 'yoga', 'swimming', 'cycling', 'boxing', 'volleyball', 'hiking'],
+  family: ['mom', 'dad', 'mother', 'father', 'wife', 'husband', 'kids', 'children', 'son', 'daughter', 'brother', 'sister', 'family', 'girlfriend', 'boyfriend', 'dog', 'cat', 'friends', 'parents', 'grandma', 'grandmother'],
+  work: ['job', 'office', 'boss', 'meeting', 'meetings', 'project', 'team', 'company', 'school', 'university', 'class', 'classes', 'customers', 'clients']
+};
+
+const FOLLOWUPS = {
+  food: ['How often do you eat {w}?', 'Where do you usually get {w}?', 'Do you know how to make {w}?'],
+  place: ['What do you like most about {W}?', 'When was the last time you were in {W}?', 'What would you recommend doing in {W}?'],
+  music: ['When do you usually listen to music?', 'Have you been to a concert recently?', 'Who do you like to listen to these days?'],
+  movie: ['What was the last one you really enjoyed?', 'Do you prefer watching at home or at the movie theater?', 'Do you watch them in English or in Spanish?'],
+  sport: ['How often do you do that?', 'What do you like most about {w}?', 'How did you get into {w}?'],
+  family: ['What do you like to do with your {w}?', 'Do you see your {w} often?'],
+  work: ['What do you like most about your {w}?', 'Is your {w} busy these days?']
+};
+
+const ACKS = {
+  food: ['Oh, {w}, yum!', 'Mmm, {w} sounds delicious.', 'I love {w}.'],
+  place: ['{W}, nice!', 'Oh, {W} is a great place.', '{W}, cool!'],
+  music: ['Oh, nice, music is the best.', 'Cool, I love music too.'],
+  movie: ['Oh, nice!', 'Cool, I love a good story.'],
+  sport: ['Nice, that keeps you active!', 'Oh, cool!'],
+  family: ["That's really nice.", 'Aw, that sounds lovely.'],
+  work: ['I see.', 'Got it, that sounds interesting.'],
+  positive: ["That's great!", 'Awesome!', 'I love that!'],
+  negative: ["Oh no, I'm sorry to hear that.", 'That sounds tough.', 'Hang in there.'],
+  generic: ['I see.', 'Interesting!', 'Cool!', 'Nice!', 'Got it.', 'Okay, that makes sense.']
+};
+
+const FEELINGS = {
+  positive: ['good', 'great', 'fine', 'happy', 'excited', 'amazing', 'awesome', 'love', 'fantastic', 'wonderful', 'nice', 'fun', 'relaxed', 'well'],
+  negative: ['tired', 'stressed', 'sad', 'bad', 'busy', 'sick', 'bored', 'angry', 'worried', 'hate', 'terrible', 'awful', 'exhausted']
+};
+
+/* ===== characters.js ===== */
+/* ============================================================
+   PERSONAJES ORIGINALES (SVG animable) y ESCENARIOS
+   Partes con clase:
+   .ch-root  .ch-head  .ch-arm  .ch-eyes  .ch-pupils  .ch-brows
+   .ch-mouth-open (se abre con la variable CSS --m, 0..1)
+   .ch-fx-* (efectos: escuchar, pensar, celebrar, corregir)
+   ============================================================ */
+
+const FX_SVG = `
+  <g class="ch-fx ch-fx-listen">
+    <path d="M182 78 q10 14 0 28" /><path d="M192 70 q16 22 0 44" /><path d="M202 62 q22 30 0 60" />
+  </g>
+  <g class="ch-fx ch-fx-think">
+    <circle cx="176" cy="44" r="5"/><circle cx="190" cy="28" r="7"/><circle cx="206" cy="10" r="9"/>
+  </g>
+  <g class="ch-fx ch-fx-celebrate">
+    <rect x="20" y="40" width="8" height="8" fill="#FFC94D" transform="rotate(20 24 44)"/>
+    <rect x="190" y="30" width="8" height="8" fill="#FF6B4A" transform="rotate(-25 194 34)"/>
+    <rect x="40" y="10" width="7" height="7" fill="#14B8A6"/>
+    <circle cx="172" cy="12" r="4" fill="#5B3E96"/>
+    <circle cx="14" cy="100" r="4" fill="#FF6B4A"/>
+    <rect x="200" y="96" width="7" height="7" fill="#FFC94D" transform="rotate(35 203 99)"/>
+  </g>
+  <g class="ch-fx ch-fx-correct">
+    <circle cx="34" cy="40" r="17" fill="#FFF" stroke="#14B8A6" stroke-width="3"/>
+    <path d="M26 41 l6 6 l11 -13" fill="none" stroke="#14B8A6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>`;
+
+function foxSVG() {
+  return `<svg viewBox="0 0 220 260" class="ch-svg" role="img" aria-label="Fito, el zorro">
+  <g class="ch-root">
+    <ellipse cx="110" cy="252" rx="64" ry="7" fill="rgba(0,0,0,.16)"/>
+    <g class="ch-tail">
+      <path d="M146 214 C206 210 220 146 188 118 C184 160 166 178 138 186 Z" fill="#EE7A2E"/>
+      <path d="M188 118 C204 134 203 152 196 164 C188 152 184 136 188 118Z" fill="#FFF4E8"/>
+    </g>
+    <g class="ch-body">
+      <path d="M62 252 C56 204 76 166 110 166 C144 166 164 204 158 252 Z" fill="#EE7A2E"/>
+      <path d="M88 252 C86 218 96 192 110 192 C124 192 134 218 132 252 Z" fill="#FFF4E8"/>
+      <path d="M74 168 Q110 192 146 168 L150 184 Q110 210 70 184 Z" fill="#14A39A"/>
+      <path d="M128 186 l10 30 l-14 -4 z" fill="#0F8079"/>
+    </g>
+    <path d="M72 196 Q56 214 64 238" stroke="#E06B22" stroke-width="15" stroke-linecap="round" fill="none"/>
+    <g class="ch-arm">
+      <path d="M148 194 Q174 178 182 148" stroke="#EE7A2E" stroke-width="15" stroke-linecap="round" fill="none"/>
+      <circle cx="182" cy="145" r="10" fill="#3A2A22"/>
+    </g>
+    <g class="ch-head">
+      <path d="M60 74 L50 16 L100 52 Z" fill="#EE7A2E"/><path d="M65 64 L59 32 L88 55Z" fill="#3A2A22"/>
+      <path d="M160 74 L170 16 L120 52 Z" fill="#EE7A2E"/><path d="M155 64 L161 32 L132 55Z" fill="#3A2A22"/>
+      <path d="M48 92 C48 56 78 40 110 40 C142 40 172 56 172 92 C172 128 142 158 110 166 C78 158 48 128 48 92Z" fill="#EE7A2E"/>
+      <path d="M56 102 Q84 116 110 110 Q136 116 164 102 Q154 150 110 166 Q66 150 56 102Z" fill="#FFF4E8"/>
+      <g class="ch-brows" stroke="#3A2A22" stroke-width="4" stroke-linecap="round" fill="none">
+        <path class="ch-brow-l" d="M74 72 Q85 65 96 71"/><path class="ch-brow-r" d="M124 71 Q135 65 146 72"/>
+      </g>
+      <g class="ch-eyes">
+        <ellipse cx="86" cy="90" rx="8" ry="10" fill="#2A1C15"/><ellipse cx="134" cy="90" rx="8" ry="10" fill="#2A1C15"/>
+        <g class="ch-pupils" fill="#fff"><circle cx="89" cy="86" r="3"/><circle cx="137" cy="86" r="3"/></g>
+      </g>
+      <circle cx="70" cy="114" r="7" fill="#FF8FA3" opacity=".45"/><circle cx="150" cy="114" r="7" fill="#FF8FA3" opacity=".45"/>
+      <ellipse cx="110" cy="116" rx="9" ry="6" fill="#2A1C15"/>
+      <g class="ch-mouth">
+        <path class="ch-mouth-closed" d="M98 131 Q110 139 122 131" stroke="#2A1C15" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <g class="ch-mouth-open"><ellipse cx="110" cy="131" rx="12" ry="10" fill="#7A1F2B"/><ellipse cx="110" cy="137" rx="7" ry="4" fill="#F07888"/></g>
+      </g>
+    </g>
+    ${FX_SVG}
+  </g></svg>`;
+}
+
+function owlSVG() {
+  return `<svg viewBox="0 0 220 260" class="ch-svg" role="img" aria-label="Olivia, la búho">
+  <g class="ch-root">
+    <ellipse cx="110" cy="252" rx="62" ry="7" fill="rgba(0,0,0,.16)"/>
+    <g class="ch-body">
+      <ellipse cx="110" cy="186" rx="62" ry="66" fill="#6F52A1"/>
+      <ellipse cx="110" cy="198" rx="40" ry="46" fill="#EDE3FA"/>
+      <g fill="none" stroke="#C9B6EA" stroke-width="3" stroke-linecap="round">
+        <path d="M92 178 q6 6 12 0 q6 6 12 0 q6 6 12 0"/><path d="M88 198 q6 6 12 0 q6 6 12 0 q6 6 12 0 q6 6 12 0"/><path d="M92 218 q6 6 12 0 q6 6 12 0 q6 6 12 0"/>
+      </g>
+      <ellipse cx="92" cy="250" rx="12" ry="5" fill="#F5A623"/><ellipse cx="128" cy="250" rx="12" ry="5" fill="#F5A623"/>
+      <path d="M94 154 L110 164 L126 154 L126 170 L110 162 L94 170 Z" fill="#14A39A"/>
+    </g>
+    <path d="M52 176 Q36 206 58 232 Q62 200 66 178 Z" fill="#5A4189"/>
+    <g class="ch-arm"><path d="M168 176 Q196 150 192 120 Q176 146 156 166 Z" fill="#5A4189"/></g>
+    <g class="ch-head">
+      <path d="M58 54 L44 14 L88 40 Z" fill="#7E61B3"/><path d="M162 54 L176 14 L132 40 Z" fill="#7E61B3"/>
+      <ellipse cx="110" cy="92" rx="72" ry="60" fill="#7E61B3"/>
+      <circle cx="84" cy="92" r="28" fill="#F6F0FF"/><circle cx="136" cy="92" r="28" fill="#F6F0FF"/>
+      <g class="ch-eyes">
+        <circle cx="84" cy="92" r="14" fill="#2A1C3A"/><circle cx="136" cy="92" r="14" fill="#2A1C3A"/>
+        <g class="ch-pupils" fill="#fff"><circle cx="89" cy="86" r="4.5"/><circle cx="141" cy="86" r="4.5"/></g>
+      </g>
+      <g fill="none" stroke="#33254F" stroke-width="4"><circle cx="84" cy="92" r="30"/><circle cx="136" cy="92" r="30"/><path d="M106 90 q4 -4 8 0"/></g>
+      <g class="ch-brows" stroke="#33254F" stroke-width="5" stroke-linecap="round" fill="none">
+        <path class="ch-brow-l" d="M66 54 Q82 46 98 52"/><path class="ch-brow-r" d="M122 52 Q138 46 154 54"/>
+      </g>
+      <g class="ch-mouth">
+        <g class="ch-mouth-open"><ellipse cx="110" cy="128" rx="8" ry="8" fill="#5B1A2B"/></g>
+        <path d="M99 112 L121 112 L110 128 Z" fill="#F5A623"/>
+        <path class="ch-beak-low" d="M103 122 L117 122 L110 134 Z" fill="#D9870F"/>
+      </g>
+    </g>
+    ${FX_SVG}
+  </g></svg>`;
+}
+
+function musicianSVG() {
+  return `<svg viewBox="0 0 220 260" class="ch-svg" role="img" aria-label="Lía Vox, artista musical">
+  <g class="ch-root">
+    <ellipse cx="110" cy="252" rx="64" ry="7" fill="rgba(0,0,0,.16)"/>
+    <g class="ch-head-back"><path d="M40 104 C30 40 80 24 112 26 C150 24 192 46 182 110 C190 150 170 170 150 168 L70 168 C48 170 30 150 40 104Z" fill="#5E35A0"/></g>
+    <g class="ch-body">
+      <path d="M58 252 C56 206 74 172 110 172 C146 172 164 206 162 252 Z" fill="#14A39A"/>
+      <path d="M96 172 L110 206 L124 172 Z" fill="#FFF8F0"/>
+      <path d="M142 196 l4 9 l10 1 l-7 7 l2 10 l-9 -5 l-9 5 l2 -10 l-7 -7 l10 -1 z" fill="#FFC94D"/>
+      <path d="M80 168 Q110 186 140 168" stroke="#2B2B3A" stroke-width="8" fill="none" stroke-linecap="round"/>
+      <rect x="66" y="156" width="18" height="24" rx="8" fill="#2B2B3A"/><rect x="136" y="156" width="18" height="24" rx="8" fill="#2B2B3A"/>
+    </g>
+    <path d="M70 196 Q54 216 62 240" stroke="#B9824F" stroke-width="14" stroke-linecap="round" fill="none"/>
+    <g class="ch-arm">
+      <path d="M150 198 Q176 182 180 152" stroke="#B9824F" stroke-width="14" stroke-linecap="round" fill="none"/>
+      <rect x="174" y="124" width="10" height="30" rx="4" fill="#2B2B3A"/>
+      <circle cx="179" cy="120" r="11" fill="#9AA3B5"/><path d="M170 116 h18 M170 122 h18" stroke="#6C7488" stroke-width="2"/>
+    </g>
+    <g class="ch-head">
+      <rect x="98" y="138" width="24" height="24" rx="8" fill="#B9824F"/>
+      <circle cx="110" cy="94" r="52" fill="#C68F5C"/>
+      <path d="M58 92 C56 52 86 36 112 38 C142 36 168 56 162 84 C146 70 130 58 106 62 C90 72 74 74 58 92Z" fill="#6B3FB0"/>
+      <circle cx="58" cy="106" r="4" fill="#FFC94D"/><circle cx="162" cy="106" r="4" fill="#FFC94D"/>
+      <g class="ch-brows" stroke="#3B2440" stroke-width="4" stroke-linecap="round" fill="none">
+        <path class="ch-brow-l" d="M78 80 Q88 74 98 79"/><path class="ch-brow-r" d="M122 79 Q132 74 142 80"/>
+      </g>
+      <g class="ch-eyes">
+        <ellipse cx="88" cy="96" rx="7" ry="9" fill="#2A1C20"/><ellipse cx="132" cy="96" rx="7" ry="9" fill="#2A1C20"/>
+        <g class="ch-pupils" fill="#fff"><circle cx="90" cy="92" r="2.6"/><circle cx="134" cy="92" r="2.6"/></g>
+      </g>
+      <path d="M80 89 l-5 -4 M140 89 l5 -4" stroke="#2A1C20" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="76" cy="116" r="7" fill="#E9707F" opacity=".35"/><circle cx="144" cy="116" r="7" fill="#E9707F" opacity=".35"/>
+      <path d="M108 104 q3 8 -2 10" stroke="#9C6A3E" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <g class="ch-mouth">
+        <path class="ch-mouth-closed" d="M98 124 Q110 132 122 124" stroke="#8A2E3B" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <g class="ch-mouth-open"><ellipse cx="110" cy="125" rx="11" ry="9" fill="#6E1E2C"/><ellipse cx="110" cy="130" rx="6" ry="3.5" fill="#F07888"/></g>
+      </g>
+    </g>
+    ${FX_SVG}
+  </g></svg>`;
+}
+
+const CHARACTERS = {
+  fox: { id: 'fox', name: 'Fito', species: 'Zorro', svg: foxSVG, claudeVoice: 'rounded', pitch: 0.95,
+    tagline: 'Curioso y bromista. Te reta a hablar desde el primer minuto.',
+    hello_es: '¡Hola! Soy Fito. Voy a ser tu tutor de inglés.', hello_en: "Hi! I'm Fito. Let's speak English together!" },
+  owl: { id: 'owl', name: 'Olivia', species: 'Búho', svg: owlSVG, claudeVoice: 'airy', pitch: 1.15,
+    tagline: 'Paciente y precisa. Te explica todo con calma.',
+    hello_es: '¡Hola! Soy Olivia. Vamos a aprender inglés paso a paso.', hello_en: "Hello! I'm Olivia. I can't wait to hear you speak!" },
+  musician: { id: 'musician', name: 'Lía Vox', species: 'Artista musical (ficticia)', svg: musicianSVG, claudeVoice: 'glassy', pitch: 1.08,
+    tagline: 'Cantante inventada. Aprende con ritmo y buena vibra.',
+    hello_es: '¡Hola! Soy Lía Vox. Vamos a practicar inglés con mucho ritmo.', hello_en: "Hey! I'm Lía. Let's make English sound like music!" }
+};
+
+/* ---------------- ESCENARIOS DE FONDO ---------------- */
+function sceneSVG(id) {
+  const wrap = (bg, inner) => `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><rect width="400" height="300" fill="${bg}"/>${inner}</svg>`;
+  switch (id) {
+    case 'cafe': return wrap('#F7E4CB', `
+      <rect x="250" y="40" width="110" height="90" rx="8" fill="#BFE6F0" stroke="#8B5A3C" stroke-width="6"/>
+      <path d="M305 40 v90 M250 85 h110" stroke="#8B5A3C" stroke-width="4"/>
+      <rect x="30" y="60" width="150" height="6" fill="#8B5A3C"/><rect x="30" y="110" width="150" height="6" fill="#8B5A3C"/>
+      <g fill="#FFF8F0" stroke="#8B5A3C" stroke-width="3"><rect x="44" y="38" width="20" height="22" rx="3"/><rect x="78" y="42" width="18" height="18" rx="3"/><rect x="112" y="36" width="22" height="24" rx="3"/><rect x="56" y="88" width="20" height="22" rx="3"/><rect x="104" y="90" width="26" height="20" rx="3"/></g>
+      <rect x="0" y="210" width="400" height="90" fill="#8B5A3C"/><rect x="0" y="204" width="400" height="12" fill="#A86E4A"/>
+      <text x="40" y="168" font-family="Baloo 2, sans-serif" font-size="22" fill="#8B5A3C" opacity=".8">Cloud Café</text>`);
+    case 'airport': return wrap('#DDEBF5', `
+      <rect x="0" y="30" width="400" height="150" fill="#A9D4F2"/>
+      <path d="M0 30 h400 M100 30 v150 M200 30 v150 M300 30 v150" stroke="#6E8BA3" stroke-width="5"/>
+      <path d="M210 90 l70 -6 l20 -18 l8 0 l-8 20 l40 -2 l8 -10 l6 0 l-4 14 l-74 10 l-22 24 l-8 0 l10 -22 z" fill="#FFFFFF" opacity=".9"/>
+      <rect x="24" y="44" width="120" height="70" rx="6" fill="#1D2B36"/>
+      <g fill="#FFC94D"><rect x="34" y="56" width="60" height="5"/><rect x="34" y="70" width="80" height="5"/><rect x="34" y="84" width="50" height="5"/><rect x="34" y="98" width="70" height="5"/></g>
+      <rect x="0" y="210" width="400" height="90" fill="#B8C4CE"/><path d="M0 240 h400 M0 270 h400" stroke="#A5B2BD" stroke-width="2"/>`);
+    case 'office': return wrap('#E6EEF4', `
+      <rect x="230" y="34" width="140" height="110" rx="6" fill="#BFD9EE" stroke="#8FA6B8" stroke-width="5"/>
+      <g fill="#8FA6B8"><rect x="240" y="96" width="18" height="48"/><rect x="262" y="76" width="22" height="68"/><rect x="290" y="106" width="16" height="38"/><rect x="312" y="66" width="24" height="78"/><rect x="342" y="92" width="20" height="52"/></g>
+      <rect x="40" y="150" width="34" height="56" rx="6" fill="#E07A5F"/><path d="M57 150 C40 120 30 110 34 96 C48 104 56 120 57 150 C60 118 70 104 84 100 C84 116 72 132 57 150" fill="#2F9E6E"/>
+      <rect x="0" y="206" width="400" height="94" fill="#C7D3DD"/><rect x="120" y="190" width="200" height="16" rx="4" fill="#8B6B4E"/>`);
+    case 'street': return wrap('#CFEAF7', `
+      <circle cx="340" cy="50" r="22" fill="#FFD866"/>
+      <g><rect x="10" y="70" width="80" height="140" fill="#F28B66"/><rect x="96" y="40" width="70" height="170" fill="#7FB7A4"/><rect x="172" y="90" width="90" height="120" fill="#F2C14E"/><rect x="268" y="60" width="70" height="150" fill="#8E7CC3"/><rect x="344" y="100" width="60" height="110" fill="#F28B66"/></g>
+      <g fill="#FFF8F0" opacity=".85">${[...Array(12)].map((_, i) => `<rect x="${22 + (i % 6) * 64}" y="${100 + Math.floor(i / 6) * 40}" width="16" height="20" rx="2"/>`).join('')}</g>
+      <rect x="0" y="210" width="400" height="90" fill="#9AA5AE"/><rect x="0" y="206" width="400" height="10" fill="#C9D1D7"/>
+      <g fill="#FFF8F0"><rect x="30" y="252" width="40" height="6"/><rect x="120" y="252" width="40" height="6"/><rect x="210" y="252" width="40" height="6"/><rect x="300" y="252" width="40" height="6"/></g>`);
+    case 'living': return wrap('#FBE7E1', `
+      <rect x="220" y="50" width="150" height="90" rx="8" fill="#1D2B36"/><path d="M285 80 l26 15 l-26 15 z" fill="#FF6B4A"/>
+      <rect x="290" y="140" width="10" height="20" fill="#1D2B36"/>
+      <path d="M40 60 h50 l-10 34 h-30 z" fill="#FFC94D"/><rect x="62" y="94" width="6" height="110" fill="#8B6B4E"/>
+      <rect x="0" y="212" width="400" height="88" fill="#C9A78A"/>
+      <rect x="110" y="160" width="190" height="56" rx="18" fill="#5B8E9E"/><rect x="96" y="150" width="30" height="66" rx="12" fill="#4D7C8B"/><rect x="284" y="150" width="30" height="66" rx="12" fill="#4D7C8B"/>`);
+    case 'meeting': return wrap('#EEF1F6', `
+      <rect x="40" y="36" width="200" height="120" rx="6" fill="#FFFFFF" stroke="#B5C0CC" stroke-width="5"/>
+      <path d="M60 130 L100 100 L140 112 L180 70 L220 80" stroke="#14A39A" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <rect x="60" y="56" width="70" height="6" rx="3" fill="#FF6B4A"/>
+      <rect x="270" y="50" width="100" height="90" rx="6" fill="#C5DCEB"/>
+      <rect x="0" y="210" width="400" height="90" fill="#C9D2DC"/><rect x="40" y="196" width="320" height="18" rx="6" fill="#7A5C43"/>`);
+    default: return wrap('#0F5E63', `
+      <defs><radialGradient id="glow" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#14B8A6" stop-opacity=".55"/><stop offset="1" stop-color="#0F5E63" stop-opacity="0"/></radialGradient></defs>
+      <rect width="400" height="300" fill="url(#glow)"/>
+      <circle cx="60" cy="60" r="34" fill="#FFC94D" opacity=".18"/><circle cx="350" cy="90" r="50" fill="#FF6B4A" opacity=".14"/>
+      <ellipse cx="200" cy="300" rx="260" ry="70" fill="#0B4A4E"/>`);
+  }
+}
+
+/* ===== engine.js ===== */
+/* ============================================================
+   MOTOR LOCAL: utilidades, correcciones, comparación de frases,
+   diálogos de lección y conversación libre, calificación.
+   Funciona sin internet ni API. Si hay IA disponible, app.js la usa
+   primero y este motor queda como respaldo.
+   ============================================================ */
+
+const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : s;
+const titleCase = s => String(s).trim().split(/\s+/).map(cap).join(' ');
+const shorten = (s, n) => { const w = String(s).trim().replace(/[.!?]+$/, '').split(/\s+/); return w.slice(0, n).join(' ').toLowerCase() + (w.length > n ? '…' : ''); };
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const wordCount = s => (String(s).trim().match(/[a-záéíóúñü']+/gi) || []).length;
+
+/* ---------- Normalización y comparación de frases ----------
+   IMPORTANTE: esto compara el TEXTO que reconoció el micrófono con
+   la frase objetivo. No evalúa pronunciación.                   */
+const CONTRACTIONS = [
+  [/\bi'm\b/g, 'i am'], [/\bcan't\b/g, 'cannot'], [/\bwon't\b/g, 'will not'], [/\blet's\b/g, 'let us'],
+  [/n't\b/g, ' not'], [/'re\b/g, ' are'], [/'ve\b/g, ' have'], [/'ll\b/g, ' will'], [/'d\b/g, ' would'], [/'s\b/g, ' is']
+];
+const NUMBERS = { '1': 'one', '2': 'two', '3': 'three', '4': 'four', '5': 'five', '6': 'six', '7': 'seven', '8': 'eight', '9': 'nine', '10': 'ten', '12': 'twelve', '50': 'fifty' };
+
+function normalize(s) {
+  let t = String(s || '').toLowerCase().replace(/[’`´]/g, "'");
+  CONTRACTIONS.forEach(([re, r]) => { t = t.replace(re, r); });
+  t = t.replace(/[^a-z0-9áéíóúñü' ]+/g, ' ').replace(/'/g, '');
+  return t.split(/\s+/).filter(Boolean).map(w => NUMBERS[w] || w);
+}
+
+function compareText(target, said) {
+  const a = normalize(target), b = normalize(said);
+  const n = a.length, m = b.length;
+  const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--)
+    dp[i][j] = a[i] === b[j] ? 1 + dp[i + 1][j + 1] : Math.max(dp[i + 1][j], dp[i][j + 1]);
+  const ok = new Array(n).fill(false);
+  let i = 0, j = 0;
+  while (i < n && j < m) {
+    if (a[i] === b[j]) { ok[i] = true; i++; j++; }
+    else if (dp[i + 1][j] >= dp[i][j + 1]) i++; else j++;
+  }
+  const lcs = dp[0][0];
+  const ratio = n + m ? (2 * lcs) / (n + m) : 0;
+  return { ratio, words: a.map((w, k) => ({ w, ok: ok[k] })), missing: a.filter((w, k) => !ok[k]) };
+}
+
+/* ---------- Detección de español / comandos ---------- */
+const SP_WORDS = new Set('que de el la los las y es yo mi mis por para pero muy con un una unos unas tengo quiero como cómo donde dónde cuando cuándo porque gracias hola bueno también ella él nosotros estoy está están soy eres fue era lo le les te nos del al este esta eso esto ahí aquí ya más menos sé entiendo puedo hablar inglés español qué decir hacer hay bien sí tiene tienes cuál nada algo'.split(' '));
+function spanishRatio(s) {
+  const w = String(s).toLowerCase().match(/[a-záéíóúñü]+/g) || [];
+  if (!w.length) return 0;
+  return w.filter(x => SP_WORDS.has(x)).length / w.length;
+}
+const isSpanish = s => wordCount(s) >= 2 && spanishRatio(s) >= 0.34;
+const isHelpRequest = s => /\b(no entiendo|no entendí|no le entiendo|repite|repítelo|otra vez|what\?|sorry\?|pardon|repeat|i don't understand|i didn't understand|can you repeat|again please|more slowly|slower)\b/i.test(s);
+
+/* ---------- Correcciones (errores típicos de hispanohablantes) ---------- */
+const GLOBAL_CORRECTIONS = [
+  { re: /\bi have (\w+) years (working|living|studying)\b([^.,!?]*)/i, rep: (m0, n, v, rest) => `I've been ${v}${rest.replace(/\s+$/, '')} for ${n} years`, tip: 'Para algo que sigue pasando: "I\'ve been working here for…".', tag: 'Duración (for / have been)' },
+  { re: /\bi (?:have|has) (\d+|[a-z]+(?:-[a-z]+)?) years(?! (?:of|working|living|studying|ago))(?: old)?\b/i, rep: (m0, n) => `I'm ${n} years old`, tip: 'La edad se dice con "to be": "I\'m 30 years old", no con "have".', tag: 'Decir la edad' },
+  { re: /\bi have (hungry|thirsty|sleepy|cold|hot)\b/i, rep: (m0, a) => `I'm ${a}`, tip: 'Hambre, sed, frío o sueño van con "to be": "I\'m hungry".', tag: 'Estados con "to be"' },
+  { re: /\bi(?:'m| am) agree\b/i, rep: 'I agree', tip: '"Agree" es verbo: se dice "I agree", sin "am".', tag: '"I agree"' },
+  { re: /\bpeople is\b/i, rep: 'people are', tip: '"People" es plural: "people are".', tag: 'Concordancia' },
+  { re: /\b(he|she|it) don't\b/i, rep: (m0, a) => `${a} doesn't`, tip: 'Con he/she/it se usa "doesn\'t".', tag: 'Tercera persona' },
+  { re: /\b(he|she) have\b/i, rep: (m0, a) => `${a} has`, tip: 'Con he/she se usa "has".', tag: 'Tercera persona' },
+  { re: /\bexplain me\b/i, rep: 'explain to me', tip: 'Se dice "explain to me" o "explain it to me".', tag: 'Verbos con preposición' },
+  { re: /\bthe life is\b/i, rep: 'life is', tip: 'En general no se usa "the": "Life is…".', tag: 'Uso de "the"' },
+  { re: /\bi like very much ([a-z ]+)/i, rep: (m0, a) => `I really like ${a}`, tip: 'Más natural: "I really like…" o "I like … a lot".', tag: 'Orden de palabras' },
+  { re: /\bmake (a|some) questions?\b/i, rep: (m0, a) => `ask ${a} question${a === 'some' ? 's' : ''}`, tip: 'Preguntas se "hacen" con "ask": "ask a question".', tag: 'Make vs. ask' },
+  { re: /\bin the night\b/i, rep: 'at night', tip: 'Se dice "at night".', tag: 'Preposiciones de tiempo' },
+  { re: /\bdepends? of\b/i, rep: m0 => m0.replace(/of$/i, 'on'), tip: '"Depend" va con "on": "It depends on…".', tag: 'Verbos con preposición' },
+  { re: /\bsince (\w+) (years|months|weeks|days)\b/i, rep: (m0, a, b) => `for ${a} ${b}`, tip: 'Con duración se usa "for": "for three years". "Since" va con un punto de inicio: "since 2020".', tag: 'For vs. since' },
+  { re: /\bdidn't (went|saw|did|had|ate|came|bought|took|made|got)\b/i, rep: (m0, v) => `didn't ${({ went: 'go', saw: 'see', did: 'do', had: 'have', ate: 'eat', came: 'come', bought: 'buy', took: 'take', made: 'make', got: 'get' })[v.toLowerCase()]}`, tip: 'Después de "didn\'t" el verbo va en forma base: "I didn\'t go".', tag: 'Pasado negativo' },
+  { re: /\b(could|can|should|would|will|must|might) to (\w+)/i, rep: (m0, a, b) => `${a} ${b}`, tip: `Después de can/could/should no va "to".`, tag: 'Verbos modales' },
+  { re: /\bsuggest you to (\w+)/i, rep: (m0, a) => `suggest that you ${a}`, tip: 'Se dice "I suggest that you…" o "I suggest + -ing".', tag: 'Suggest / recommend' },
+  { re: /\brecommend you to (\w+)/i, rep: (m0, a) => `recommend that you ${a}`, tip: 'Se dice "I recommend that you…" o "I recommend + -ing".', tag: 'Suggest / recommend' },
+  { re: /\bmore (better|worse|bigger|easier|cheaper|faster)\b/i, rep: (m0, a) => a, tip: '"Better", "bigger"… ya son comparativos: no lleva "more".', tag: 'Comparativos' },
+  { re: /\bhow (it|this|that) is called\b/i, rep: (m0, a) => `what ${a} is called`, tip: 'Se pregunta "What is it called?"', tag: 'Preguntas' },
+  { re: /\bi(?:'m| am) boring\b/i, rep: "I'm bored", tip: '"I\'m bored" = estoy aburrido. "I\'m boring" = soy aburrido.', tag: 'Bored vs. boring' },
+  { re: /\b(go|went|going|come|came|get|got|arrive|arrived) to home\b/i, rep: (m0, a) => `${a} home`, tip: 'Con "home" no se usa "to": "go home".', tag: 'Go home' },
+  { re: /\bassist(?:ed)? to\b/i, rep: m0 => /ed/i.test(m0) ? 'attended' : 'attend', tip: 'Asistir a un evento = "attend". "Assist" significa ayudar.', tag: 'Falsos amigos' },
+  { re: /^(is|was) (very|so|really|too|a|an|good|nice|great|bad|delicious|fun|interesting|expensive|cheap|far|close|easy|hard)\b/i, rep: (m0, a, b) => `It ${a.toLowerCase()} ${b}`, tip: 'En inglés siempre va el sujeto: "It\'s very good".', tag: 'Sujeto obligatorio' }
+];
+
+function tidy(s) {
+  let t = String(s).trim().replace(/\s+/g, ' ');
+  t = t.replace(/\bi\b/g, 'I').replace(/\bi'(m|d|ve|ll)\b/g, "I'$1");
+  t = t.charAt(0).toUpperCase() + t.slice(1);
+  if (!/[.!?…]$/.test(t)) t += /^(can|could|would|do|does|is|are|what|where|how|when|why|who|may|should)\b/i.test(t) ? '?' : '.';
+  return t;
+}
+
+function applyCorrections(text, extra = []) {
+  let t = String(text || '').trim();
+  if (!t) return null;
+  const tips = [], tags = [];
+  for (const rule of [...extra, ...GLOBAL_CORRECTIONS]) {
+    const re = new RegExp(rule.re.source, rule.re.flags.replace('g', ''));
+    if (re.test(t)) {
+      const before = t;
+      t = t.replace(re, typeof rule.rep === 'function' ? rule.rep : () => rule.rep);
+      if (t !== before) { tips.push(rule.tip); tags.push(rule.tag); }
+    }
+  }
+  if (!tips.length) return null;
+  return { said: text.trim(), natural: tidy(t), tip_es: tips.join(' '), tags };
+}
+
+/* ---------- Relleno de plantillas: {slot}, {Slot}, {slot|predeterminado} ---------- */
+function fill(tpl, vars) {
+  return String(tpl).replace(/\{(\w+)(?:\|([^}]*))?\}/g, (m0, k, def) => {
+    const low = k.charAt(0).toLowerCase() + k.slice(1);
+    let v = vars[k] ?? vars[low];
+    if (v === undefined || v === null || v === '') v = def ?? '';
+    if (/^[A-Z]/.test(k) && v) v = String(v).charAt(0).toUpperCase() + String(v).slice(1);
+    return v;
+  }).replace(/\s{2,}/g, ' ').replace(/\s+([.,!?])/g, '$1');
+}
+
+/* ---------- Diálogo de lección (motor local) ---------- */
+class LessonDialog {
+  constructor(lesson, ctx) {
+    this.lesson = lesson; this.ctx = ctx;
+    this.turns = lesson.conversation.turns.filter(t => !t.minLevel || ctx.levelIdx + 1 >= t.minLevel);
+    this.i = 0; this.retries = 0;
+    this.slots = { tutor: ctx.tutorName, user: ctx.userName || '' };
+  }
+  get current() { return this.turns[this.i]; }
+  question(simple = false) {
+    const t = this.current; if (!t) return '';
+    return fill((simple || this.ctx.levelIdx === 0) && t.simple ? t.simple : t.ask, this.slots);
+  }
+  opening() { return fill(this.lesson.conversation.opening, this.slots) + ' ' + this.question(); }
+  respond(text) {
+    const t = this.current;
+    const correction = applyCorrections(text, this.lesson.corrections || []);
+    if (!t) return { reply: fill(this.lesson.conversation.closing, this.slots), end: true, correction };
+    if (isHelpRequest(text)) return { reply: 'No problem. ' + this.question(true), hint_es: t.hint, model: t.model, correction: null, help: true };
+    if (isSpanish(text)) return { reply: `Try it in English. You can say: ${t.model}`, hint_es: 'Intenta decirlo en inglés. ' + (t.hint || ''), model: t.model, correction: null, help: true };
+    let exp = null, m = null;
+    for (const e of t.expect || []) { m = text.match(e.re); if (m) { exp = e; break; } }
+    if (!exp) {
+      if ((t.expect || []).length && this.retries < 1) {
+        this.retries++;
+        return { reply: "Sorry, I didn't quite get that. " + this.question(true), hint_es: t.hint, model: t.model, correction, retry: true };
+      }
+      if (t.anySlots) Object.entries(t.anySlots).forEach(([k, v]) => { if (!this.slots[k]) this.slots[k] = v; });
+      exp = { reply: t.any || 'Okay.' };
+    }
+    if (exp.slot) this.slots[exp.slot] = exp.val ? exp.val(m, text) : (m[1] || m[0]).trim();
+    if (exp.slot === 'name' && this.slots.name) this.ctx.learnedName = this.slots.name;
+    this.retries = 0; this.i++;
+    const ack = fill(exp.reply, this.slots);
+    if (this.i >= this.turns.length) return { reply: ack + ' ' + fill(this.lesson.conversation.closing, this.slots), end: true, correction };
+    return { reply: ack + ' ' + this.question(), correction };
+  }
+}
+
+/* ---------- Conversación libre (motor local) ---------- */
+function detectCategories(text) {
+  const t = ' ' + String(text).toLowerCase().replace(/[^a-záéíóúñü' -]+/g, ' ') + ' ';
+  const hits = [];
+  for (const [cat, words] of Object.entries(LEXICON)) {
+    for (const w of words) if (t.includes(' ' + w + ' ')) { hits.push({ cat, w }); break; }
+  }
+  return hits;
+}
+function feeling(text) {
+  const w = String(text).toLowerCase().match(/[a-z]+/g) || [];
+  const neg = /\b(not|don't|isn't|wasn't)\s+(good|great|fine|happy|fun)\b/i.test(text);
+  if (neg || w.some(x => FEELINGS.negative.includes(x))) return 'negative';
+  if (w.some(x => FEELINGS.positive.includes(x))) return 'positive';
+  return null;
+}
+
+class FreeDialog {
+  constructor(topicId, ctx, maxTurns) {
+    this.topic = FREE_TOPICS.find(t => t.id === topicId) || FREE_TOPICS[1];
+    this.ctx = ctx; this.qi = 0; this.turn = 0; this.used = new Set(); this.facts = []; this.referenced = false;
+    this.maxTurns = maxTurns || [5, 6, 7, 8, 9][ctx.levelIdx] || 6;
+    this.bank = ctx.levelIdx <= 1 ? this.topic.qA : this.topic.qB;
+    this.lastQuestion = '';
+  }
+  nextTopicQuestion() {
+    const q = this.bank[this.qi % this.bank.length]; this.qi++; return q;
+  }
+  opening() {
+    const hi = this.ctx.userName ? `Hi, ${this.ctx.userName}!` : 'Hi!';
+    this.lastQuestion = this.nextTopicQuestion();
+    return `${hi} ${this.lastQuestion}`;
+  }
+  respond(text) {
+    const correction = applyCorrections(text);
+    if (isHelpRequest(text)) return { reply: 'Sure, let me say it again. ' + this.lastQuestion, help: true, slow: true, correction: null };
+    if (isSpanish(text)) return { reply: `Let's try in English. ${this.lastQuestion}`, hint_es: 'Intenta responder en inglés, aunque sea con pocas palabras.', help: true, correction: null };
+    this.turn++;
+    const cats = detectCategories(text);
+    const fresh = cats.find(c => !this.used.has(c.w));
+    const feel = feeling(text);
+    let ack;
+    if (feel && (!fresh || Math.random() < 0.5)) ack = pick(ACKS[feel]);
+    else if (fresh) ack = pick(ACKS[fresh.cat]);
+    else if (wordCount(text) <= 2 && /^(yes|yeah|yep|sure|no|nope|not really|maybe)\b/i.test(text.trim())) ack = /^n/i.test(text.trim()) ? 'Okay, fair enough.' : 'Cool.';
+    else ack = pick(ACKS.generic);
+    if (this.turn >= this.maxTurns) {
+      const ref = this.facts.length ? ` I really enjoyed hearing about ${this.facts[0].w}.` : '';
+      return { reply: fill(ack, { w: fresh?.w, W: fresh ? titleCase(fresh.w) : '' }) + ref + ' Great conversation! You did really well today.', end: true, correction };
+    }
+    let q;
+    if (fresh && Math.random() < 0.75) {
+      this.used.add(fresh.w); this.facts.push(fresh);
+      q = pick(FOLLOWUPS[fresh.cat]);
+    } else if (!this.referenced && this.facts.length && this.turn >= 3) {
+      this.referenced = true;
+      const f = this.facts[0];
+      q = `Earlier you mentioned ${f.cat === 'place' ? titleCase(f.w) : f.w}. ` + this.nextTopicQuestion();
+    } else q = this.nextTopicQuestion();
+    if (fresh) this.used.add(fresh.w);
+    const vars = { w: fresh?.w || '', W: fresh ? titleCase(fresh.w) : '' };
+    this.lastQuestion = fill(q, vars);
+    return { reply: fill(ack, vars).replace(/\?/g, '.') + ' ' + this.lastQuestion, correction };
+  }
+}
+
+/* ---------- Calificación de respuestas abiertas (heurística) ----------
+   Califica contenido y gramática del TEXTO, no la pronunciación. */
+function scoreOpen(text, { minWords = 6, expect = null } = {}) {
+  const wc = wordCount(text);
+  if (!wc) return { score: 0, note: 'sin respuesta' };
+  if (spanishRatio(text) >= 0.3) return { score: 0.1, note: 'respondió en español' };
+  const len = Math.min(1, wc / minWords);
+  const kw = expect ? (expect.test(text) ? 1 : 0.45) : 0.8;
+  const corr = applyCorrections(text);
+  const penalty = corr ? Math.min(0.3, corr.tags.length * 0.12) : 0;
+  const score = clamp(0.55 * len + 0.45 * kw - penalty, 0, 1);
+  return { score, corrections: corr };
+}
+
+/* ---------- Prompts para IA (si está configurada) ---------- */
+function promptConversation({ tutorName, level, scenario, role, goals, history, said, turn, maxTurns }) {
+  return `You are ${tutorName}, a warm, encouraging English conversation tutor inside a language-learning app for Mexican Spanish speakers.
+Student CEFR level (estimated): ${level}. Adapt vocabulary and sentence length to that level (A1/A2: very short, simple words).
+Scenario: ${scenario}
+Your role in the scene: ${role}
+${goals ? 'Things to cover, in order (one per turn): ' + goals.join(' | ') : ''}
+
+Rules:
+- Reply ONLY in English, max 2 short sentences, reacting specifically to what the student just said and remembering earlier details.
+- End with exactly ONE question (never two), unless you are closing the conversation.
+- If the student's sentence has a clear grammar error or sounds unnatural, include a correction. Ignore capitalization and punctuation (the text comes from speech recognition). Do not invent errors. If nothing meaningful to correct, correction = null.
+- "tip_es": brief explanation in Mexican Spanish, max 20 words.
+- Never claim to evaluate pronunciation.
+- This is turn ${turn} of about ${maxTurns}. When the goals are covered or the turn limit is reached, set "end": true and close kindly with no question.
+
+Conversation so far:
+${history.map(h => (h.role === 'tutor' ? 'Tutor: ' : 'Student: ') + h.text).join('\n')}
+Student just said: "${said.replace(/"/g, "'")}"
+
+Respond ONLY with JSON, no other text:
+{"reply":"...","correction":null or {"natural":"...","tip_es":"..."},"end":false}`;
+}
+
+function promptScore({ question, answer, level }) {
+  return `You are rating a short spoken answer (transcribed by speech recognition) in an English placement test for Spanish speakers.
+Question: "${question}"
+Answer: "${answer.replace(/"/g, "'")}"
+Current estimated level: ${level}.
+Rate how well the answer communicates a relevant response, considering grammar, vocabulary range and length. Ignore capitalization/punctuation. Do NOT judge pronunciation.
+Respond ONLY with JSON: {"score": number between 0 and 1, "cefr": "A1"|"A2"|"B1"|"B2"|"C1", "tag_es": "short Spanish phrase naming the main thing to improve, or empty"}`;
+}
+
+/* ===== voice.js ===== */
+/* ============================================================
+   VOZ, MICRÓFONO, SINCRONÍA DE BOCA E IA
+   Backends (se elige el mejor disponible, en este orden):
+   - Voz:  servidor /api/tts (audio real + análisis de amplitud)
+           → voz de Claude (artefacto publicado, capacidad "tts")
+           → speechSynthesis del navegador (eventos por palabra)
+   - Oído: dictado de Claude (artefacto) → Web Speech API → escribir
+   - IA:   servidor /api/chat → Claude (capacidad "sample") → reglas locales
+   ============================================================ */
+
+const Caps = { server: { chat: false, tts: false }, claudeTTS: null, claudeDictation: null, claudeSample: null, ready: false };
+
+async function detectCaps(onUpdate) {
+  // 1) Servidor propio (cuando corres `npm start`)
+  try {
+    if (/^https?:$/.test(location.protocol)) {
+      const r = await fetch('api/config', { cache: 'no-store' });
+      if (r.ok && (r.headers.get('content-type') || '').includes('json')) Caps.server = await r.json();
+    }
+  } catch (e) { /* sin servidor: está bien */ }
+  onUpdate && onUpdate();
+  // 2) Capacidades de Claude (solo cuando la app está publicada como artefacto)
+  const c = (typeof window.claude === 'object' && window.claude && typeof window.claude.use === 'function') ? window.claude : null;
+  if (c) {
+    const safe = p => Promise.resolve(p).catch(() => null);
+    const [tts, dict, sample] = await Promise.all([safe(c.use('tts')), safe(c.use('dictation')), safe(c.use('sample'))]);
+    Caps.claudeTTS = tts; Caps.claudeDictation = dict; Caps.claudeSample = sample;
+  }
+  Caps.ready = true;
+  Voice.configure(); Ears.configure(); AI.configure();
+  onUpdate && onUpdate();
+}
+
+/* ---------------- Subtítulos (globo del personaje) ---------------- */
+const Subs = {
+  el: null, who: null, text: null, words: [], cur: -1,
+  init(el) { this.el = el; this.who = el.querySelector('.bubble-who'); this.text = el.querySelector('.bubble-text'); },
+  show(line, wordStarts, audioOnly) {
+    if (!this.el) return;
+    const npc = line.who === 'npc';
+    this.el.hidden = false;
+    this.el.classList.toggle('is-npc', npc);
+    this.el.classList.toggle('es', line.lang === 'es');
+    this.who.textContent = npc ? `${line.npc?.icon || '🗣️'} ${line.npc?.name || ''}` : `${Tutor.char.name}${line.lang === 'es' ? ' · español' : ''}`;
+    const forced = S.settings.mute || Voice.backend === 'none';
+    const cc = (S.settings.cc && !audioOnly) || forced;
+    this.el.classList.toggle('cc-off', !cc);
+    this.words = [];
+    if (cc) {
+      const parts = line.text.split(/(\s+)/);
+      this.text.innerHTML = parts.map(p => /\s+/.test(p) || !p ? p : `<span class="w">${esc(p)}</span>`).join('');
+      this.words = [...this.text.querySelectorAll('.w')];
+    } else {
+      this.text.innerHTML = audioOnly && S.settings.cc ? `<span class="cc-off-msg">🎧 Escucha con atención… <small>(el texto aparece después)</small></span>` : `<span class="cc-off-msg">🔊 Escuchando… <small>(subtítulos apagados)</small></span>`;
+    }
+    this.cur = -1;
+  },
+  highlight(i) {
+    if (i === this.cur || !this.words.length) return;
+    this.words.forEach((w, k) => w.classList.toggle('on', k === i));
+    this.cur = i;
+  },
+  hide() { if (this.el) this.el.hidden = true; }
+};
+
+/* ---------------- Sincronía de boca ----------------
+   - Audio de servidor: amplitud real de la señal (AnalyserNode).
+   - Navegador: cada evento de palabra (onboundary) reancla una línea de
+     tiempo de sílabas estimadas.
+   - Voz de Claude: la posición en milisegundos (onPosition) reancla la
+     misma línea de tiempo.                                              */
+const Lip = {
+  tl: null, anchorT: 0, anchorPerf: 0, running: false, pending: false, analyser: null, buf: null, raf: 0, smooth: 0,
+  build(text, lang, rate) {
+    const segs = [], wordStarts = [];
+    const syl = lang === 'es' ? 0.15 : 0.19;
+    let t = 0.05, ci = 0;
+    const re = /\S+/g; let m;
+    while ((m = re.exec(text))) {
+      const raw = m[0], word = raw.toLowerCase().replace(/[^a-záéíóúñü']/g, '');
+      wordStarts.push({ char: m.index, t });
+      const groups = word.match(/[aeiouyáéíóú]+/g) || (word ? ['e'] : []);
+      let n = groups.length;
+      if (lang !== 'es' && n > 1 && /[^aeiou]e$/.test(word)) n--;
+      for (let k = 0; k < n; k++) {
+        const v = groups[k] || 'e', d = syl / rate;
+        const amp = /a|á/.test(v) ? 1 : /o|ó/.test(v) ? 0.8 : /u|ú/.test(v) ? 0.6 : /e|é/.test(v) ? 0.7 : 0.55;
+        segs.push({ t0: t, t1: t + d * 0.9, amp }); t += d;
+      }
+      t += 0.05 / rate;
+      if (/[,;:]$/.test(raw)) t += 0.22 / rate;
+      if (/[.!?]$/.test(raw)) t += 0.4 / rate;
+      ci = m.index;
+    }
+    return { segs, wordStarts, total: t };
+  },
+  start(tl, { pending = false } = {}) { this.analyser = null; this.tl = tl; this.pending = pending; this.anchorT = 0; this.anchorPerf = performance.now(); this.running = true; this.loop(); },
+  begin() { if (this.pending) { this.pending = false; this.anchorT = 0; this.anchorPerf = performance.now(); } },
+  anchorMs(ms) { this.pending = false; this.anchorT = ms / 1000; this.anchorPerf = performance.now(); },
+  anchorChar(ci) {
+    if (!this.tl) return; this.pending = false;
+    let idx = 0; this.tl.wordStarts.forEach((w, k) => { if (w.char <= ci) idx = k; });
+    this.anchorT = this.tl.wordStarts[idx].t; this.anchorPerf = performance.now();
+  },
+  startAnalyser(an) { this.tl = null; this.analyser = an; this.buf = new Uint8Array(an.fftSize); this.running = true; this.pending = false; this.loop(); },
+  stop() { this.running = false; cancelAnimationFrame(this.raf); this.set(0); this.analyser = null; },
+  set(v) { if (Tutor.root) Tutor.root.style.setProperty('--m', v.toFixed(3)); },
+  loop() {
+    cancelAnimationFrame(this.raf);
+    const step = () => {
+      if (!this.running) return;
+      let m = 0;
+      if (this.analyser) {
+        this.analyser.getByteTimeDomainData(this.buf);
+        let sum = 0; for (let i = 0; i < this.buf.length; i++) { const x = (this.buf[i] - 128) / 128; sum += x * x; }
+        const rms = Math.sqrt(sum / this.buf.length);
+        m = clamp((rms - 0.015) * 7, 0, 1);
+      } else if (this.tl && !this.pending) {
+        const t = this.anchorT + (performance.now() - this.anchorPerf) / 1000;
+        const s = this.tl.segs.find(sg => t >= sg.t0 && t <= sg.t1);
+        if (s) m = s.amp * Math.pow(Math.sin(Math.PI * (t - s.t0) / (s.t1 - s.t0)), 0.8);
+        let wi = -1; this.tl.wordStarts.forEach((w, k) => { if (w.t <= t) wi = k; });
+        if (wi >= 0) Subs.highlight(wi);
+      }
+      this.smooth = this.smooth * 0.45 + m * 0.55;
+      this.set(this.smooth);
+      this.raf = requestAnimationFrame(step);
+    };
+    this.raf = requestAnimationFrame(step);
+  }
+};
+
+/* ---------------- Voz (texto a voz) ---------------- */
+const Voice = {
+  backend: 'none', enVoice: null, enVoice2: null, esVoice: null, token: 0, last: null, ctx: null, audio: null, _resolveLine: null, browserReady: false,
+  init() {
+    if ('speechSynthesis' in window) {
+      const load = () => {
+        const vs = speechSynthesis.getVoices();
+        if (!vs.length) return;
+        const score = (v, prefs) => { let s = 0; prefs.forEach((p, i) => { if (p.test(v.name)) s = Math.max(s, 100 - i); }); return s; };
+        const en = vs.filter(v => /^en[-_]/i.test(v.lang));
+        const enSorted = en.slice().sort((a, b) => score(b, [/natural/i, /google us english/i, /samantha/i, /aria|jenny|guy/i, /en-us/i]) - score(a, [/natural/i, /google us english/i, /samantha/i, /aria|jenny|guy/i, /en-us/i]) || (/en[-_]us/i.test(b.lang) - /en[-_]us/i.test(a.lang)));
+        this.enVoice = enSorted[0] || null;
+        this.enVoice2 = enSorted.find(v => v !== this.enVoice && /en[-_](us|gb)/i.test(v.lang)) || null;
+        const es = vs.filter(v => /^es[-_]/i.test(v.lang));
+        this.esVoice = es.find(v => /es[-_]mx/i.test(v.lang)) || es.find(v => /es[-_](us|419)/i.test(v.lang)) || es[0] || null;
+        this.browserReady = !!this.enVoice;
+        this.configure(); App.updateStatus && App.updateStatus();
+      };
+      load(); speechSynthesis.onvoiceschanged = load;
+    }
+  },
+  configure() {
+    if (Caps.server.tts) this.backend = 'server';
+    else if (Caps.claudeTTS && !this.claudeOff) this.backend = 'claude';
+    else if (this.browserReady) this.backend = 'browser';
+    else this.backend = 'none';
+    if (this.backend === 'claude' && !this._claudeHooked) {
+      this._claudeHooked = true;
+      const t = Caps.claudeTTS;
+      try { t.onState(({ state }) => { if (state === 'speaking') Lip.begin(); }); } catch (e) { }
+      try { t.onPosition(({ ms }) => Lip.anchorMs(ms)); } catch (e) { }
+    }
+  },
+  short() { return { server: 'Voz API', claude: 'Voz Claude', browser: 'Voz navegador', none: 'Sin voz' }[this.backend]; },
+  label() {
+    return { server: 'Voz del servidor (API externa)', claude: 'Voz de Claude', browser: `Voz del navegador${this.enVoice ? ' · ' + this.enVoice.name : ''}`, none: 'Sin voz disponible' }[this.backend];
+  },
+  unlock() {
+    try { if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume(); } catch (e) { }
+  },
+  baseRate() { const lvl = S.levelIdx ?? 0; return [0.85, 0.92, 1, 1.02, 1.05][lvl] || 0.95; },
+  stop() {
+    this.token++;
+    try { if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch (e) { }
+    try { if (Caps.claudeTTS) Caps.claudeTTS.stop(); } catch (e) { }
+    try { if (this.audio) { this.audio.pause(); } } catch (e) { }
+    if (this._resolveLine) { const r = this._resolveLine; this._resolveLine = null; r(); }
+    Lip.stop(); Tutor.talking(false); NPC.hide();
+  },
+  async repeat(slow) {
+    if (!this.last) return;
+    await this.speak(this.last, { slow });
+  },
+  /* lines: [{text, lang:'en'|'es', who:'tutor'|'npc', npc:{name,icon}}] */
+  async speak(lines, opts = {}) {
+    if (typeof lines === 'string') lines = [{ text: lines, lang: 'en', who: 'tutor' }];
+    lines = lines.filter(l => l && l.text);
+    if (!lines.length) return;
+    Ears.abort();
+    this.stop();
+    const my = this.token;
+    this.last = lines;
+    const slow = opts.slow ?? S.settings.slow;
+    for (const line of lines) {
+      if (my !== this.token) return;
+      const rate = (opts.rate || this.baseRate()) * (slow ? 0.75 : 1) * (line.lang === 'es' ? 1.05 : 1);
+      const tl = Lip.build(line.text, line.lang, rate);
+      Subs.show(line, tl.wordStarts, opts.audioOnly && line.lang === 'en');
+      const isTutor = line.who !== 'npc';
+      if (isTutor) { Tutor.talking(true); NPC.hide(); } else { Tutor.talking(false); NPC.show(line.npc); }
+      try {
+        if (S.settings.mute || this.backend === 'none') await this.silentLine(line, tl, my);
+        else if (this.backend === 'server') await this.serverLine(line, rate, isTutor);
+        else if (this.backend === 'claude') await this.claudeLine(line, rate, isTutor, tl);
+        else await this.browserLine(line, rate, isTutor, tl);
+      } catch (e) { console.warn('voz', e); }
+      if (!isTutor) Lip.stop();
+      Lip.stop(); Tutor.talking(false); NPC.hide();
+      if (my !== this.token) return;
+      await sleep(180);
+    }
+  },
+  async silentLine(line, tl, my) {
+    // Silenciado: solo subtítulos; la boca NO se mueve (no simulamos voz).
+    const ms = clamp(line.text.length * 55, 1200, 6000);
+    const t0 = performance.now();
+    while (performance.now() - t0 < ms) { if (my !== this.token) return; await sleep(100); }
+  },
+  browserLine(line, rate, isTutor, tl) {
+    return new Promise(res => {
+      const u = new SpeechSynthesisUtterance(line.text);
+      const v = line.lang === 'es' ? this.esVoice : (isTutor ? this.enVoice : (this.enVoice2 || this.enVoice));
+      if (v) u.voice = v;
+      u.lang = line.lang === 'es' ? (this.esVoice?.lang || 'es-MX') : (v?.lang || 'en-US');
+      u.rate = rate; u.pitch = isTutor ? Tutor.char.pitch : 0.9;
+      let done = false;
+      const finish = () => { if (done) return; done = true; clearTimeout(safety); this._resolveLine = null; res(); };
+      this._resolveLine = finish;
+      if (isTutor) Lip.start(tl, { pending: true });
+      u.onstart = () => Lip.begin();
+      u.onboundary = e => { if (e.name === 'word' || !e.name) Lip.anchorChar(e.charIndex); };
+      u.onend = finish; u.onerror = finish;
+      const safety = setTimeout(finish, (tl.total * 1000) * 2.2 + 4000);
+      try { speechSynthesis.resume(); } catch (e) { }
+      speechSynthesis.speak(u);
+    });
+  },
+  async claudeLine(line, rate, isTutor, tl) {
+    const t = Caps.claudeTTS;
+    if (isTutor) { Lip.start(tl, { pending: true }); setTimeout(() => Lip.begin(), 1600); }
+    const voice = isTutor ? Tutor.char.claudeVoice : 'buttery';
+    try {
+      await t.speak(line.text, { voice, rate: clamp(rate, 0.7, 1.5), language: line.lang === 'es' ? 'es' : 'en' });
+    } catch (e) {
+      const code = e && e.code;
+      if (code === 'not_granted' || code === 'unavailable') { this.claudeOff = true; this.configure(); App.updateStatus(); if (this.backend === 'browser') return this.browserLine(line, rate, isTutor, tl); }
+      if (code === 'busy') { Ears.abort(); }
+    }
+  },
+  async serverLine(line, rate, isTutor) {
+    const r = await fetch('api/tts', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text: line.text, lang: line.lang, voice: isTutor ? Tutor.char.id : 'npc', speed: rate }) });
+    if (!r.ok) throw new Error('tts ' + r.status);
+    const url = URL.createObjectURL(await r.blob());
+    await new Promise(res => {
+      const a = new Audio(url); this.audio = a;
+      let done = false; const finish = () => { if (done) return; done = true; this._resolveLine = null; URL.revokeObjectURL(url); res(); };
+      this._resolveLine = finish;
+      a.onended = finish; a.onerror = finish;
+      try {
+        this.unlock();
+        if (this.ctx && isTutor) {
+          const src = this.ctx.createMediaElementSource(a); const an = this.ctx.createAnalyser(); an.fftSize = 1024;
+          src.connect(an); an.connect(this.ctx.destination); Lip.startAnalyser(an);
+        }
+      } catch (e) { }
+      a.play().catch(finish);
+    });
+  }
+};
+
+/* ---------------- Personaje no jugador (voz secundaria) ---------------- */
+const NPC = {
+  el: null,
+  show(npc) { if (!this.el || !npc) return; this.el.hidden = false; this.el.querySelector('.npc-ava').textContent = npc.icon || '🗣️'; this.el.querySelector('.npc-name').textContent = npc.name || ''; this.el.classList.add('talking'); },
+  hide() { if (this.el) { this.el.classList.remove('talking'); this.el.hidden = true; } }
+};
+
+/* ---------------- Oído (voz a texto) ---------------- */
+const Ears = {
+  backend: 'none', denied: false, rec: null, h: null, listening: false,
+  configure() {
+    const prev = this.backend;
+    this._configure();
+    if (prev !== this.backend) this.denied = false;
+  },
+  _configure() {
+    if (Caps.claudeDictation && !this.claudeOff) {
+      this.backend = 'claude';
+      if (!this._hooked) {
+        this._hooked = true; const d = Caps.claudeDictation;
+        d.onPartial(({ text }) => this.h && this.h.partial(text));
+        d.onFinal(({ text }) => this.h && this.h.final(text));
+        d.onState(({ state, reason }) => { this.listening = state === 'listening'; this.h && this.h.state(state, reason); });
+      }
+    } else if ((window.SpeechRecognition || window.webkitSpeechRecognition) && window.isSecureContext !== false) this.backend = 'browser';
+    else this.backend = 'none';
+  },
+  available() { return this.backend !== 'none' && !this.denied; },
+  short() { return this.denied ? 'Mic sin permiso' : { claude: 'Dictado Claude', browser: 'Mic navegador', none: 'Sin mic' }[this.backend]; },
+  label() {
+    if (this.denied) return 'Micrófono sin permiso (respuestas escritas)';
+    return { claude: 'Dictado de Claude', browser: 'Reconocimiento de voz del navegador', none: 'No disponible en este navegador (respuestas escritas)' }[this.backend];
+  },
+  // Debe llamarse directo desde el clic del usuario (sin await antes).
+  start(h) {
+    this.h = h;
+    if (this.backend === 'claude') {
+      this.listening = true;
+      Caps.claudeDictation.start().catch(e => {
+        const code = (e && (e.code || e.message)) || String(e);
+        this.listening = false;
+        if (code === 'not_granted') this.denied = true;
+        h.error(code);
+      });
+      return;
+    }
+    const R = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const rec = new R(); this.rec = rec;
+    rec.lang = 'en-US'; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+    rec.onresult = e => {
+      let fin = '', part = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) { const r = e.results[i]; if (r.isFinal) fin += r[0].transcript; else part += r[0].transcript; }
+      if (part) h.partial(part);
+      if (fin) h.final(fin);
+    };
+    rec.onerror = e => { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') this.denied = true; h.error(e.error); };
+    rec.onend = () => { this.listening = false; this.h && this.h.state('idle', 'ended'); };
+    this.listening = true;
+    try { rec.start(); } catch (e) { this.listening = false; h.error(String(e)); }
+  },
+  stop() {
+    try { if (this.backend === 'claude') Caps.claudeDictation.stop(); else if (this.rec) this.rec.stop(); } catch (e) { }
+  },
+  abort() {
+    this.h = null;
+    if (this.listening) { try { if (this.backend === 'claude') Caps.claudeDictation.stop(); else if (this.rec) this.rec.abort(); } catch (e) { } }
+    this.listening = false;
+  }
+};
+
+/* ---------------- IA conversacional (opcional) ---------------- */
+const AI = {
+  mode: 'local', fails: 0, disabled: false,
+  configure() { this.mode = Caps.server.chat ? 'server' : (Caps.claudeSample ? 'claude' : 'local'); },
+  short() { return this.mode === 'local' || this.disabled ? 'Reglas locales' : (this.mode === 'server' ? 'IA API' : 'IA Claude'); },
+  active() { return this.mode !== 'local' && !this.disabled && S.settings.useAI; },
+  label() {
+    if (this.mode === 'local') return 'Reglas locales (sin IA externa)';
+    if (this.disabled) return 'IA no disponible ahora · usando reglas locales';
+    return this.mode === 'server' ? 'IA vía servidor (API externa)' : 'IA de Claude';
+  },
+  async complete(prompt) {
+    const timeout = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 20000));
+    const run = (async () => {
+      if (this.mode === 'server') {
+        const r = await fetch('api/chat', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prompt }) });
+        if (!r.ok) throw new Error('chat ' + r.status);
+        return (await r.json()).text;
+      }
+      const res = await Caps.claudeSample(prompt, { modelTier: 'quick', cache: false });
+      return res.text;
+    })();
+    return Promise.race([run, timeout]);
+  },
+  async json(prompt) {
+    try {
+      const t = await this.complete(prompt);
+      const m = String(t).match(/\{[\s\S]*\}/);
+      const j = JSON.parse(m[0]);
+      this.fails = 0;
+      return j;
+    } catch (e) {
+      console.warn('IA', e);
+      if (e && (e.code === 'not_granted')) this.disabled = true;
+      if (++this.fails >= 2) this.disabled = true;
+      App.updateStatus();
+      return null;
+    }
+  }
+};
+
+/* ===== app.js ===== */
+/* ============================================================
+   APLICACIÓN: estado, navegación y pantallas
+   ============================================================ */
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const shuffle = a => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
+const fmtTime = s => { s = Math.round(s || 0); const m = Math.floor(s / 60); return m ? `${m} min ${String(s % 60).padStart(2, '0')} s` : `${s} s`; };
+
+/* ---------------- Estado guardado (localStorage) ---------------- */
+const STORE_KEY = 'charla-ingles.v1';
+function defaultState() {
+  return {
+    v: 1, name: '', character: null, levelIdx: null, test: null, goal: null,
+    plan: { sessionsPerWeek: 3, minutes: 30, days: [1, 3, 5] },
+    completed: {}, secondsSpoken: 0, review: [], sessions: [], chats: 0,
+    settings: { cc: true, slow: false, mute: false, useAI: true, audioFirst: true }
+  };
+}
+function loadState() {
+  try { const raw = localStorage.getItem(STORE_KEY); if (raw) { const d = JSON.parse(raw); const def = defaultState(); return { ...def, ...d, settings: { ...def.settings, ...(d.settings || {}) }, plan: { ...def.plan, ...(d.plan || {}) } }; } } catch (e) { }
+  return defaultState();
+}
+let S = loadState();
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); } catch (e) { } }
+function addSpoken(sec) { if (sec > 0) { S.secondsSpoken += sec; save(); } }
+function addReview(item) {
+  if (!item || !item.en) return;
+  const k = normalize(item.en).join(' ');
+  if (S.review.some(r => normalize(r.en).join(' ') === k)) return;
+  S.review.push({ en: item.en, es: item.es || '', note: item.note || '', said: item.said || '', reps: 0, added: Date.now() });
+}
+
+/* ---------------- Tutor (personaje animado) ---------------- */
+const Tutor = {
+  root: null, char: CHARACTERS.fox, t: 0,
+  mount(el) { this.root = el; },
+  set(id) {
+    this.char = CHARACTERS[id] || CHARACTERS.fox;
+    this.root.innerHTML = this.char.svg();
+    this.root.className = 'char-wrap char-' + this.char.id;
+  },
+  mood(m, ms) {
+    clearTimeout(this.t);
+    ['greet', 'listen', 'think', 'celebrate', 'correct'].forEach(x => this.root.classList.remove('mood-' + x));
+    if (m && m !== 'idle') this.root.classList.add('mood-' + m);
+    const auto = { greet: 2600, celebrate: 2600, correct: 2800 }[m];
+    if (ms || auto) this.t = setTimeout(() => this.mood('idle'), ms || auto);
+  },
+  talking(on) { if (this.root) this.root.classList.toggle('talking', !!on); }
+};
+const setScene = id => { $('#scene').innerHTML = sceneSVG(id); };
+
+/* ---------------- Navegación y flujos ---------------- */
+const ABORT = { abort: true };
+const App = {
+  flow: 0, screen: null,
+  go(name, arg) {
+    this.flow++; Voice.stop(); Ears.abort(); this.screen = name;
+    Tutor.mood('idle'); Subs.hide();
+    $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.go === name || (name === 'lesson' && b.dataset.go === 'lessons') || (name === 'freeChat' && b.dataset.go === 'free') || (name === 'review' && b.dataset.go === 'progress')));
+    $('#nav').hidden = S.levelIdx === null;
+    window.scrollTo({ top: 0 });
+    SCREENS[name](arg);
+  },
+  check(f) { if (f !== this.flow) throw ABORT; },
+  updateStatus() {
+    const el = $('#statusLine');
+    if (el) el.innerHTML = `<span title="${esc(Voice.label())}">🔊 ${esc(Voice.short())}</span><span title="${esc(Ears.label())}">🎤 ${esc(Ears.short())}</span><span title="${esc(AI.label())}">🧠 ${esc(AI.short())}</span>`;
+    const st = $('#settingsStatus'); if (st) st.innerHTML = statusList();
+    const ch = $('#checks'); if (ch) ch.innerHTML = statusList();
+  }
+};
+function statusList() {
+  return `<ul class="status-list">
+    <li><b>🔊 Voz:</b> ${esc(Voice.label())}</li>
+    <li><b>🎤 Micrófono:</b> ${esc(Ears.label())}</li>
+    <li><b>🧠 Conversación:</b> ${esc(AI.label())}</li></ul>`;
+}
+function run(fn) { Promise.resolve().then(fn).catch(e => { if (e !== ABORT) { console.error(e); toast('Algo salió mal: ' + (e.message || e)); } }); }
+const en = (text, who = 'tutor', npc) => ({ text, lang: 'en', who, npc });
+const es = text => ({ text, lang: 'es', who: 'tutor' });
+async function say(f, lines, opts) { await Voice.speak(Array.isArray(lines) ? lines : [lines], opts); App.check(f); }
+function view(html) { $('#view').innerHTML = html; }
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 3500); }
+function waitClick(el) { return new Promise(r => { el.addEventListener('click', () => r(), { once: true }); }); }
+function choose(container) {
+  return new Promise(r => {
+    $$('.opt', container).forEach(b => b.addEventListener('click', () => {
+      $$('.opt', container).forEach(x => { x.disabled = true; });
+      b.classList.add('picked'); r(+b.dataset.k);
+    }));
+  });
+}
+
+/* ---------------- Barra de respuesta (micrófono o teclado) ---------------- */
+function askAnswer(container, opts = {}) {
+  return new Promise(resolve => {
+    const micOK = Ears.available() && !opts.textOnly && !S.forceText;
+    container.innerHTML = `
+      <div class="answer">
+        ${opts.label ? `<p class="ans-label">${opts.label}</p>` : ''}
+        <div class="ans-live" aria-live="polite">${micOK ? 'Toca el micrófono cuando quieras responder.' : ''}</div>
+        ${micOK ? `<button class="mic" type="button"><span class="mic-ico" aria-hidden="true"></span><span class="mic-lbl">Toca y habla</span></button>` : ''}
+        <form class="ans-form" ${micOK ? 'hidden' : ''}>
+          <input type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${esc(opts.placeholder || 'Escribe tu respuesta en inglés…')}" aria-label="Tu respuesta">
+          <button class="btn primary" type="submit">Enviar</button>
+        </form>
+        <div class="ans-tools">
+          ${micOK ? '<button type="button" class="link" data-a="type">⌨️ Prefiero escribir</button>' : ''}
+          ${opts.hint ? '<button type="button" class="link" data-a="hint">💡 Pista</button>' : ''}
+          ${opts.allowHelp !== false ? '<button type="button" class="link" data-a="repeat">🐢 No entendí, repite lento</button>' : ''}
+          ${opts.skip ? '<button type="button" class="link" data-a="skip">Saltar</button>' : ''}
+        </div>
+        <div class="ans-hint" hidden></div>
+      </div>`;
+    const live = $('.ans-live', container), mic = $('.mic', container), form = $('form', container), input = $('input', form);
+    let finalText = '', partial = '', t0 = 0, tLast = 0, timer = 0, done = false;
+    const setMic = on => { if (!mic) return; mic.classList.toggle('on', on); $('.mic-lbl', mic).textContent = on ? 'Te escucho… toca para terminar' : 'Toca y habla'; };
+    const showText = () => { form.hidden = false; input.focus(); };
+    const finish = r => { if (done) return; done = true; clearTimeout(timer); Ears.abort(); setMic(false); $('.answer', container).classList.add('done'); Tutor.mood('idle'); resolve(r); };
+    const submitSpoken = () => {
+      const text = (finalText || partial).trim();
+      if (!text) { live.textContent = 'No te escuché. Toca el micrófono e intenta otra vez, o escribe tu respuesta.'; setMic(false); Tutor.mood('idle'); return; }
+      const seconds = t0 ? Math.max(1, (tLast - t0) / 1000 + 0.6) : 1;
+      live.innerHTML = `<span class="you">Tú:</span> ${esc(text)}`;
+      finish({ text, viaMic: true, seconds });
+    };
+    if (mic) mic.addEventListener('click', () => {
+      if (Ears.listening) { Ears.stop(); return; }
+      Voice.stop(); Voice.unlock();
+      finalText = ''; partial = ''; t0 = 0;
+      setMic(true); Tutor.mood('listen'); live.textContent = 'Te escucho…';
+      Ears.start({
+        partial: t => { if (!t0) t0 = performance.now(); tLast = performance.now(); partial = t; live.innerHTML = `<span class="you">Tú:</span> ${esc((finalText + ' ' + t).trim())}…`; if (Ears.backend === 'claude') { clearTimeout(timer); timer = setTimeout(() => Ears.stop(), 2600); } },
+        final: t => { if (!t0) t0 = performance.now(); tLast = performance.now(); finalText = (finalText + ' ' + t).trim(); partial = ''; live.innerHTML = `<span class="you">Tú:</span> ${esc(finalText)}`; if (Ears.backend === 'claude') { clearTimeout(timer); timer = setTimeout(() => Ears.stop(), 1300); } },
+        state: (st, reason) => {
+          if (st !== 'idle' || done) return;
+          setMic(false);
+          if (finalText || partial) submitSpoken();
+          else { Tutor.mood('idle'); if (!Ears.denied) live.textContent = 'No te escuché. Toca el micrófono e intenta otra vez.'; }
+        },
+        error: code => {
+          setMic(false); Tutor.mood('idle');
+          if (Ears.denied) { live.textContent = 'No hay permiso para usar el micrófono. Responde por escrito.'; if (mic) mic.hidden = true; showText(); opts.onDenied && opts.onDenied(); }
+          else if (code === 'no-speech') live.textContent = 'No te escuché. Intenta otra vez.';
+          else if (code !== 'aborted') live.textContent = `El micrófono tuvo un problema (${code}). Intenta de nuevo o escribe tu respuesta.`;
+        }
+      });
+    });
+    form.addEventListener('submit', e => { e.preventDefault(); const t = input.value.trim(); if (!t) return; live.innerHTML = `<span class="you">Tú (escrito):</span> ${esc(t)}`; finish({ text: t, viaMic: false, seconds: 0 }); });
+    $$('.ans-tools .link', container).forEach(b => b.addEventListener('click', () => {
+      const a = b.dataset.a;
+      if (a === 'type') { showText(); b.hidden = true; }
+      if (a === 'hint') { const h = $('.ans-hint', container); h.hidden = false; h.innerHTML = `💡 ${esc(opts.hint)}`; }
+      if (a === 'repeat') finish({ cmd: 'repeat' });
+      if (a === 'skip') finish({ cmd: 'skip', text: '' });
+    }));
+    if (!micOK) setTimeout(() => input.focus({ preventScroll: true }), 50);
+  });
+}
+
+function diffHTML(cmp, label) {
+  const pct = Math.round(cmp.ratio * 100);
+  return `<div class="diff">
+    <div class="diff-words">${cmp.words.map(w => `<span class="${w.ok ? 'ok' : 'miss'}">${esc(w.w)}</span>`).join(' ')}</div>
+    <div class="meter"><span style="width:${pct}%"></span></div>
+    <p class="fine">${label || 'Coincidencia con la frase'}: <b>${pct}%</b> · Se compara el texto reconocido, no la pronunciación.</p></div>`;
+}
+
+/* ============================================================
+   PANTALLAS
+   ============================================================ */
+const SCREENS = {};
+
+/* ---------- 1. Bienvenida y selección de personaje ---------- */
+SCREENS.welcome = () => {
+  setScene('studio');
+  view(`<div class="card hero">
+    <p class="eyebrow">Inglés conversacional para hispanohablantes</p>
+    <h1>Habla inglés desde tu primera sesión</h1>
+    <p class="lead">Escucha situaciones reales, entiende, habla y perfecciona con un tutor que te contesta con su propia voz.</p>
+    <div class="method">${['🎧 Escuchar', '💡 Comprender', '🗣️ Hablar', '✨ Perfeccionar'].map(s => `<span>${s}</span>`).join('')}</div>
+    <label class="field"><span>¿Cómo te llamas? <small>(opcional)</small></span>
+      <input id="nameIn" value="${esc(S.name)}" autocomplete="given-name" placeholder="Tu nombre"></label>
+    <h2>Elige a tu tutor</h2>
+    <div class="char-grid">${Object.values(CHARACTERS).map(c => `
+      <button class="char-card ${S.character === c.id ? 'sel' : ''}" data-c="${c.id}" aria-pressed="${S.character === c.id}">
+        <div class="mini">${c.svg()}</div>
+        <b>${c.name}</b><span class="species">${c.species}</span>
+        <span class="tag">${c.tagline}</span>
+        <span class="listen-btn">🔊 Escuchar su voz</span>
+      </button>`).join('')}</div>
+    <details class="checks-box"><summary>Revisar voz y micrófono</summary><div id="checks">${statusList()}</div>
+      <p class="fine">Para hablar con el tutor usa Chrome o Edge (computadora o Android) y permite el micrófono. Si tu navegador no lo permite, podrás responder por escrito.</p></details>
+    <div class="actions">
+      <button class="btn primary big" id="startTest" ${S.character ? '' : 'disabled'}>Empezar examen inicial · 8–10 min</button>
+      <button class="btn ghost" id="skipTest">Saltar examen y empezar en A1</button>
+    </div>
+  </div>`);
+  if (!S.character) Subs.show({ text: '¡Hola! Elige a tu tutor para empezar.', lang: 'es', who: 'tutor' });
+  $$('.char-card').forEach(b => b.addEventListener('click', () => {
+    const c = CHARACTERS[b.dataset.c];
+    S.character = c.id; save(); Tutor.set(c.id); Voice.unlock();
+    $$('.char-card').forEach(x => { x.classList.toggle('sel', x === b); x.setAttribute('aria-pressed', x === b); });
+    $('#startTest').disabled = false;
+    Tutor.mood('greet');
+    const f = App.flow;
+    run(() => say(f, [es(c.hello_es), en(c.hello_en)]));
+  }));
+  $('#nameIn').addEventListener('change', e => { S.name = e.target.value.trim().slice(0, 30); save(); });
+  $('#startTest').addEventListener('click', () => { S.name = $('#nameIn').value.trim().slice(0, 30); save(); Voice.unlock(); App.go('test'); });
+  $('#skipTest').addEventListener('click', () => {
+    S.name = $('#nameIn').value.trim().slice(0, 30);
+    if (!S.character) { S.character = 'fox'; Tutor.set('fox'); }
+    S.levelIdx = 0; S.test = { skipped: true, date: new Date().toISOString(), level: 'A1', levelIdx: 0 }; save(); App.go('goal');
+  });
+};
+
+/* ---------- 2. Examen inicial adaptativo ---------- */
+SCREENS.test = () => run(testFlow);
+
+function pickItem(kind, T) {
+  const bank = TEST_BANK[kind];
+  const free = bank.filter(it => !T.used.has(it.id));
+  free.sort((a, b) => Math.abs(a.d - T.d) - Math.abs(b.d - T.d) || b.d - a.d);
+  const it = free[0]; T.used.add(it.id); return it;
+}
+
+async function testFlow() {
+  const f = App.flow; setScene('studio');
+  const T = { items: [], d: 2, start: Date.now(), used: new Set(), micMode: Ears.available(), intro: {} };
+  S.forceText = false;
+  view(`<div class="card test">
+    <div class="test-head"><div><p class="eyebrow">Examen inicial</p><h1 id="tTitle">Preparación</h1></div>
+      <div class="test-meta"><span id="tTimer">0:00</span><span id="tCount">0 / 10</span></div></div>
+    <div class="progress"><span id="tBar" style="width:0%"></span></div>
+    <div id="tBody"></div></div>`);
+  const timer = setInterval(() => {
+    if (App.flow !== f) return clearInterval(timer);
+    const s = Math.floor((Date.now() - T.start) / 1000); const el = $('#tTimer'); if (el) el.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  }, 1000);
+  const body = html => { $('#tBody').innerHTML = html; };
+  Tutor.mood('greet');
+  await say(f, [es(`¡Hola${S.name ? ', ' + S.name : ''}! Antes de empezar el curso, vamos a estimar tu nivel. Son 10 actividades cortas, de 8 a 10 minutos: vas a escuchar, elegir respuestas y platicar conmigo.`)]);
+
+  // Prueba de micrófono
+  if (Ears.available()) {
+    body(`<h2>Prueba tu micrófono</h2><p>Toca el micrófono y di: <b class="say">"Hello, I'm ready!"</b></p><div id="ans"></div>
+      <button class="link" id="noMic">No puedo usar el micrófono ahora · responder por escrito</button>`);
+    let noMic; const noMicP = new Promise(r => { noMic = r; });
+    $('#noMic').addEventListener('click', () => noMic({ cmd: 'nomic' }));
+    await say(f, [es('Primero probemos tu micrófono. Toca el botón y dime:'), en("Hello, I'm ready!")]);
+    let r;
+    for (; ;) {
+      r = await Promise.race([askAnswer($('#ans'), { allowHelp: false, onDenied: () => noMic({ cmd: 'nomic' }) }), noMicP]);
+      App.check(f);
+      if (r.cmd === 'nomic' || Ears.denied || !r.viaMic) break;
+      if (r.viaMic) break;
+    }
+    if (r.cmd === 'nomic' || Ears.denied || !r.viaMic) {
+      T.micMode = false; S.forceText = true;
+      await say(f, [es('Sin problema. Responderás por escrito y la expresión oral quedará como «sin evaluar».')]);
+    } else {
+      addSpoken(r.seconds); Tutor.mood('celebrate');
+      await say(f, [en("Great, I can hear you! Let's start.")]);
+    }
+  } else {
+    T.micMode = false;
+    body(`<div class="notice">🎤 Tu navegador no permite reconocimiento de voz aquí. Responderás por escrito y la <b>expresión oral quedará «sin evaluar»</b>.<br><small>Para hablar con el tutor, abre la app en Chrome o Edge y permite el micrófono.</small></div>
+      <button class="btn primary" id="go">Continuar</button>`);
+    const goP = waitClick($('#go'));
+    await Promise.race([say(f, [es('Tu navegador no me deja escucharte por micrófono, así que responderás por escrito. La parte oral quedará sin evaluar.')]), goP]);
+    await goP; Voice.stop(); App.check(f);
+  }
+
+  for (let i = 0; i < TEST_SEQUENCE.length; i++) {
+    const kind = TEST_SEQUENCE[i];
+    $('#tCount').textContent = `${i + 1} / 10`; $('#tBar').style.width = `${(i / 10) * 100}%`;
+    let res;
+    if (kind === 'C') res = await testConversation(f, T, body);
+    else res = await TEST_RUN[kind](f, pickItem(kind, T), T, body);
+    T.items.push(res);
+    if (kind !== 'C') T.d = clamp(T.d + (res.score >= 0.6 ? 1 : -1), 1, 5);
+  }
+  $('#tBar').style.width = '100%';
+  S.test = computeResult(T); S.levelIdx = S.test.levelIdx; save();
+  App.go('results');
+}
+
+const TEST_RUN = {
+  async L(f, item, T, body) {
+    $('#tTitle').textContent = 'Comprensión auditiva';
+    const options = shuffle(item.options.map((t, k) => ({ t, ok: k === item.answer })));
+    body(`<p class="skill-chip">🎧 Escucha y elige</p>
+      <div class="audio-box"><div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="muted">El texto está oculto: concéntrate en escuchar.</p>
+      <button class="btn soft" id="replay" disabled>🔁 Escuchar otra vez <small id="rc">(2)</small></button></div>
+      <div id="q" hidden><h3>${esc(item.q)}</h3><div class="opts">${options.map((o, k) => `<button class="opt" data-k="${k}">${esc(o.t)}</button>`).join('')}</div></div>`);
+    const lines = item.lines.map(l => ({ text: l.en, lang: 'en', who: l.who, npc: { name: 'Audio', icon: '🎧' } }));
+    if (!T.intro.L) { T.intro.L = 1; await say(f, [es('Escucha con atención y elige la respuesta correcta.')]); }
+    await say(f, lines, { audioOnly: true });
+    $('#q').hidden = false;
+    let replays = 2; const rb = $('#replay'); rb.disabled = false;
+    rb.addEventListener('click', () => { if (replays <= 0) return; replays--; $('#rc').textContent = `(${replays})`; if (!replays) rb.disabled = true; Voice.speak(lines, { audioOnly: true }); });
+    const k = await choose($('#q .opts')); App.check(f); Voice.stop();
+    Tutor.mood('think', 900); await sleep(450); App.check(f);
+    return { kind: 'L', skill: 'L', d: item.d, score: options[k].ok ? 1 : 0, prompt: item.q };
+  },
+  async V(f, item, T, body) {
+    $('#tTitle').textContent = 'Vocabulario en contexto';
+    const options = shuffle(item.options.map((t, k) => ({ t, ok: k === item.answer })));
+    body(`<p class="skill-chip">📚 Completa la frase</p>
+      <p class="sentence">${esc(item.sentence).replace('___', '<span class="blank">_____</span>')}</p>
+      <div class="opts">${options.map((o, k) => `<button class="opt" data-k="${k}">${esc(o.t)}</button>`).join('')}</div>`);
+    if (!T.intro.V) { T.intro.V = 1; await say(f, [es('Elige la palabra que completa mejor la frase.')]); }
+    run(() => say(f, [en(item.sentence.replace('___', '… blank …'))]));
+    const k = await choose($('.opts', $('#tBody'))); App.check(f); Voice.stop();
+    Tutor.mood('think', 800); await sleep(400); App.check(f);
+    return { kind: 'V', skill: 'V', d: item.d, score: options[k].ok ? 1 : 0, prompt: item.sentence };
+  },
+  async R(f, item, T, body) {
+    $('#tTitle').textContent = T.micMode ? 'Expresión oral' : 'Dictado';
+    body(`<p class="skill-chip">${T.micMode ? '🗣️ Escucha y repite' : '✍️ Escucha y escribe'}</p>
+      <div class="audio-box"><div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="muted">${T.micMode ? 'Repite la frase tal como la escuches.' : 'Escribe exactamente lo que escuches.'}</p></div>
+      <div id="ans"></div>`);
+    await say(f, [es(T.micMode ? 'Ahora repite después de mí.' : 'Escribe exactamente lo que escuches.'), en(item.en)], { audioOnly: true });
+    let r;
+    for (; ;) {
+      r = await askAnswer($('#ans'), { placeholder: 'Escribe lo que escuchaste…' }); App.check(f);
+      if (r.cmd === 'repeat') { await say(f, [en(item.en)], { slow: true, audioOnly: true }); continue; }
+      break;
+    }
+    const cmp = compareText(item.en, r.text);
+    if (r.viaMic) addSpoken(r.seconds);
+    Tutor.mood('think', 800); await sleep(400); App.check(f);
+    return { kind: 'R', skill: r.viaMic ? 'S' : 'L', d: item.d, score: cmp.ratio >= 0.85 ? 1 : cmp.ratio, viaMic: r.viaMic, prompt: item.en, answer: r.text };
+  },
+  async S(f, item, T, body) {
+    $('#tTitle').textContent = T.micMode ? 'Respuesta oral' : 'Respuesta escrita';
+    body(`<p class="skill-chip">💬 Responde la pregunta</p>
+      <div class="audio-box"><div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <button class="link" id="showQ">📄 Ver la pregunta escrita</button><p class="q-text" id="qText" hidden>${esc(item.en)}</p></div>
+      <div id="ans"></div>`);
+    $('#showQ').addEventListener('click', () => { $('#qText').hidden = false; $('#showQ').hidden = true; });
+    if (!T.intro.S) { T.intro.S = 1; await say(f, [es('Contesta con tus propias palabras. Intenta decir al menos una frase completa.')]); }
+    await say(f, [en(item.en)], { audioOnly: true });
+    let r;
+    for (; ;) {
+      r = await askAnswer($('#ans'), {}); App.check(f);
+      if (r.cmd === 'repeat') { $('#qText').hidden = false; await say(f, [en(item.en)], { slow: true }); continue; }
+      break;
+    }
+    if (r.viaMic) addSpoken(r.seconds);
+    const sc = scoreOpen(r.text, item);
+    let tags = sc.corrections ? sc.corrections.tags : [];
+    if (AI.active()) {
+      Tutor.mood('think');
+      const j = await AI.json(promptScore({ question: item.en, answer: r.text, level: LEVELS[T.d - 1] })); App.check(f);
+      if (j && typeof j.score === 'number') { sc.score = 0.5 * sc.score + 0.5 * clamp(j.score, 0, 1); if (j.tag_es) tags = tags.concat([j.tag_es]); }
+    }
+    Tutor.mood('idle');
+    await say(f, [en(pick(['Thank you!', 'Okay, thanks!', 'Got it, thank you!']))]);
+    return { kind: 'S', skill: r.viaMic ? 'S' : 'W', d: item.d, score: sc.score, viaMic: r.viaMic, prompt: item.en, answer: r.text, tags };
+  }
+};
+
+async function testConversation(f, T, body) {
+  $('#tTitle').textContent = 'Conversación breve';
+  body(`<p class="skill-chip">💬 Plática con ${esc(Tutor.char.name)}</p><div class="chat" id="chat"></div><div id="ans"></div>`);
+  await say(f, [es('Última actividad: una plática corta conmigo. Respóndeme con naturalidad.')]);
+  const levelIdx = T.d - 1;
+  const dlg = new FreeDialog('intro', { levelIdx, userName: S.name }, 99);
+  let q = dlg.opening();
+  const history = [], scores = [], tags = [];
+  let mic = 0, turns = 0;
+  while (turns < 3) {
+    addChat('tutor', q); history.push({ role: 'tutor', text: q });
+    await say(f, [en(q)]);
+    let r;
+    for (; ;) { r = await askAnswer($('#ans'), {}); App.check(f); if (r.cmd === 'repeat') { await say(f, [en(q)], { slow: true }); continue; } break; }
+    addChat('user', r.text); history.push({ role: 'user', text: r.text });
+    if (r.viaMic) { mic++; addSpoken(r.seconds); }
+    const sc = scoreOpen(r.text, { minWords: [4, 6, 9, 12, 15][levelIdx] });
+    scores.push(sc.score); if (sc.corrections) tags.push(...sc.corrections.tags);
+    turns++;
+    if (turns >= 3) break;
+    const local = dlg.respond(r.text);
+    q = local.reply;
+    if (AI.active() && !local.help) {
+      Tutor.mood('think');
+      const j = await AI.json(promptConversation({ tutorName: Tutor.char.name, level: LEVELS[levelIdx], scenario: 'A short, friendly getting-to-know-you chat in a placement test. Ask about the student\'s life, free time and reasons to learn English.', role: 'a friendly English tutor', history, said: r.text, turn: turns + 1, maxTurns: 3 }));
+      App.check(f); Tutor.mood('idle');
+      if (j && j.reply) q = j.reply;
+    }
+  }
+  const bye = "Thanks for chatting with me! That's the end of the test.";
+  addChat('tutor', bye); Tutor.mood('celebrate');
+  await say(f, [en(bye)]);
+  const score = scores.reduce((a, b) => a + b, 0) / scores.length;
+  return { kind: 'C', skill: 'C', d: T.d, score, viaMic: mic > 0, written: mic === 0, tags };
+}
+
+function computeResult(T) {
+  const items = T.items;
+  const est = items.reduce((a, it) => a + (it.d - 0.5 + it.score), 0) / items.length;
+  const levelIdx = clamp(Math.round(est) - 1, 0, 4);
+  const groups = {};
+  items.forEach(it => { (groups[it.skill] = groups[it.skill] || []).push(it); });
+  const skills = {};
+  Object.entries(groups).forEach(([k, arr]) => {
+    const avg = arr.reduce((a, it) => a + it.score, 0) / arr.length;
+    const lv = arr.reduce((a, it) => a + (it.d - 0.5 + it.score), 0) / arr.length;
+    skills[k] = { pct: Math.round(avg * 100), level: LEVELS[clamp(Math.round(lv) - 1, 0, 4)], n: arr.length };
+  });
+  const speakingEvaluated = !!skills.S;
+  const convWritten = items.find(i => i.kind === 'C')?.written;
+  const STRONG = { L: 'Entiendes bien el inglés hablado en situaciones reales.', V: 'Reconoces el vocabulario correcto según el contexto.', S: 'Te animas a responder en voz alta con frases completas.', C: 'Sostienes una plática respondiendo a lo que te preguntan.', W: 'Te expresas con claridad por escrito.' };
+  const WEAK = { L: 'Comprensión auditiva: escucha audios cortos varias veces antes de leer el texto.', V: 'Vocabulario: aprende frases completas, no palabras sueltas.', S: 'Expresión oral: responde con frases más completas (sujeto + verbo + un detalle).', C: 'Conversación: después de responder, agrega un detalle o una razón ("because…").', W: 'Respuestas escritas: cuida el orden sujeto-verbo y los tiempos verbales.' };
+  const sorted = Object.entries(skills).sort((a, b) => b[1].pct - a[1].pct);
+  let strengths = sorted.filter(([, v]) => v.pct >= 70).map(([k]) => STRONG[k]);
+  if (!strengths.length && sorted.length) strengths = [`Tu mejor resultado fue en ${SKILL_LABELS[sorted[0][0]].toLowerCase()} (${sorted[0][1].pct}%). ¡Ahí hay una buena base!`];
+  const improvements = sorted.filter(([, v]) => v.pct < 60).reverse().map(([k]) => WEAK[k]);
+  const tags = [...new Set(items.flatMap(i => i.tags || []))].slice(0, 3);
+  tags.forEach(t => improvements.push(`Practicar: ${t}.`));
+  if (!improvements.length) improvements.push('Ganar fluidez: responde más rápido y con más detalle en conversaciones largas.');
+  if (!speakingEvaluated) improvements.push('Expresión oral: sin evaluar. Cuando puedas, usa el micrófono para medirla.');
+  return {
+    date: new Date().toISOString(), levelIdx, level: LEVELS[levelIdx], est: Math.round(est * 100) / 100,
+    skills, speakingEvaluated, convWritten, strengths, improvements,
+    recommended: recommendLesson(levelIdx, S.goal).id, minutes: Math.max(1, Math.round((Date.now() - T.start) / 60000))
+  };
+}
+
+function lessonRank(l, levelIdx, goal) {
+  return Math.abs(l.level - (levelIdx + 1)) + (goal && !l.goals.includes(goal) ? 2.5 : 0) + (S.completed[l.id] ? 6 : 0) + l.level * 0.01;
+}
+function recommendLesson(levelIdx = 0, goal = null) {
+  return LESSONS.slice().sort((a, b) => lessonRank(a, levelIdx, goal) - lessonRank(b, levelIdx, goal))[0];
+}
+
+/* ---------- 3. Resultados ---------- */
+function skillBars(R) {
+  const order = ['L', 'V', 'S', 'C', 'W'];
+  return order.map(k => {
+    if (k === 'S' && !R.skills.S) return `<div class="skill"><div class="skill-top"><span>${SKILL_LABELS.S}</span><b class="na">Sin evaluar</b></div><div class="meter na"><span style="width:0"></span></div></div>`;
+    const s = R.skills[k]; if (!s) return '';
+    const label = k === 'C' && R.convWritten ? SKILL_LABELS.C + ' (escrita)' : SKILL_LABELS[k];
+    return `<div class="skill"><div class="skill-top"><span>${label}</span><b>${s.pct}% · ≈${s.level}</b></div><div class="meter"><span style="width:${s.pct}%"></span></div></div>`;
+  }).join('');
+}
+
+SCREENS.results = () => {
+  const R = S.test; const f = App.flow; setScene('studio');
+  if (!R || R.skipped) return App.go('goal');
+  const rec = LESSONS.find(l => l.id === R.recommended) || LESSONS[0];
+  view(`<div class="card results">
+    <p class="eyebrow">Resultado del examen inicial · ${R.minutes} min</p>
+    <div class="level-badge"><span class="lv">${R.level}</span><div><b>Nivel estimado (MCER)</b><p>${LEVEL_DESC_ES[R.level]}</p></div></div>
+    <p class="notice soft">⚠️ Es una <b>estimación inicial</b> basada en 10 actividades. No es una certificación oficial.</p>
+    <h2>Desempeño por habilidad</h2><div class="skills">${skillBars(R)}</div>
+    <div class="two-col">
+      <div><h3>💪 Fortalezas</h3><ul>${R.strengths.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>
+      <div><h3>🎯 Aspectos por mejorar</h3><ul>${R.improvements.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>
+    </div>
+    <div class="rec-card"><span class="rec-ico">${GOALS[rec.goals[0]].icon}</span><div><p class="eyebrow">Primera lección recomendada</p><b>${esc(rec.title)}</b><p class="muted">${esc(rec.title_en)} · ${LEVELS[rec.level - 1]}</p></div></div>
+    ${R.speakingEvaluated ? '<p class="fine">La expresión oral se estimó con el texto que reconoció el micrófono (contenido y gramática). La app no evaluó tu pronunciación.</p>' : ''}
+    <div class="actions"><button class="btn primary big" id="toGoal">Personalizar mi curso</button><button class="btn ghost" id="retest">Repetir examen</button></div>
+  </div>`);
+  $('#toGoal').addEventListener('click', () => App.go('goal'));
+  $('#retest').addEventListener('click', () => App.go('test'));
+  Tutor.mood('celebrate');
+  run(() => say(f, [es(`¡Terminamos! Tu nivel estimado es ${R.level}. Recuerda: es una estimación inicial, no una certificación.`), en("Great job today! Now let's build your plan.")]));
+};
+
+/* ---------- 4. Curso personalizado: objetivo y plan ---------- */
+SCREENS.goal = () => {
+  const f = App.flow; setScene('studio');
+  const DAYS = [[1, 'Lun'], [2, 'Mar'], [3, 'Mié'], [4, 'Jue'], [5, 'Vie'], [6, 'Sáb'], [0, 'Dom']];
+  let goal = S.goal, days = S.plan.days.slice();
+  view(`<div class="card">
+    <p class="eyebrow">Curso personalizado</p><h1>¿Para qué quieres aprender inglés?</h1>
+    <div class="goal-grid">${Object.entries(GOALS).map(([k, g]) => `<button class="goal-card ${goal === k ? 'sel' : ''}" data-g="${k}"><span class="g-ico">${g.icon}</span><b>${g.label}</b><span class="muted">${g.desc}</span></button>`).join('')}</div>
+    <h2>Tu plan de estudio</h2>
+    <label class="plan-opt sel"><input type="radio" name="plan" checked> <div><b>3 sesiones por semana · 30 minutos</b>
+      <span class="muted">Cada sesión: lección guiada (~20 min) + repaso de frases (~5 min) + conversación libre (~5 min).</span></div></label>
+    <p class="field-label">Elige tus 3 días</p>
+    <div class="days">${DAYS.map(([d, n]) => `<button class="day ${days.includes(d) ? 'sel' : ''}" data-d="${d}" aria-pressed="${days.includes(d)}">${n}</button>`).join('')}</div>
+    <p class="fine" id="dayHint"></p>
+    <div class="actions"><button class="btn primary big" id="savePlan">Guardar mi plan</button></div></div>`);
+  const refresh = () => {
+    $$('.day').forEach(b => { const on = days.includes(+b.dataset.d); b.classList.toggle('sel', on); b.setAttribute('aria-pressed', on); });
+    $('#dayHint').textContent = days.length === 3 ? '' : `Selecciona exactamente 3 días (llevas ${days.length}).`;
+    $('#savePlan').disabled = !(goal && days.length === 3);
+  };
+  const REACT = { viajes: "Traveling! Great. Let's get you ready for airports, hotels and new places.", trabajo: "Work! Perfect. We'll practice meetings, introductions and ideas.", cotidiana: "Everyday life! Nice. Cafés, shops and small talk, here we go.", entretenimiento: "Entertainment! Fun. We'll talk about series, music and recommendations." };
+  $$('.goal-card').forEach(b => b.addEventListener('click', () => {
+    goal = b.dataset.g; $$('.goal-card').forEach(x => x.classList.toggle('sel', x === b)); refresh();
+    Tutor.mood('celebrate'); run(() => say(f, [en(REACT[goal])]));
+  }));
+  $$('.day').forEach(b => b.addEventListener('click', () => {
+    const d = +b.dataset.d;
+    if (days.includes(d)) days = days.filter(x => x !== d); else if (days.length < 3) days.push(d); else { days.shift(); days.push(d); }
+    refresh();
+  }));
+  $('#savePlan').addEventListener('click', () => { S.goal = goal; S.plan.days = days.sort(); save(); App.go('plan'); });
+  refresh();
+  Tutor.mood('greet');
+  run(() => say(f, [es('Ahora dime para qué quieres aprender inglés y elige tus tres días de práctica.'), en('What do you want to use English for?')]));
+};
+
+/* ---------- 5. Plan de estudio (inicio) ---------- */
+function weekStart() { const d = new Date(); d.setHours(0, 0, 0, 0); const k = (d.getDay() + 6) % 7; d.setDate(d.getDate() - k); return d.getTime(); }
+const sessionsThisWeek = () => S.sessions.filter(s => s.date >= weekStart()).length;
+
+SCREENS.plan = () => {
+  if (S.levelIdx === null) return App.go('welcome');
+  if (!S.goal) return App.go('goal');
+  const f = App.flow; setScene('studio');
+  const rec = recommendLesson(S.levelIdx, S.goal);
+  const done = sessionsThisWeek();
+  const DN = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  const route = LESSONS.slice().sort((a, b) => (lessonRank(a, S.levelIdx, S.goal) - (S.completed[a.id] ? 6 : 0)) - (lessonRank(b, S.levelIdx, S.goal) - (S.completed[b.id] ? 6 : 0)));
+  view(`<div class="card">
+    <p class="eyebrow">${GOALS[S.goal].icon} ${GOALS[S.goal].label} · Nivel ${LEVELS[S.levelIdx]}${S.test && !S.test.skipped ? ' (estimado)' : ''}</p>
+    <h1>Hola${S.name ? ', ' + esc(S.name) : ''} 👋</h1>
+    <div class="week">
+      <div><b>Esta semana</b><span class="muted">${done} de ${S.plan.sessionsPerWeek} sesiones · ${S.plan.days.map(d => DN[d]).join(', ')}</span></div>
+      <div class="dots">${[0, 1, 2].map(i => `<span class="${i < done ? 'on' : ''}"></span>`).join('')}</div>
+    </div>
+    <div class="next-session">
+      <p class="eyebrow">Siguiente sesión · 30 min</p>
+      <ol class="session-steps">
+        <li><span>🎬</span><div><b>${esc(rec.title)}</b><small>Lección guiada · ~20 min</small></div></li>
+        <li><span>🔁</span><div><b>Repaso de frases difíciles</b><small>${S.review.length ? S.review.length + ' frases guardadas' : 'Se llena con tus lecciones'} · ~5 min</small></div></li>
+        <li><span>💬</span><div><b>Conversación libre</b><small>Plática sobre un tema que elijas · ~5 min</small></div></li>
+      </ol>
+      <button class="btn primary big" id="startSession">Empezar sesión</button>
+    </div>
+    <h2>Tu ruta</h2>
+    <div class="lesson-list">${route.map(l => lessonRow(l, l.id === rec.id)).join('')}</div>
+    <button class="link" id="editPlan">Cambiar objetivo o días</button>
+  </div>`);
+  $('#startSession').addEventListener('click', () => App.go('lesson', { id: rec.id, session: true }));
+  bindLessonRows();
+  $('#editPlan').addEventListener('click', () => App.go('goal'));
+  Tutor.mood('greet');
+  run(() => say(f, [en(`Welcome${S.name ? ', ' + S.name : ''}! Ready for today's session?`)]));
+};
+function lessonRow(l, recommended) {
+  const c = S.completed[l.id];
+  return `<div class="lesson-row ${c ? 'done' : ''}">
+    <span class="l-ico">${c ? '✅' : GOALS[l.goals[0]].icon}</span>
+    <div class="l-info"><b>${esc(l.title)}</b><span class="muted">${esc(l.title_en)} · ${LEVELS[l.level - 1]} · ${l.goals.map(g => GOALS[g].label).join(', ')}</span>
+    ${recommended ? '<span class="pill">Recomendada</span>' : ''}</div>
+    <button class="btn soft sm" data-lesson="${l.id}">${c ? 'Repetir' : 'Empezar'}</button></div>`;
+}
+function bindLessonRows() { $$('[data-lesson]').forEach(b => b.addEventListener('click', () => App.go('lesson', { id: b.dataset.lesson }))); }
+
+SCREENS.lessons = () => {
+  setScene('studio');
+  view(`<div class="card"><p class="eyebrow">Lecciones de ejemplo</p><h1>Lecciones</h1>
+    <p class="muted">Cada lección sigue el método: escuchar → comprender → hablar → perfeccionar.</p>
+    <div class="lesson-list">${LESSONS.map(l => lessonRow(l, false)).join('')}</div></div>`);
+  bindLessonRows();
+};
+
+/* ---------- 6. Lección (6 pasos) ---------- */
+SCREENS.lesson = arg => run(() => lessonFlow(arg.id, arg));
+
+function addChat(role, text, extra = '') {
+  const chat = $('#chat'); if (!chat) return;
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  if (role === 'tutor') {
+    const blur = S.settings.audioFirst;
+    d.innerHTML = `<span class="who">${esc(Tutor.char.name)}</span><p class="${blur ? 'blur' : ''}" title="${blur ? 'Toca para ver el texto' : ''}">${esc(text)}</p>${extra}`;
+    const p = $('p', d); if (blur) p.addEventListener('click', () => p.classList.remove('blur'));
+  } else if (role === 'user') d.innerHTML = `<span class="who">Tú</span><p>${esc(text)}</p>`;
+  else d.innerHTML = text;
+  chat.appendChild(d); d.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  return d;
+}
+
+async function lessonFlow(id, opts = {}) {
+  const L = LESSONS.find(l => l.id === id) || LESSONS[0];
+  const f = App.flow; setScene(L.scene);
+  const levelIdx = S.levelIdx ?? 0;
+  const vars = { tutor: Tutor.char.name };
+  const npc = { name: L.npc.name, icon: L.npc.icon };
+  const st = { comp: [], phrase: [], corrections: [], said: [] };
+  const STEPS = ['Escucha', 'Comprende', 'Frases', 'Conversa', 'Corrige', 'Repasa'];
+  view(`<div class="card lesson">
+    <p class="eyebrow">${GOALS[L.goals[0]].icon} Lección · ${LEVELS[L.level - 1]}</p>
+    <h1>${esc(L.title)}</h1><p class="muted">${esc(L.title_en)}</p>
+    <ol class="stepper">${STEPS.map((s, i) => `<li data-s="${i}"><span>${i + 1}</span>${s}</li>`).join('')}</ol>
+    <div id="lb"></div></div>`);
+  const step = i => $$('.stepper li').forEach((li, k) => { li.classList.toggle('on', k === i); li.classList.toggle('past', k < i); });
+  const body = html => { $('#lb').innerHTML = html; };
+  const sitLines = L.situation.map(l => ({ text: fill(l.en, vars), lang: 'en', who: l.who, npc }));
+
+  /* Paso 1 · Escucha la situación (solo audio) */
+  step(0);
+  body(`<h2>1 · Escucha la situación</h2><p>${esc(L.intro_es)}</p>
+    <div class="audio-box"><div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="row-btns"><button class="btn soft" id="rep" disabled>🔁 Otra vez</button><button class="btn soft" id="slw" disabled>🐢 Más lento</button><button class="btn soft" id="tx" disabled>📄 Ver texto</button></div></div>
+    <div class="transcript" id="trans" hidden>${L.situation.map(l => `<p><b>${l.who === 'npc' ? esc(L.npc.name) : esc(Tutor.char.name)}:</b> ${esc(fill(l.en, vars))}<span class="es">${esc(fill(l.es, vars))}</span></p>`).join('')}</div>
+    <div class="actions"><button class="btn primary" id="next" disabled>Continuar</button></div>`);
+  Tutor.mood('greet');
+  await say(f, [es(L.intro_es)]);
+  await say(f, sitLines, { audioOnly: true });
+  ['rep', 'slw', 'tx', 'next'].forEach(k => { $('#' + k).disabled = false; });
+  $('#rep').addEventListener('click', () => Voice.speak(sitLines, { audioOnly: $('#trans').hidden }));
+  $('#slw').addEventListener('click', () => Voice.speak(sitLines, { slow: true, audioOnly: $('#trans').hidden }));
+  $('#tx').addEventListener('click', () => { $('#trans').hidden = !$('#trans').hidden; });
+  await waitClick($('#next')); App.check(f); Voice.stop();
+
+  /* Paso 2 · Demuestra qué comprendiste */
+  step(1);
+  for (let qi = 0; qi < L.comprehension.length; qi++) {
+    const q = L.comprehension[qi];
+    if (!q.spoken) {
+      const options = shuffle(q.options.map((t, k) => ({ t, ok: k === q.answer })));
+      body(`<h2>2 · ¿Qué entendiste?</h2><p class="muted">Pregunta ${qi + 1} de ${L.comprehension.length}</p>
+        <h3 class="q-en">${esc(q.q_en)}</h3><p class="q-es">${esc(q.q_es)}</p>
+        <div class="opts">${options.map((o, k) => `<button class="opt" data-k="${k}">${esc(o.t)}</button>`).join('')}</div><div id="fb"></div>`);
+      if (qi === 0) await say(f, [es('Ahora demuéstrame qué entendiste.')]);
+      run(() => say(f, [en(q.q_en)]));
+      const k = await choose($('#lb .opts')); App.check(f); Voice.stop();
+      const ok = options[k].ok;
+      $$('#lb .opt').forEach((b, i) => { if (options[i].ok) b.classList.add('right'); else if (i === k) b.classList.add('wrong'); });
+      st.comp.push(ok ? 1 : 0);
+      if (ok) { Tutor.mood('celebrate'); await say(f, [en(pick(["That's right!", 'Exactly!', 'Correct, well done!']))]); }
+      else { Tutor.mood('correct'); $('#fb').innerHTML = `<p class="hint-box">Escucha otra vez la parte clave: <i>${esc(sitLines[q.line].text)}</i></p>`; await say(f, [es('Casi. Escucha otra vez esta parte.'), sitLines[q.line]]); }
+    } else {
+      body(`<h2>2 · ¿Qué entendiste?</h2><p class="muted">Pregunta ${qi + 1} de ${L.comprehension.length} · respuesta oral</p>
+        <h3 class="q-en">${esc(q.q_en)}</h3><p class="q-es">${esc(q.q_es)}</p><div id="ans"></div><div id="fb"></div>`);
+      await say(f, [en(q.q_en)]);
+      let tries = 0, ok = false;
+      while (tries < 2 && !ok) {
+        const r = await askAnswer($('#ans'), { hint: `Una respuesta posible: "${q.model}"` }); App.check(f);
+        if (r.cmd === 'repeat') { await say(f, [sitLines[q.line], en(q.q_en)], { slow: true }); continue; }
+        tries++; if (r.viaMic) addSpoken(r.seconds);
+        ok = q.expect.test(r.text);
+        if (ok) { Tutor.mood('celebrate'); $('#fb').innerHTML = `<p class="good-box">✅ ¡Bien! Respuesta modelo: <b>${esc(q.model)}</b></p>`; await say(f, [en('Yes! ' + q.model)]); }
+        else {
+          Tutor.mood('correct');
+          $('#fb').innerHTML = `<p class="hint-box">Escucha la parte clave: <i>${esc(sitLines[q.line].text)}</i><br>Una respuesta posible: <b>${esc(q.model)}</b></p>`;
+          await say(f, tries < 2 ? [es('Casi. Escucha esta parte y vuelve a intentarlo.'), sitLines[q.line]] : [es('Una respuesta posible es:'), en(q.model)]);
+          if (tries >= 2) addReview({ en: q.model, es: q.q_es, note: 'Comprensión' });
+        }
+      }
+      st.comp.push(ok ? 1 : 0);
+      $('#fb').insertAdjacentHTML('beforeend', '<div class="actions"><button class="btn primary" id="next">Continuar</button></div>');
+      await waitClick($('#next')); App.check(f);
+    }
+    if (!q.spoken) { await sleep(700); App.check(f); }
+  }
+
+  /* Paso 3 · Frases útiles: escucha y repite */
+  step(2);
+  for (let pi = 0; pi < L.phrases.length; pi++) {
+    const p = L.phrases[pi];
+    body(`<h2>3 · Frases útiles</h2><p class="muted">Frase ${pi + 1} de ${L.phrases.length} · escucha y repite</p>
+      <div class="phrase"><p class="p-en">${esc(p.en)}</p><p class="p-es">${esc(p.es)}</p><p class="p-tip">💡 ${esc(p.tip)}</p>
+        <div class="row-btns"><button class="btn soft sm" id="pl">🔊 Escuchar</button><button class="btn soft sm" id="ps">🐢 Lento</button></div></div>
+      <div id="ans"></div><div id="fb"></div>`);
+    $('#pl').addEventListener('click', () => Voice.speak([en(p.en)]));
+    $('#ps').addEventListener('click', () => Voice.speak([en(p.en)], { slow: true }));
+    if (pi === 0) await say(f, [es('Te enseño frases útiles. Escucha cada una y repítela en voz alta.')]);
+    await say(f, [en(p.en)]);
+    let best = 0, tries = 0, lastSaid = '';
+    for (; ;) {
+      const r = await askAnswer($('#ans'), { label: 'Repite la frase:' }); App.check(f);
+      if (r.cmd === 'repeat') { await say(f, [en(p.en)], { slow: true }); continue; }
+      tries++; if (r.viaMic) addSpoken(r.seconds);
+      const cmp = compareText(p.en, r.text); lastSaid = r.text;
+      best = Math.max(best, cmp.ratio);
+      const good = cmp.ratio >= 0.85;
+      $('#fb').innerHTML = `${diffHTML(cmp, r.viaMic ? 'Coincidencia del texto reconocido' : 'Coincidencia del texto escrito')}
+        <div class="actions">${good ? '' : '<button class="btn soft" id="again">🔁 Intentar otra vez</button>'}<button class="btn primary" id="next">${pi < L.phrases.length - 1 ? 'Siguiente frase' : 'Continuar'}</button></div>`;
+      if (good) { Tutor.mood('celebrate'); run(() => say(f, [en(pick(['Great!', 'Nice job!', 'Perfect!', 'Well done!']))])); }
+      else { Tutor.mood('correct'); run(() => say(f, [es(cmp.missing.length ? 'Casi. Te faltaron algunas palabras. Escúchala otra vez.' : 'Casi. Escúchala otra vez.'), en(p.en)], { slow: true })); }
+      const act = await new Promise(res => { $('#next').addEventListener('click', () => res('next')); $('#again')?.addEventListener('click', () => res('again')); });
+      App.check(f); Voice.stop();
+      if (act === 'next') break;
+    }
+    st.phrase.push({ p, best, said: lastSaid, tries });
+    if (best < 0.85) addReview({ en: p.en, es: p.es, note: p.tip, said: lastSaid });
+  }
+
+  /* Paso 4 · Conversación */
+  step(3);
+  body(`<h2>4 · Conversación</h2><p>${esc(L.conversation.role_es)}</p><div class="chat" id="chat"></div><div id="ans"></div>`);
+  await say(f, [es(L.conversation.role_es)]);
+  const dlg = new LessonDialog(L, { levelIdx, tutorName: Tutor.char.name, userName: S.name });
+  const history = [];
+  let tutorText = dlg.opening(), end = false, turn = 0;
+  while (turn < 14) {
+    addChat('tutor', tutorText); history.push({ role: 'tutor', text: tutorText });
+    await say(f, [en(tutorText)]);
+    if (end) break;
+    const r = await askAnswer($('#ans'), { hint: dlg.current?.hint }); App.check(f);
+    if (r.cmd === 'repeat') {
+      addChat('note', `<p class="hint-box">💡 ${esc(dlg.current?.hint || 'Responde con una frase corta.')}</p>`);
+      await say(f, [en(dlg.question(true))], { slow: true });
+      continue;
+    }
+    turn++;
+    addChat('user', r.text); history.push({ role: 'user', text: r.text }); st.said.push(r.text);
+    if (r.viaMic) addSpoken(r.seconds);
+    const local = dlg.respond(r.text);
+    let reply = local.reply, corr = local.correction; end = !!local.end;
+    if (AI.active() && !local.help) {
+      Tutor.mood('think');
+      const goals = dlg.turns.slice(dlg.i).map(t => t.ask);
+      const j = await AI.json(promptConversation({ tutorName: Tutor.char.name, level: LEVELS[levelIdx], scenario: L.conversation.scenario, role: L.conversation.role_en, goals: goals.length ? goals : ['Close the conversation kindly'], history, said: r.text, turn, maxTurns: dlg.turns.length + 1 }));
+      App.check(f); Tutor.mood('idle');
+      if (j && j.reply && (!end || j.end)) reply = j.reply;
+      if (!corr && j && j.correction && j.correction.natural && normalize(j.correction.natural).join(' ') !== normalize(r.text).join(' '))
+        corr = { said: r.text, natural: j.correction.natural, tip_es: j.correction.tip_es || '', tags: ['Sugerencia de la IA'] };
+    }
+    if (local.help && local.hint_es) { addChat('note', `<p class="hint-box">💡 ${esc(local.hint_es)}</p>`); await say(f, [es(local.hint_es)]); }
+    if (corr) { st.corrections.push(corr); addChat('note', `<p class="note-chip">✏️ Anoté una sugerencia para el paso 5</p>`); }
+    tutorText = reply;
+  }
+  Tutor.mood('celebrate');
+  $('#ans').innerHTML = `<div class="actions"><button class="btn primary" id="next">Continuar a la corrección</button></div>`;
+  await waitClick($('#next')); App.check(f);
+
+  /* Paso 5 · Corrección concreta y nuevo intento */
+  step(4);
+  let main = st.corrections[0];
+  if (!main) {
+    const weak = st.phrase.filter(x => x.best < 0.85 && x.said).sort((a, b) => a.best - b.best)[0];
+    if (weak) main = { said: weak.said, natural: weak.p.en, tip_es: weak.p.tip, tags: [] };
+  }
+  if (main) {
+    body(`<h2>5 · Corrección</h2>
+      <div class="corr">
+        <div class="corr-row said"><span>Lo que dijiste</span><p>${esc(main.said)}</p></div>
+        <div class="corr-row natural"><span>Una forma más natural</span><p>${esc(main.natural)}</p></div>
+        ${main.tip_es ? `<p class="corr-tip">💡 ${esc(main.tip_es)}</p>` : ''}
+        <div class="corr-row retry"><span>Inténtalo de nuevo</span><div id="ans"></div></div>
+      </div><div id="fb"></div>
+      ${st.corrections.length > 1 ? `<details class="more"><summary>Otras ${st.corrections.length - 1} sugerencias (también se guardan para repasar)</summary>${st.corrections.slice(1).map(c => `<p><s>${esc(c.said)}</s> → <b>${esc(c.natural)}</b><br><small>${esc(c.tip_es)}</small></p>`).join('')}</details>` : ''}`);
+    Tutor.mood('correct');
+    await say(f, [es('Mira esta sugerencia. Una forma más natural de decirlo es:'), en(main.natural), ...(main.tip_es ? [es(main.tip_es)] : []), es('Inténtalo de nuevo.')]);
+    for (; ;) {
+      const r = await askAnswer($('#ans'), { label: 'Di la forma más natural:' }); App.check(f);
+      if (r.cmd === 'repeat') { await say(f, [en(main.natural)], { slow: true }); continue; }
+      if (r.viaMic) addSpoken(r.seconds);
+      const cmp = compareText(main.natural, r.text);
+      const good = cmp.ratio >= 0.85;
+      $('#fb').innerHTML = diffHTML(cmp, r.viaMic ? 'Coincidencia del texto reconocido' : 'Coincidencia del texto escrito') +
+        `<div class="actions">${good ? '' : '<button class="btn soft" id="again">🔁 Intentar otra vez</button>'}<button class="btn primary" id="next">Continuar</button></div>`;
+      if (good) { Tutor.mood('celebrate'); run(() => say(f, [en(pick(['Much better!', 'Yes, that sounds very natural!', 'Excellent!']))])); }
+      else { Tutor.mood('correct'); run(() => say(f, [es('Vamos otra vez, con calma.'), en(main.natural)], { slow: true })); }
+      const act = await new Promise(res => { $('#next').addEventListener('click', () => res('next')); $('#again')?.addEventListener('click', () => res('again')); });
+      App.check(f); Voice.stop();
+      if (act === 'next') { if (!good) main.keep = true; break; }
+    }
+  } else {
+    body(`<h2>5 · Corrección</h2><div class="good-box big">🎉 No encontré errores claros en lo que reconocí. ¡Muy bien!</div>
+      <p class="muted">Reto extra: di esta frase con naturalidad.</p><p class="p-en">${esc(dlg.turns[0].model)}</p><div id="ans"></div><div id="fb"></div>`);
+    Tutor.mood('celebrate');
+    await say(f, [es('¡Muy bien! No encontré errores claros. Te dejo un reto extra:'), en(dlg.turns[0].model)]);
+    const r = await askAnswer($('#ans'), { skip: true }); App.check(f);
+    if (r.text) { if (r.viaMic) addSpoken(r.seconds); $('#fb').innerHTML = diffHTML(compareText(dlg.turns[0].model, r.text)); }
+    $('#fb').insertAdjacentHTML('beforeend', '<div class="actions"><button class="btn primary" id="next">Continuar</button></div>');
+    await waitClick($('#next')); App.check(f);
+  }
+
+  /* Paso 6 · Guardar frases difíciles */
+  step(5);
+  const toSave = [];
+  st.corrections.forEach(c => toSave.push({ en: c.natural, es: '', note: c.tip_es, said: c.said }));
+  st.phrase.filter(x => x.best < 0.85).forEach(x => toSave.push({ en: x.p.en, es: x.p.es, note: x.p.tip, said: x.said }));
+  const uniq = []; toSave.forEach(t => { if (!uniq.some(u => normalize(u.en).join(' ') === normalize(t.en).join(' '))) uniq.push(t); });
+  body(`<h2>6 · Frases para repasar</h2>
+    ${uniq.length ? `<p>Estas frases te costaron más. Se guardarán en tu repaso:</p>
+      <div class="save-list">${uniq.map((u, i) => `<label class="save-item"><input type="checkbox" checked data-i="${i}"><div><b>${esc(u.en)}</b>${u.es ? `<span>${esc(u.es)}</span>` : ''}${u.note ? `<small>${esc(u.note)}</small>` : ''}</div></label>`).join('')}</div>`
+      : '<div class="good-box">Todas las frases salieron bien. Aun así puedes repasar cuando quieras.</div>'}
+    <div class="actions"><button class="btn primary big" id="finish">Guardar y terminar lección</button></div>`);
+  await say(f, [es(uniq.length ? 'Guardé las frases que te costaron más para que las repases después.' : '¡Excelente! Todas las frases salieron bien.')]);
+  await waitClick($('#finish')); App.check(f);
+  $$('.save-item input').forEach(cb => { if (cb.checked) addReview(uniq[+cb.dataset.i]); });
+  const compScore = st.comp.length ? st.comp.reduce((a, b) => a + b, 0) / st.comp.length : 0;
+  S.completed[L.id] = { date: Date.now(), comp: Math.round(compScore * 100), phrases: Math.round(st.phrase.reduce((a, x) => a + x.best, 0) / st.phrase.length * 100) };
+  S.sessions.push({ date: Date.now(), lesson: L.id });
+  save();
+
+  // Lección completa
+  step(6);
+  const next = recommendLesson(S.levelIdx ?? 0, S.goal);
+  body(`<div class="done-box"><div class="big-emoji">🏆</div><h2>¡Lección terminada!</h2>
+    <p>Comprensión: <b>${S.completed[L.id].comp}%</b> · Frases: <b>${S.completed[L.id].phrases}%</b> de coincidencia</p>
+    <p class="muted">Tiempo hablado acumulado: ${fmtTime(S.secondsSpoken)}</p></div>
+    <div class="actions col">
+      ${opts.session ? '<p class="eyebrow">Sigue tu sesión de 30 minutos</p>' : ''}
+      <button class="btn primary" id="toReview" ${S.review.length ? '' : 'hidden'}>🔁 Repasar frases difíciles (~5 min)</button>
+      <button class="btn ${S.review.length ? 'soft' : 'primary'}" id="toFree">💬 Conversación libre (~5 min)</button>
+      <button class="btn ghost" id="toPlan">Volver a mi plan · siguiente: ${esc(next.title)}</button></div>`);
+  $('#toReview').addEventListener('click', () => App.go('review'));
+  $('#toFree').addEventListener('click', () => App.go('free'));
+  $('#toPlan').addEventListener('click', () => App.go('plan'));
+  Tutor.mood('celebrate');
+  await say(f, [en('You did it! Lesson complete.'), es('¡Lección terminada! Sigue con tu repaso o una conversación libre.')]);
+}
+
+/* ---------- 7. Conversación libre ---------- */
+SCREENS.free = () => {
+  setScene('living');
+  view(`<div class="card"><p class="eyebrow">Conversación libre</p><h1>¿De qué quieres platicar?</h1>
+    <p class="muted">${esc(Tutor.char.name)} te hará una pregunta a la vez y responderá a lo que digas. Si algo puede sonar más natural, te lo dirá.</p>
+    <div class="goal-grid">${FREE_TOPICS.filter(t => !t.hidden).map(t => `<button class="goal-card" data-t="${t.id}"><span class="g-ico">${t.icon}</span><b>${t.label}</b></button>`).join('')}</div>
+    <p class="fine">Conversación: ${esc(AI.label())}.</p></div>`);
+  $$('[data-t]').forEach(b => b.addEventListener('click', () => App.go('freeChat', b.dataset.t)));
+  const f = App.flow; Tutor.mood('greet');
+  run(() => say(f, [en("Let's chat! Pick a topic.")]));
+};
+
+SCREENS.freeChat = topicId => run(async () => {
+  const f = App.flow; setScene('living');
+  const topic = FREE_TOPICS.find(t => t.id === topicId);
+  const levelIdx = S.levelIdx ?? 0;
+  view(`<div class="card"><div class="row-between"><div><p class="eyebrow">Conversación libre</p><h1>${topic.icon} ${topic.label}</h1></div>
+    <button class="btn ghost sm" id="endChat">Terminar</button></div>
+    <div class="chat" id="chat"></div><div id="ans"></div></div>`);
+  let endNow; const endP = new Promise(r => { endNow = r; });
+  $('#endChat').addEventListener('click', () => endNow({ cmd: 'end' }));
+  const dlg = new FreeDialog(topicId, { levelIdx, userName: S.name });
+  const history = [], corrections = [];
+  const t0 = S.secondsSpoken;
+  let q = dlg.opening(), end = false, turns = 0, retryNatural = null;
+  for (; ;) {
+    addChat('tutor', q); history.push({ role: 'tutor', text: q });
+    await say(f, [en(q)]);
+    if (end) break;
+    let r;
+    for (; ;) {
+      let retryClick; const retryP = new Promise(res => { retryClick = res; });
+      if (retryNatural) { const bs = $$('#chat .retry-btn'); const b = bs[bs.length - 1]; if (b) b.onclick = () => { b.disabled = true; retryClick({ cmd: 'retry' }); }; }
+      r = await Promise.race([askAnswer($('#ans'), {}), endP, retryP]); App.check(f);
+      if (r.cmd === 'repeat') { await say(f, [en(dlg.lastQuestion || q)], { slow: true }); continue; }
+      if (r.cmd === 'retry') {
+        const target = retryNatural; retryNatural = null;
+        const rr = await askAnswer($('#ans'), { label: `Inténtalo de nuevo: «${target}»`, allowHelp: false }); App.check(f);
+        if (rr.viaMic) addSpoken(rr.seconds);
+        const cmp = compareText(target, rr.text);
+        addChat('note', `<div class="corr-mini">${diffHTML(cmp, rr.viaMic ? 'Coincidencia del texto reconocido' : 'Coincidencia del texto escrito')}</div>`);
+        if (cmp.ratio >= 0.85) { Tutor.mood('celebrate'); await say(f, [en('Much better! Now, back to my question.')]); }
+        else { Tutor.mood('correct'); await say(f, [en(`Good try. It's: ${target}`)]); }
+        await say(f, [en(dlg.lastQuestion || q)]);
+        continue;
+      }
+      break;
+    }
+    if (r.cmd === 'end') break;
+    turns++;
+    addChat('user', r.text); history.push({ role: 'user', text: r.text });
+    if (r.viaMic) addSpoken(r.seconds);
+    const local = dlg.respond(r.text);
+    let reply = local.reply, corr = local.correction; end = !!local.end;
+    if (AI.active() && !local.help) {
+      Tutor.mood('think');
+      const j = await AI.json(promptConversation({ tutorName: Tutor.char.name, level: LEVELS[levelIdx], scenario: `A relaxed free conversation about: ${topic.label} (${topic.qB[0]})`, role: 'a friendly conversation partner who is curious about the student', history, said: r.text, turn: turns, maxTurns: dlg.maxTurns }));
+      App.check(f); Tutor.mood('idle');
+      if (j && j.reply) { reply = j.reply; end = !!j.end || turns >= dlg.maxTurns + 2; if (!end && local.end) end = false; }
+      if (!corr && j && j.correction && j.correction.natural && normalize(j.correction.natural).join(' ') !== normalize(r.text).join(' '))
+        corr = { said: r.text, natural: j.correction.natural, tip_es: j.correction.tip_es || '', tags: ['Sugerencia de la IA'] };
+    }
+    if (local.help && local.hint_es) addChat('note', `<p class="hint-box">💡 ${esc(local.hint_es)}</p>`);
+    q = reply;
+    if (corr) {
+      corrections.push(corr); addReview({ en: corr.natural, note: corr.tip_es, said: corr.said }); save();
+      retryNatural = corr.natural;
+      addChat('note', `<div class="corr corr-mini">
+        <div class="corr-row said"><span>Lo que dijiste</span><p>${esc(corr.said)}</p></div>
+        <div class="corr-row natural"><span>Una forma más natural</span><p>${esc(corr.natural)}</p></div>
+        ${corr.tip_es ? `<p class="corr-tip">💡 ${esc(corr.tip_es)}</p>` : ''}
+        <button class="btn soft sm retry-btn">🔁 Inténtalo de nuevo</button></div>`);
+    }
+  }
+  S.chats++; save();
+  Tutor.mood('celebrate');
+  $('#ans').innerHTML = `<div class="done-box"><h2>¡Buena plática!</h2>
+    <p>${turns} respuestas · tiempo hablado en esta plática: <b>${fmtTime(S.secondsSpoken - t0)}</b></p>
+    ${corrections.length ? `<p>${corrections.length} sugerencia(s) guardada(s) en tu repaso.</p>` : '<p>Sin correcciones que guardar. ¡Muy bien!</p>'}</div>
+    <div class="actions"><button class="btn primary" id="again">Otro tema</button><button class="btn ghost" id="prog">Ver mi progreso</button></div>`;
+  $('#again').addEventListener('click', () => App.go('free'));
+  $('#prog').addEventListener('click', () => App.go('progress'));
+  if (!end) await say(f, [en('Thanks for chatting! See you next time.')]);
+});
+
+/* ---------- 8. Repaso ---------- */
+SCREENS.review = () => run(async () => {
+  const f = App.flow; setScene('studio');
+  const items = S.review.slice().sort((a, b) => a.reps - b.reps).slice(0, 8);
+  if (!items.length) { view(`<div class="card"><h1>Repaso</h1><p>Aún no tienes frases guardadas. Se agregan solas cuando una frase te cuesta en las lecciones o conversaciones.</p><button class="btn primary" id="b">Ir a lecciones</button></div>`); $('#b').addEventListener('click', () => App.go('lessons')); return; }
+  let mastered = 0;
+  for (let i = 0; i < items.length; i++) {
+    const it = items[i];
+    view(`<div class="card"><p class="eyebrow">Repaso · ${i + 1} de ${items.length}</p><h1>Escucha y repite</h1>
+      <div class="phrase"><p class="p-en">${esc(it.en)}</p>${it.es ? `<p class="p-es">${esc(it.es)}</p>` : ''}${it.note ? `<p class="p-tip">💡 ${esc(it.note)}</p>` : ''}
+      <p class="fine">Dominio: ${'●'.repeat(it.reps)}${'○'.repeat(3 - Math.min(3, it.reps))}</p></div>
+      <div id="ans"></div><div id="fb"></div></div>`);
+    if (i === 0) await say(f, [es('Repasemos tus frases difíciles. Escucha y repite.')]);
+    await say(f, [en(it.en)]);
+    let r;
+    for (; ;) { r = await askAnswer($('#ans'), { skip: true }); App.check(f); if (r.cmd === 'repeat') { await say(f, [en(it.en)], { slow: true }); continue; } break; }
+    if (r.cmd !== 'skip') {
+      if (r.viaMic) addSpoken(r.seconds);
+      const cmp = compareText(it.en, r.text);
+      const ref = S.review.find(x => x.en === it.en);
+      if (cmp.ratio >= 0.85 && ref) { ref.reps++; if (ref.reps >= 3) { S.review = S.review.filter(x => x !== ref); mastered++; } }
+      save();
+      $('#fb').innerHTML = diffHTML(cmp, r.viaMic ? 'Coincidencia del texto reconocido' : 'Coincidencia del texto escrito') + '<div class="actions"><button class="btn primary" id="next">Siguiente</button></div>';
+      if (cmp.ratio >= 0.85) { Tutor.mood('celebrate'); run(() => say(f, [en(pick(['Great!', 'Nice!', 'Perfect!']))])); } else { Tutor.mood('correct'); run(() => say(f, [en(it.en)], { slow: true })); }
+      await waitClick($('#next')); App.check(f);
+    }
+  }
+  view(`<div class="card"><div class="done-box"><div class="big-emoji">🔁</div><h2>¡Repaso terminado!</h2><p>${mastered ? `Dominaste ${mastered} frase(s): ya salieron de tu lista.` : 'Cada frase se domina al decirla bien 3 veces.'}</p></div>
+    <div class="actions"><button class="btn primary" id="f">💬 Conversación libre</button><button class="btn ghost" id="p">Ver progreso</button></div></div>`);
+  $('#f').addEventListener('click', () => App.go('free'));
+  $('#p').addEventListener('click', () => App.go('progress'));
+  Tutor.mood('celebrate');
+  await say(f, [en('Review done. Great work!')]);
+});
+
+/* ---------- 9. Panel de progreso ---------- */
+SCREENS.progress = () => {
+  setScene('studio');
+  const nDone = Object.keys(S.completed).length;
+  const R = S.test;
+  view(`<div class="card"><p class="eyebrow">Panel de progreso</p><h1>Tu progreso</h1>
+    <div class="stats">
+      <div class="stat"><span class="s-num">${S.levelIdx !== null ? LEVELS[S.levelIdx] : '—'}</span><span>Nivel ${R && !R.skipped ? 'estimado' : 'inicial'}</span></div>
+      <div class="stat"><span class="s-num">${nDone}/${LESSONS.length}</span><span>Lecciones completadas</span></div>
+      <div class="stat"><span class="s-num">${Math.round(S.secondsSpoken / 60)}<small> min</small></span><span>Tiempo hablado (aprox.)</span></div>
+      <div class="stat"><span class="s-num">${sessionsThisWeek()}/3</span><span>Sesiones esta semana</span></div>
+    </div>
+    ${R && !R.skipped ? `<h2>Habilidades (examen inicial)</h2><div class="skills">${skillBars(R)}</div><p class="fine">Estimación del ${new Date(R.date).toLocaleDateString('es-MX')}. No es una certificación.</p>` : ''}
+    <h2>Vocabulario por repasar <small class="muted">(${S.review.length})</small></h2>
+    ${S.review.length ? `<div class="review-list">${S.review.map((r, i) => `<div class="review-item"><div><b>${esc(r.en)}</b>${r.es ? `<span>${esc(r.es)}</span>` : ''}${r.said ? `<small>Dijiste: «${esc(r.said)}»</small>` : ''}</div><span class="reps">${'●'.repeat(r.reps)}${'○'.repeat(3 - Math.min(3, r.reps))}</span><button class="icon-btn" data-del="${i}" aria-label="Quitar">✕</button></div>`).join('')}</div>
+      <button class="btn primary" id="practice">🔁 Practicar ahora</button>` : '<p class="muted">Vacío por ahora. Se llena con las frases que te cuestan.</p>'}
+    <h2>Lecciones</h2><div class="lesson-list">${LESSONS.map(l => lessonRow(l, false)).join('')}</div>
+    <div class="actions"><button class="btn ghost" id="retest">Repetir examen inicial</button></div></div>`);
+  $$('[data-del]').forEach(b => b.addEventListener('click', () => { S.review.splice(+b.dataset.del, 1); save(); SCREENS.progress(); }));
+  $('#practice')?.addEventListener('click', () => App.go('review'));
+  $('#retest').addEventListener('click', () => App.go('test'));
+  bindLessonRows();
+};
+
+/* ---------- Ajustes ---------- */
+function openSettings() {
+  const m = $('#modal');
+  const tg = (k, label, desc) => `<label class="toggle"><input type="checkbox" data-k="${k}" ${S.settings[k] ? 'checked' : ''}><span class="sw"></span><div><b>${label}</b><small>${desc}</small></div></label>`;
+  m.innerHTML = `<div class="modal-card" role="dialog" aria-modal="true" aria-label="Ajustes">
+    <div class="row-between"><h2>Ajustes</h2><button class="icon-btn" id="closeM" aria-label="Cerrar">✕</button></div>
+    <div id="settingsStatus">${statusList()}</div>
+    ${tg('cc', 'Subtítulos', 'Muestra en el globo lo que dice el tutor.')}
+    ${tg('slow', 'Voz lenta', 'Reduce la velocidad de la voz.')}
+    ${tg('mute', 'Silenciar al tutor', 'Solo subtítulos; la boca no se mueve.')}
+    ${tg('audioFirst', 'Primero escuchar', 'En las conversaciones, el texto del tutor aparece borroso hasta que lo tocas.')}
+    ${tg('useAI', 'Usar IA cuando esté disponible', 'Respuestas más naturales. Si no hay IA, se usan reglas locales.')}
+    <h3>Tutor</h3><div class="row-btns">${Object.values(CHARACTERS).map(c => `<button class="btn ${S.character === c.id ? 'primary' : 'soft'} sm" data-ch="${c.id}">${c.name}</button>`).join('')}</div>
+    <h3>Datos</h3><p class="fine">Tu progreso se guarda solo en este navegador.</p>
+    <div class="row-btns"><button class="btn soft sm" id="mRetest">Repetir examen</button><button class="btn danger sm" id="mReset">Borrar progreso</button></div>
+    <p class="fine">Privacidad: en Chrome, el reconocimiento de voz del navegador envía el audio al servicio de Google para convertirlo en texto. La app no graba ni guarda audio; solo guarda el texto de tus respuestas en este navegador.</p></div>`;
+  m.hidden = false;
+  const close = () => { m.hidden = true; m.innerHTML = ''; };
+  $('#closeM').addEventListener('click', close);
+  m.addEventListener('click', e => { if (e.target === m) close(); }, { once: true });
+  $$('.toggle input', m).forEach(cb => cb.addEventListener('change', () => { S.settings[cb.dataset.k] = cb.checked; save(); syncControls(); if (cb.dataset.k === 'mute' && cb.checked) Voice.stop(); App.updateStatus(); }));
+  $$('[data-ch]', m).forEach(b => b.addEventListener('click', () => { S.character = b.dataset.ch; save(); Tutor.set(S.character); close(); toast(`Tu tutor ahora es ${Tutor.char.name}`); Tutor.mood('greet'); Voice.speak([en(Tutor.char.hello_en)]); }));
+  $('#mRetest').addEventListener('click', () => { close(); App.go('test'); });
+  $('#mReset').addEventListener('click', e => {
+    if (e.target.dataset.confirm) { S = defaultState(); save(); close(); Tutor.set('fox'); App.go('welcome'); toast('Progreso borrado'); }
+    else { e.target.dataset.confirm = '1'; e.target.textContent = '¿Seguro? Toca otra vez para borrar'; }
+  });
+}
+
+/* ---------- Controles de voz del escenario ---------- */
+function syncControls() {
+  const set = (id, on, labelOn, labelOff) => { const b = $(id); b.setAttribute('aria-pressed', on); b.classList.toggle('on', on); if (labelOn) b.querySelector('.vl').textContent = on ? labelOn : labelOff; };
+  set('#vSlow', S.settings.slow);
+  set('#vCC', S.settings.cc);
+  set('#vMute', S.settings.mute, 'Silenciado', 'Sonido');
+  $('#vMute .vi').textContent = S.settings.mute ? '🔇' : '🔊';
+}
+
+function init() {
+  Subs.init($('#bubble')); NPC.el = $('#npc'); Tutor.mount($('#charWrap'));
+  Tutor.set(S.character || 'fox');
+  Voice.init(); Ears.configure(); AI.configure();
+  detectCaps(() => App.updateStatus());
+  document.addEventListener('pointerdown', () => Voice.unlock());
+  $('#vRepeat').addEventListener('click', () => Voice.repeat());
+  $('#vSlow').addEventListener('click', () => { S.settings.slow = !S.settings.slow; save(); syncControls(); });
+  $('#vCC').addEventListener('click', () => { S.settings.cc = !S.settings.cc; save(); syncControls(); });
+  $('#vMute').addEventListener('click', () => { S.settings.mute = !S.settings.mute; save(); syncControls(); if (S.settings.mute) Voice.stop(); });
+  $('#btnSettings').addEventListener('click', openSettings);
+  $$('#nav button').forEach(b => b.addEventListener('click', () => App.go(b.dataset.go)));
+  $('#brand').addEventListener('click', () => App.go(S.levelIdx === null ? 'welcome' : 'plan'));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal').hidden) { $('#modal').hidden = true; } });
+  syncControls(); App.updateStatus();
+  if (S.levelIdx === null || !S.character) App.go('welcome');
+  else if (!S.goal) App.go('goal');
+  else App.go('plan');
+}
+document.addEventListener('DOMContentLoaded', init);
+
+</script>
+</body>
+</html>

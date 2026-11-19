@@ -1,0 +1,13 @@
+{
+  "name": "charla-ingles",
+  "version": "1.0.0",
+  "description": "App para aprender inglés conversacional con tutor virtual que habla y escucha.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node build.mjs && node server.mjs",
+    "demo": "python3 demo/demo.py"
+  },
+  "engines": { "node": ">=18" }
+}
