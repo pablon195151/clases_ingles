@@ -1,0 +1,126 @@
+{
+ "RecognitionStatus": "Success",
+ "DisplayText": "I think three things are free.",
+ "NBest": [
+  {
+   "Display": "I think three things are free.",
+   "AccuracyScore": 72,
+   "FluencyScore": 88,
+   "CompletenessScore": 100,
+   "PronScore": 78,
+   "ProsodyScore": 81,
+   "Words": [
+    {
+     "Word": "I",
+     "AccuracyScore": 98,
+     "ErrorType": "None",
+     "Phonemes": [
+      {
+       "Phoneme": "ay",
+       "AccuracyScore": 98
+      }
+     ]
+    },
+    {
+     "Word": "think",
+     "AccuracyScore": 46,
+     "ErrorType": "Mispronunciation",
+     "Phonemes": [
+      {
+       "Phoneme": "th",
+       "AccuracyScore": 18
+      },
+      {
+       "Phoneme": "ih",
+       "AccuracyScore": 70
+      },
+      {
+       "Phoneme": "ng",
+       "AccuracyScore": 80
+      },
+      {
+       "Phoneme": "k",
+       "AccuracyScore": 90
+      }
+     ]
+    },
+    {
+     "Word": "three",
+     "AccuracyScore": 61,
+     "ErrorType": "Mispronunciation",
+     "Phonemes": [
+      {
+       "Phoneme": "th",
+       "AccuracyScore": 35
+      },
+      {
+       "Phoneme": "r",
+       "AccuracyScore": 60
+      },
+      {
+       "Phoneme": "iy",
+       "AccuracyScore": 92
+      }
+     ]
+    },
+    {
+     "Word": "things",
+     "AccuracyScore": 83,
+     "ErrorType": "None",
+     "Phonemes": [
+      {
+       "Phoneme": "th",
+       "AccuracyScore": 75
+      },
+      {
+       "Phoneme": "ih",
+       "AccuracyScore": 88
+      },
+      {
+       "Phoneme": "ng",
+       "AccuracyScore": 90
+      },
+      {
+       "Phoneme": "z",
+       "AccuracyScore": 80
+      }
+     ]
+    },
+    {
+     "Word": "are",
+     "AccuracyScore": 95,
+     "ErrorType": "None",
+     "Phonemes": [
+      {
+       "Phoneme": "aa",
+       "AccuracyScore": 95
+      },
+      {
+       "Phoneme": "r",
+       "AccuracyScore": 94
+      }
+     ]
+    },
+    {
+     "Word": "free",
+     "AccuracyScore": 90,
+     "ErrorType": "None",
+     "Phonemes": [
+      {
+       "Phoneme": "f",
+       "AccuracyScore": 95
+      },
+      {
+       "Phoneme": "r",
+       "AccuracyScore": 85
+      },
+      {
+       "Phoneme": "iy",
+       "AccuracyScore": 91
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

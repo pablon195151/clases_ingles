@@ -387,6 +387,7 @@ small{font-size:.82em}
   #btnSettings{margin-left:auto}
   .brand span{display:inline}
   body{padding-bottom:64px}
+  .topbar{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
   .stats.three{grid-template-columns:repeat(3,1fr)}
   .ring{width:62px;height:62px}.ring.big{width:86px;height:86px}
 }
@@ -396,6 +397,7 @@ small{font-size:.82em}
 .photo-char{position:relative;width:100%;aspect-ratio:4/5;transform-origin:50% 100%;animation:breathe 3.6s ease-in-out infinite;filter:drop-shadow(0 18px 24px rgba(0,0,0,.28))}
 .photo-char .fr{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;user-select:none;-webkit-user-drag:none}
 .photo-char .fr.on{opacity:1}
+.photo-char .fr-neutral{opacity:1}  /* capa base siempre visible: evita transparencias al cambiar de cuadro */
 .photo-char .fr-happy,.photo-char .fr-think,.photo-char .fr-listen,.photo-char .fr-correct{transition:opacity .18s}
 .is-photo.talking .photo-char{animation:bob-photo .9s ease-in-out infinite alternate}
 .is-photo.mood-celebrate .photo-char{animation:hop .45s ease-out 2}

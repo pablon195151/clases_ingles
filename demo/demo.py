@@ -71,7 +71,7 @@ def speak(page, text):
 
 def main():
     with sync_playwright() as p:
-        browser = p.chromium.launch(channel="chrome", args=["--autoplay-policy=no-user-gesture-required"])
+        browser = p.chromium.launch(channel="chrome", args=["--autoplay-policy=no-user-gesture-required", "--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"])
         ctx = browser.new_context(viewport={"width": 1280, "height": 800}, record_video_dir=str(OUT / "video"), record_video_size={"width": 1280, "height": 800})
         ctx.add_init_script(MOCK)
         page = ctx.new_page()
@@ -210,7 +210,21 @@ def main():
         page.click("#nav button[data-go=progress]"); page.wait_for_timeout(600); shot(page, "celular-progreso")
         page.click("#nav button[data-go=lessons]"); page.wait_for_timeout(300)
         page.locator("[data-lesson=cafe]").click(); page.wait_for_timeout(3500); shot(page, "celular-leccion")
-        ctx.close(); browser.close()
+        ctx.close()
+
+        # Práctica de pronunciación con una respuesta de Azure SIMULADA (para mostrar la pantalla sin llave real)
+        fake = json.loads(open(pathlib.Path(__file__).parent / "azure-simulado.json").read())
+        ctx2 = browser.new_context(viewport={"width": 1280, "height": 860}, permissions=["microphone"])
+        ctx2.add_init_script(MOCK + ";window.__wordMs=60;")
+        ctx2.route("**/api/config", lambda r: r.fulfill(status=200, content_type="application/json", body=json.dumps({"chat": False, "tts": False, "pronunciation": True})))
+        ctx2.route("**/api/pronunciation*", lambda r: r.fulfill(status=200, content_type="application/json", body=json.dumps(fake)))
+        pg = ctx2.new_page(); pg.goto(URL); pg.wait_for_timeout(600)
+        pg.evaluate("S.character='sofia'; S.levelIdx=2; S.goal='viajes'; S.test={skipped:true}; save()"); pg.reload(); pg.wait_for_timeout(1200)
+        pg.click("#nav button[data-go=practice]"); pg.wait_for_timeout(1500); shot(pg, "pronunciacion-inicio")
+        pg.click("[data-set=th]"); pg.wait_for_function("()=>!speechSynthesis.speaking", timeout=30000); pg.wait_for_timeout(800)
+        pg.wait_for_selector(".pron-ans .mic"); pg.click(".pron-ans .mic"); pg.wait_for_timeout(1600); pg.click(".pron-ans .mic")
+        pg.wait_for_selector(".pron-res", timeout=15000); pg.wait_for_timeout(1800); shot(pg, "pronunciacion-resultado")
+        ctx2.close(); browser.close()
         print("Listo. Capturas en", OUT)
 
 if __name__ == "__main__":

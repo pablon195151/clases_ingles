@@ -4,7 +4,7 @@
   "character": "fox",
   "levelIdx": 3,
   "test": {
-    "date": "2026-11-19T22:31:14.586Z",
+    "date": "2026-11-19T23:58:20.064Z",
     "levelIdx": 3,
     "level": "B2",
     "est": 4.36,
@@ -54,12 +54,12 @@
   },
   "completed": {
     "airport": {
-      "date": 1795127556399,
+      "date": 1795132783367,
       "comp": 67,
       "phrases": 96
     }
   },
-  "secondsSpoken": 30.825399999999913,
+  "secondsSpoken": 30.796999999999763,
   "review": [
     {
       "en": "I'd like a window seat, please.",
@@ -67,7 +67,7 @@
       "note": "\"I'd like…\" es más amable que \"I want…\".",
       "said": "I like a window seat",
       "reps": 0,
-      "added": 1795127521754
+      "added": 1795132747937
     },
     {
       "en": "I'd like a window seat.",
@@ -75,7 +75,7 @@
       "note": "\"I'd like…\" suena más amable que \"I want…\".",
       "said": "I want a window seat",
       "reps": 0,
-      "added": 1795127556399
+      "added": 1795132783367
     },
     {
       "en": "I'm 30 years old and I cook a lot.",
@@ -83,12 +83,12 @@
       "note": "La edad se dice con \"to be\": \"I'm 30 years old\", no con \"have\".",
       "said": "I have 30 years and I cook a lot.",
       "reps": 0,
-      "added": 1795127570915
+      "added": 1795132797804
     }
   ],
   "sessions": [
     {
-      "date": 1795127556399,
+      "date": 1795132783367,
       "lesson": "airport"
     }
   ],

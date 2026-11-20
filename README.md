@@ -127,6 +127,8 @@ charla-ingles/
 └── .env.example
 ```
 
+**Imágenes de los tutores:** son originales, generadas con IA (Higgsfield · GPT Image). Cada tutor tiene 9 cuadros alineados con su retrato neutral; solo cambia la zona de boca, ojos o rostro, para que no «tiemble» al hablar.
+
 **Agregar una lección:** copia un objeto de `LESSONS` en `src/content.js` y cambia la situación, las preguntas, las frases, los turnos de conversación (`ask`, `expect`, `reply`) y las correcciones. Después ejecuta `npm run build`.
 
 ## Demostración automática
@@ -137,7 +139,7 @@ pip install playwright && playwright install chrome
 python3 demo/demo.py                     # terminal 2
 ```
 
-Recorre todo el flujo (personaje → examen → resultados → plan → lección completa → conversación libre → progreso) y guarda capturas y video en `demo/capturas/`. Un navegador automatizado no tiene altavoces ni micrófono, así que el script **simula** la voz del navegador y el micrófono con respuestas guionizadas. Para probar la voz real, abre la app en Chrome.
+Recorre todo el flujo (personaje → examen → resultados → plan → lección completa → conversación libre → progreso → práctica de pronunciación) y guarda capturas y video en `demo/capturas/`. Las capturas de pronunciación usan una respuesta de Azure **simulada** (`demo/azure-simulado.json`), solo para mostrar la pantalla. Un navegador automatizado no tiene altavoces ni micrófono, así que el script **simula** la voz del navegador y el micrófono con respuestas guionizadas. Para probar la voz real, abre la app en Chrome.
 
 ## Límites de esta primera versión
 
